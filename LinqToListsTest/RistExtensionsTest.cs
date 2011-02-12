@@ -41,5 +41,40 @@ namespace LinqToListsTest {
             list.Add(1);
             Assert.IsTrue(rist.SequenceEqual(new[] { 2, 3 }));
         }
+
+        [TestMethod()]
+        public void SubListTest() {
+            var r = Enumerable.Range(0, 10).AsRist().SubList(0, 10);
+            Assert.IsTrue(r.Count == 10);
+            Assert.IsTrue(r.SequenceEqual(Enumerable.Range(0, 10)));
+
+            var r2 = Enumerable.Range(0, 10).AsRist().SubList(2, 8);
+            Assert.IsTrue(r2.Count == 8);
+            Assert.IsTrue(r2.SequenceEqual(Enumerable.Range(2, 8)));
+
+            var r3 = Enumerable.Range(0, 10).AsRist().SubList(0, 8);
+            Assert.IsTrue(r3.Count == 8);
+            Assert.IsTrue(r3.SequenceEqual(Enumerable.Range(0, 8)));
+
+            var r4 = Enumerable.Range(0, 10).AsRist().SubList(1, 8);
+            Assert.IsTrue(r4.Count == 8);
+            Assert.IsTrue(r4.SequenceEqual(Enumerable.Range(1, 8)));
+
+            var r5 = Enumerable.Range(0, 10).AsRist().SubList(5, 0);
+            Assert.IsTrue(r5.Count == 0);
+            Assert.IsTrue(r5.SequenceEqual(Enumerable.Range(0, 0)));
+
+            var r6 = Enumerable.Range(0, 10).AsRist().SubList(0, 0);
+            Assert.IsTrue(r6.Count == 0);
+            Assert.IsTrue(r6.SequenceEqual(Enumerable.Range(0, 0)));
+
+            var r7 = Enumerable.Range(0, 10).AsRist().SubList(10, 0);
+            Assert.IsTrue(r7.Count == 0);
+            Assert.IsTrue(r7.SequenceEqual(Enumerable.Range(0, 0)));
+
+            var r8 = Enumerable.Range(0, 10).AsRist().SubList(1, 8).SubList(1, 6);
+            Assert.IsTrue(r8.Count == 6);
+            Assert.IsTrue(r8.SequenceEqual(Enumerable.Range(2, 6)));
+        }
     }
 }

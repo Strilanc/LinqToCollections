@@ -53,5 +53,22 @@ namespace LinqToLists {
             
             return sequence.ToRist();
         }
+
+        ///<summary>Exposes a contiguous subset of a readable list as a readable list.</summary>
+        [Pure()]
+        public static IRist<T> SubList<T>(this IRist<T> list, int offset, int length) {
+            Contract.Requires<ArgumentException>(list != null);
+            Contract.Requires<ArgumentException>(offset >= 0);
+            Contract.Requires<ArgumentException>(length >= 0);
+            Contract.Requires<ArgumentException>(offset + length <= list.Count);
+            Contract.Ensures(Contract.Result<IRist<T>>() != null);
+            Contract.Ensures(Contract.Result<IRist<T>>().Count == length);
+
+            //prevent trivial indirection explosion
+            var view = list as RistView<T>;
+            if (view != null) return view.NestedView(offset, length);
+
+            return new RistView<T>(list, offset, length);
+        }
     }
 }
