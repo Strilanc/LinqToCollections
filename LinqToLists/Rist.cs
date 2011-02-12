@@ -9,36 +9,41 @@ namespace LinqToLists {
     [DebuggerDisplay("{ToString()}")]
     [SuppressMessage("Microsoft.Naming", "CA1710:IdentifiersShouldHaveCorrectSuffix")]
     public class Rist<T> : IRist<T> {
-        private readonly int _count;
+        private readonly Func<int> _counter;
         private readonly Func<int, T> _getter;
         private readonly IEnumerable<T> _iterator;
 
         [ContractInvariantMethod()]
         private void ObjectInvariant() {
-            Contract.Invariant(_count >= 0);
+            Contract.Invariant(_counter != null);
             Contract.Invariant(_getter != null);
             Contract.Invariant(_iterator != null);
         }
 
         ///<summary>Constructs a readable list implementation.</summary>
-        ///<param name="count">The number of list items.</param>
-        ///<param name="getter">Delegate used to get the list items.</param>
+        ///<param name="counter">Gets the number of list items.</param>
+        ///<param name="getter">Gets indexed list items.</param>
         ///<param name="efficientIterator">Optionally used to provide a more efficient iterator than accessing each index in turn.</param>
-        public Rist(int count, Func<int, T> getter, IEnumerable<T> efficientIterator = null) {
-            Contract.Requires(count >= 0);
+        public Rist(Func<int> counter, Func<int, T> getter, IEnumerable<T> efficientIterator = null) {
+            Contract.Requires(counter != null);
             Contract.Requires(getter != null);
-            Contract.Ensures(this.Count == count);
-            this._count = count;
+            this._counter = counter;
             this._getter = getter;
-            this._iterator = efficientIterator ?? DefaultIterator(count, getter);
-            Contract.Assume(this.Count == count);
+            this._iterator = efficientIterator ?? DefaultIterator(counter, getter);
         }
-        private static IEnumerable<T> DefaultIterator(int count, Func<int, T> getter) {
-            for (int i = 0; i < count; i++)
+        private static IEnumerable<T> DefaultIterator(Func<int> counter, Func<int, T> getter) {
+            int n = counter();
+            for (int i = 0; i < n; i++)
                 yield return getter(i);
         }
 
-        public int Count { get { return _count; } }
+        public int Count {
+            get {
+                var r = _counter();
+                if (r < 0) throw new InvalidOperationException("Invalid counter delegate.");
+                return r;
+            }
+        }
         public T this[int index] { get { return _getter(index); } }
         public IEnumerator<T> GetEnumerator() { return this._iterator.GetEnumerator(); }
         System.Collections.IEnumerator System.Collections.IEnumerable.GetEnumerator() { return this.GetEnumerator(); }
