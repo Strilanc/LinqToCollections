@@ -9,6 +9,8 @@ namespace LinqToListsTest {
     public class RistExtensionsTest {
         [TestMethod()]
         public void AsRistIListTest() {
+            Util.ExpectException<ArgumentException>(() => RistExtensions.AsRist((IList<int>)null));
+
             Assert.IsTrue(new[] { 0, 1, 2 }.AsRist().Count == 3);
             Assert.IsTrue(new[] { 0, 2, 5, 7 }.AsRist().SequenceEqual(new[] { 0, 2, 5, 7 }));
             var list = new List<int>() { 2, 3 };
@@ -19,6 +21,8 @@ namespace LinqToListsTest {
         }
         [TestMethod()]
         public void AsRistIEnumerableTest() {
+            Util.ExpectException<ArgumentException>(() => RistExtensions.AsRist((IEnumerable<int>)null));
+
             var list = new List<int>() { 2, 3 };
             var listAsRist = list.AsEnumerable().AsRist();
             var projectionAsRist = list.Select(i => i + 1).AsRist();
@@ -35,6 +39,8 @@ namespace LinqToListsTest {
         }
         [TestMethod()]
         public void ToRistTest() {
+            Util.ExpectException<ArgumentException>(() => RistExtensions.ToRist((IEnumerable<int>)null));
+            
             var list = new List<int>() { 2, 3 };
             var rist = list.ToRist();
             Assert.IsTrue(rist.SequenceEqual(new[] { 2, 3 }));
@@ -44,6 +50,12 @@ namespace LinqToListsTest {
 
         [TestMethod()]
         public void SubListTest() {
+            Util.ExpectException<ArgumentException>(() => RistExtensions.SubList((IRist<int>)null, 0, 0));
+            Util.ExpectException<ArgumentException>(() => RistExtensions.SubList(new[] { 1 }.AsRist(), -1, 0));
+            Util.ExpectException<ArgumentException>(() => RistExtensions.SubList(new[] { 1 }.AsRist(), 0, 2));
+            Util.ExpectException<ArgumentException>(() => RistExtensions.SubList(new[] { 1 }.AsRist(), 1, 1));
+            Util.ExpectException<ArgumentException>(() => RistExtensions.SubList(new[] { 1 }.AsRist(), 2, 0));
+
             var r = Enumerable.Range(0, 10).AsRist().SubList(0, 10);
             Assert.IsTrue(r.Count == 10);
             Assert.IsTrue(r.SequenceEqual(Enumerable.Range(0, 10)));
