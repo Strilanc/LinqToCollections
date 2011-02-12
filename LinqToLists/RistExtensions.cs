@@ -160,5 +160,16 @@ namespace LinqToLists {
             Contract.Ensures(Contract.Result<IRist<T>>().Count == list.Count - Math.Min(list.Count, maxSkipCount));
             return list.SkipLastExact(Math.Min(list.Count, maxSkipCount));
         }
+
+        ///<summary>Exposes the non-negative integers below the count as a readable list.</summary>
+        [Pure()]
+        public static IRist<int> Range(this int count) {
+            Contract.Requires<ArgumentException>(count >= 0);
+            Contract.Ensures(Contract.Result<IRist<int>>() != null);
+            Contract.Ensures(Contract.Result<IRist<int>>().Count == count);
+            var r = new Rist<int>(counter: () => count, getter: i => i);
+            Contract.Assume(r.Count == count);
+            return r;
+        }
     }
 }
