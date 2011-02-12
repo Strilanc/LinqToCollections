@@ -2,13 +2,14 @@
 using System.Diagnostics.Contracts;
 using System.Collections.Generic;
 using System.Linq;
+using System;
 
 namespace LinqToLists {
     public static class RistExtensions {
         ///<summary>Exposes a list as a readable list.</summary>
         [Pure()]
         public static IRist<T> AsRist<T>(this IList<T> list) {
-            Contract.Requires(list != null);
+            Contract.Requires<ArgumentException>(list != null);
             Contract.Ensures(Contract.Result<IRist<T>>() != null);
             Contract.Ensures(Contract.Result<IRist<T>>().Count == list.Count);
             Contract.Ensures(Contract.Result<IRist<T>>().SequenceEqual(list));
@@ -22,7 +23,7 @@ namespace LinqToLists {
         ///<summary>Creates a copy of the given sequence and exposes the copy as a readable list.</summary>
         [Pure()]
         public static IRist<T> ToRist<T>(this IEnumerable<T> sequence) {
-            Contract.Requires(sequence != null);
+            Contract.Requires<ArgumentException>(sequence != null);
             Contract.Ensures(Contract.Result<IRist<T>>() != null);
             Contract.Ensures(Contract.Result<IRist<T>>().SequenceEqual(sequence));
             var r = sequence.ToArray().AsRist();
@@ -33,7 +34,7 @@ namespace LinqToLists {
         ///<remarks>Just a cast when the sequence is an IRist, and equivalent to AsRist(IList) when the sequence is an IList.</remarks>
         [Pure()]
         public static IRist<T> AsRist<T>(this IEnumerable<T> sequence) {
-            Contract.Requires(sequence != null);
+            Contract.Requires<ArgumentException>(sequence != null);
             Contract.Ensures(Contract.Result<IRist<T>>() != null);
             Contract.Ensures(Contract.Result<IRist<T>>().SequenceEqual(sequence));
             

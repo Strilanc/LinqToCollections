@@ -25,8 +25,8 @@ namespace LinqToLists {
         ///<param name="getter">Gets indexed list items.</param>
         ///<param name="efficientIterator">Optionally used to provide a more efficient iterator than accessing each index in turn.</param>
         public Rist(Func<int> counter, Func<int, T> getter, IEnumerable<T> efficientIterator = null) {
-            Contract.Requires(counter != null);
-            Contract.Requires(getter != null);
+            Contract.Requires<ArgumentException>(counter != null);
+            Contract.Requires<ArgumentException>(getter != null);
             this._counter = counter;
             this._getter = getter;
             this._iterator = efficientIterator ?? DefaultIterator(counter, getter);
