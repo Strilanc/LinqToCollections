@@ -74,5 +74,50 @@ namespace LinqToLists {
 
             return new RistView<T>(list, offset, length);
         }
+
+        ///<summary>Exposes the end of a readable list, after skipping exactly the given number of items, as a readable list.</summary>
+        [Pure]
+        [SuppressMessage("Microsoft.Design", "CA1062:Validate arguments of public methods", MessageId = "0", Justification = "Contract cycle check creates false-positive")]
+        public static IRist<T> SkipExact<T>(this IRist<T> list, int exactSkipCount) {
+            Contract.Requires<ArgumentException>(list != null);
+            Contract.Requires<ArgumentException>(exactSkipCount >= 0);
+            Contract.Requires<ArgumentException>(exactSkipCount <= list.Count);
+            Contract.Ensures(Contract.Result<IRist<T>>() != null);
+            Contract.Ensures(Contract.Result<IRist<T>>().Count == list.Count - exactSkipCount);
+            return list.SubList(exactSkipCount, list.Count - exactSkipCount);
+        }
+        ///<summary>Exposes the start of a readable list, up to exactly the given number of items, as a readable list.</summary>
+        [Pure]
+        [SuppressMessage("Microsoft.Design", "CA1062:Validate arguments of public methods", MessageId = "0", Justification = "Contract cycle check creates false-positive")]
+        public static IRist<T> TakeExact<T>(this IRist<T> list, int exactTakeCount) {
+            Contract.Requires<ArgumentException>(list != null);
+            Contract.Requires<ArgumentException>(exactTakeCount >= 0);
+            Contract.Requires<ArgumentException>(exactTakeCount <= list.Count);
+            Contract.Ensures(Contract.Result<IRist<T>>() != null);
+            Contract.Ensures(Contract.Result<IRist<T>>().Count == exactTakeCount);
+            return list.SubList(0, exactTakeCount);
+        }
+        ///<summary>Exposes the start of a readable list, before skipping exactly the given number of items at the end, as a readable list.</summary>
+        [Pure]
+        [SuppressMessage("Microsoft.Design", "CA1062:Validate arguments of public methods", MessageId = "0", Justification = "Contract cycle check creates false-positive")]
+        public static IRist<T> SkipLastExact<T>(this IRist<T> list, int exactSkipCount) {
+            Contract.Requires<ArgumentException>(list != null);
+            Contract.Requires<ArgumentException>(exactSkipCount >= 0);
+            Contract.Requires<ArgumentException>(exactSkipCount <= list.Count);
+            Contract.Ensures(Contract.Result<IRist<T>>() != null);
+            Contract.Ensures(Contract.Result<IRist<T>>().Count == list.Count - exactSkipCount);
+            return list.SubList(0, list.Count - exactSkipCount);
+        }
+        ///<summary>Exposes the end of a readable list, down to exactly the given number of items, as a readable list.</summary>
+        [Pure]
+        [SuppressMessage("Microsoft.Design", "CA1062:Validate arguments of public methods", MessageId = "0", Justification = "Contract cycle check creates false-positive")]
+        public static IRist<T> TakeLastExact<T>(this IRist<T> list, int exactTakeCount) {
+            Contract.Requires<ArgumentException>(list != null);
+            Contract.Requires<ArgumentException>(exactTakeCount >= 0);
+            Contract.Requires<ArgumentException>(exactTakeCount <= list.Count);
+            Contract.Ensures(Contract.Result<IRist<T>>() != null);
+            Contract.Ensures(Contract.Result<IRist<T>>().Count == exactTakeCount);
+            return list.SubList(list.Count - exactTakeCount, exactTakeCount);
+        }
     }
 }

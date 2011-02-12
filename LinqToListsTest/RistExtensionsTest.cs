@@ -88,5 +88,54 @@ namespace LinqToListsTest {
             Assert.IsTrue(r8.Count == 6);
             Assert.IsTrue(r8.SequenceEqual(Enumerable.Range(2, 6)));
         }
+
+        [TestMethod()]
+        public void SkipExactTest() {
+            Util.ExpectException<ArgumentException>(() => new[] { 1, 2, 3 }.AsRist().SkipExact(-1));
+            Util.ExpectException<ArgumentException>(() => new[] { 1, 2, 3 }.AsRist().SkipExact(4));
+            Util.ExpectException<ArgumentException>(() => new[] { 1, 2 }.AsRist().SkipExact(-1));
+            Util.ExpectException<ArgumentException>(() => new[] { 1, 2 }.AsRist().SkipExact(3));
+
+            Assert.IsTrue(new[] { 1, 2, 3 }.AsRist().SkipExact(0).SequenceEqual(new[] { 1, 2, 3 }));
+            Assert.IsTrue(new[] { 1, 2, 3 }.AsRist().SkipExact(3).SequenceEqual(new int[0]));
+            Assert.IsTrue(new[] { 1, 2, 3, 4 }.AsRist().SkipExact(1).SequenceEqual(new[] { 2, 3, 4 }));
+            Assert.IsTrue(new[] { 1, 2, 3, 4 }.AsRist().SkipExact(3).SequenceEqual(new[] { 4 }));
+        }
+        [TestMethod()]
+        public void SkipLastExactTest() {
+            Util.ExpectException<ArgumentException>(() => new[] { 1, 2, 3 }.AsRist().SkipLastExact(-1));
+            Util.ExpectException<ArgumentException>(() => new[] { 1, 2, 3 }.AsRist().SkipLastExact(4));
+            Util.ExpectException<ArgumentException>(() => new[] { 1, 2 }.AsRist().SkipLastExact(-1));
+            Util.ExpectException<ArgumentException>(() => new[] { 1, 2 }.AsRist().SkipLastExact(3));
+
+            Assert.IsTrue(new[] { 1, 2, 3 }.AsRist().SkipLastExact(0).SequenceEqual(new[] { 1, 2, 3 }));
+            Assert.IsTrue(new[] { 1, 2, 3 }.AsRist().SkipLastExact(3).SequenceEqual(new int[0]));
+            Assert.IsTrue(new[] { 1, 2, 3, 4 }.AsRist().SkipLastExact(1).SequenceEqual(new[] { 1, 2, 3 }));
+            Assert.IsTrue(new[] { 1, 2, 3, 4 }.AsRist().SkipLastExact(3).SequenceEqual(new[] { 1 }));
+        }
+        [TestMethod()]
+        public void TakeExactTest() {
+            Util.ExpectException<ArgumentException>(() => new[] { 1, 2, 3 }.AsRist().TakeExact(-1));
+            Util.ExpectException<ArgumentException>(() => new[] { 1, 2, 3 }.AsRist().TakeExact(4));
+            Util.ExpectException<ArgumentException>(() => new[] { 1, 2 }.AsRist().TakeExact(-1));
+            Util.ExpectException<ArgumentException>(() => new[] { 1, 2 }.AsRist().TakeExact(3));
+
+            Assert.IsTrue(new[] { 1, 2, 3 }.AsRist().TakeExact(0).SequenceEqual(new int[0]));
+            Assert.IsTrue(new[] { 1, 2, 3 }.AsRist().TakeExact(3).SequenceEqual(new[] { 1, 2, 3 }));
+            Assert.IsTrue(new[] { 1, 2, 3, 4 }.AsRist().TakeExact(1).SequenceEqual(new[] { 1 }));
+            Assert.IsTrue(new[] { 1, 2, 3, 4 }.AsRist().TakeExact(3).SequenceEqual(new[] { 1, 2, 3 }));
+        }
+        [TestMethod()]
+        public void TakeLastExactTest() {
+            Util.ExpectException<ArgumentException>(() => new[] { 1, 2, 3 }.AsRist().TakeLastExact(-1));
+            Util.ExpectException<ArgumentException>(() => new[] { 1, 2, 3 }.AsRist().TakeLastExact(4));
+            Util.ExpectException<ArgumentException>(() => new[] { 1, 2 }.AsRist().TakeLastExact(-1));
+            Util.ExpectException<ArgumentException>(() => new[] { 1, 2 }.AsRist().TakeLastExact(3));
+
+            Assert.IsTrue(new[] { 1, 2, 3 }.AsRist().TakeLastExact(0).SequenceEqual(new int[0]));
+            Assert.IsTrue(new[] { 1, 2, 3 }.AsRist().TakeLastExact(3).SequenceEqual(new[] { 1, 2, 3 }));
+            Assert.IsTrue(new[] { 1, 2, 3, 4 }.AsRist().TakeLastExact(1).SequenceEqual(new[] { 4 }));
+            Assert.IsTrue(new[] { 1, 2, 3, 4 }.AsRist().TakeLastExact(3).SequenceEqual(new[] { 2, 3, 4 }));
+        }
     }
 }
