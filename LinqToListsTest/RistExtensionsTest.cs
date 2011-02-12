@@ -203,5 +203,36 @@ namespace LinqToListsTest {
             Assert.IsTrue(1.Range().Count == 1);
             Assert.IsTrue(10.Range().SequenceEqual(Enumerable.Range(0, 10)));
         }
+
+        [TestMethod()]
+        public void SelectTest() {
+            Util.ExpectException<ArgumentException>(() => ((IRist<int>)null).Select(i => i));
+            Util.ExpectException<ArgumentException>(() => new int[0].AsRist().Select((Func<int, int>)null));
+
+            Assert.IsTrue(5.Range().Select(i => i * i).SequenceEqual(new[] { 0, 1, 4, 9, 16 }));
+            Assert.IsTrue(0.Range().Select(i => i * i).SequenceEqual(new int[0]));
+            Assert.IsTrue(4.Range().Select(i => i + i).SequenceEqual(new[] { 0, 2, 4, 6 }));
+        }
+        [TestMethod()]
+        public void Select2Test() {
+            Util.ExpectException<ArgumentException>(() => ((IRist<int>)null).Select((e, i) => i));
+            Util.ExpectException<ArgumentException>(() => new int[0].AsRist().Select((Func<int, int, int>)null));
+
+            Assert.IsTrue(5.Range().Select((e, i) => i * e).SequenceEqual(new[] { 0, 1, 4, 9, 16 }));
+            Assert.IsTrue(0.Range().Select((e, i) => i * e).SequenceEqual(new int[0]));
+            Assert.IsTrue(new[] { 2, 3, 5 }.AsRist().Select((e, i) => e).SequenceEqual(new[] { 2, 3, 5 }));
+            Assert.IsTrue(new[] { 2, 3, 5 }.AsRist().Select((e, i) => i).SequenceEqual(new[] { 0, 1, 2 }));
+            Assert.IsTrue(new[] { 2, 3, 5 }.AsRist().Select((e, i) => e + i).SequenceEqual(new[] { 2, 4, 7 }));
+        }
+        [TestMethod()]
+        public void ZipTest() {
+            Util.ExpectException<ArgumentException>(() => ((IRist<int>)null).Zip(new int[0], (i1, i2) => i1));
+            Util.ExpectException<ArgumentException>(() => new int[0].AsRist().Zip((IRist<int>)null, (i1, i2) => i1));
+            Util.ExpectException<ArgumentException>(() => new int[0].AsRist().Zip(new int[0], (Func<int, int, int>)null));
+
+            Assert.IsTrue(5.Range().Zip(4.Range(), (e1, e2) => e1 + e2).SequenceEqual(new[] { 0, 2, 4, 6 }));
+            Assert.IsTrue(4.Range().Zip(5.Range(), (e1, e2) => e1 + e2).SequenceEqual(new[] { 0, 2, 4, 6 }));
+            Assert.IsTrue(5.Range().Zip(new[] {true, false, true}, (e1, e2) => e2 ? e1 : -e1).SequenceEqual(new[] { 0, -1, 2 }));
+        }
     }
 }

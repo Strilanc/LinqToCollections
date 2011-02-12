@@ -171,5 +171,40 @@ namespace LinqToLists {
             Contract.Assume(r.Count == count);
             return r;
         }
+
+        ///<summary>Projects each element of a readable list into a new form by incorporating the element's index and exposes the results as a readable list.</summary>
+        [Pure()]
+        public static IRist<TOut> Select<TIn, TOut>(this IRist<TIn> list, Func<TIn, TOut> projection) {
+            Contract.Requires<ArgumentException>(list != null);
+            Contract.Requires<ArgumentException>(projection != null);
+            Contract.Ensures(Contract.Result<IRist<TOut>>() != null);
+            Contract.Ensures(Contract.Result<IRist<TOut>>().Count == list.Count);
+            var r = new Rist<TOut>(counter: () => list.Count, getter: i => projection(list[i]));
+            Contract.Assume(r.Count == list.Count);
+            return r;
+        }
+        ///<summary>Projects each element of a readable list into a new form and exposes the results as a readable list.</summary>
+        [Pure()]
+        public static IRist<TOut> Select<TIn, TOut>(this IRist<TIn> list, Func<TIn, int, TOut> projection) {
+            Contract.Requires<ArgumentException>(list != null);
+            Contract.Requires<ArgumentException>(projection != null);
+            Contract.Ensures(Contract.Result<IRist<TOut>>() != null);
+            Contract.Ensures(Contract.Result<IRist<TOut>>().Count == list.Count);
+            var r = new Rist<TOut>(counter: () => list.Count, getter: i => projection(list[i], i));
+            Contract.Assume(r.Count == list.Count);
+            return r;
+        }
+        ///<summary>Merges two readable lists using the specified projection and exposes the results as a readable list.</summary>
+        [Pure()]
+        public static IRist<TOut> Zip<TIn1, TIn2, TOut>(this IRist<TIn1> list1, IRist<TIn2> list2, Func<TIn1, TIn2, TOut> projection) {
+            Contract.Requires<ArgumentException>(list1 != null);
+            Contract.Requires<ArgumentException>(list2 != null);
+            Contract.Requires<ArgumentException>(projection != null);
+            Contract.Ensures(Contract.Result<IRist<TOut>>() != null);
+            Contract.Ensures(Contract.Result<IRist<TOut>>().Count == Math.Min(list1.Count, list2.Count));
+            var r = new Rist<TOut>(counter: () => Math.Min(list1.Count, list2.Count), getter: i => projection(list1[i], list2[i]));
+            Contract.Assume(r.Count == Math.Min(list1.Count, list2.Count));
+            return r;
+        }
     }
 }
