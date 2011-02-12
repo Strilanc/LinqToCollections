@@ -73,6 +73,7 @@
   <ItemGroup>
     <Compile Include="IRist.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
+    <Compile Include="Rist.cs" />
   </ItemGroup>
   <ItemGroup>
     <None Include="Strilanc-LinqToLists.pfx" />
