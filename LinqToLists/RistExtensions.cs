@@ -56,6 +56,7 @@ namespace LinqToLists {
 
         ///<summary>Exposes a contiguous subset of a readable list as a readable list.</summary>
         [Pure()]
+        [SuppressMessage("Microsoft.Design", "CA1062:Validate arguments of public methods", MessageId = "0", Justification = "Contract cycle check creates false-positive")]
         public static IRist<T> SubList<T>(this IRist<T> list, int offset, int length) {
             Contract.Requires<ArgumentException>(list != null);
             Contract.Requires<ArgumentException>(offset >= 0);
@@ -66,7 +67,10 @@ namespace LinqToLists {
 
             //prevent trivial indirection explosion
             var view = list as RistView<T>;
-            if (view != null) return view.NestedView(offset, length);
+            if (view != null) {
+                Contract.Assume(offset + length <= view.Count);
+                return view.NestedView(offset, length);
+            }
 
             return new RistView<T>(list, offset, length);
         }
