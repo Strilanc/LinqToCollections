@@ -8,6 +8,7 @@ namespace LinqToLists {
     ///<remarks>Shorthand for 'IReadableList'.</remarks>
     ///<typeparam name="T">The type of items in the list.</typeparam>
     [ContractClass(typeof(IRistContractClass<>))]
+    [SuppressMessage("Microsoft.Naming", "CA1710:IdentifiersShouldHaveCorrectSuffix")]
     public interface IRist<T> : IEnumerable<T> {
         ///<summary>Gets the number of items in the list.</summary>
         int Count { get; }
