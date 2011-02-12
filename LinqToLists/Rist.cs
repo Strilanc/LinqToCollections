@@ -7,6 +7,7 @@ using System.Diagnostics.CodeAnalysis;
 namespace LinqToLists {
     ///<summary>Utility class for implementing a readable list via a count and getter delegate.</summary>
     [DebuggerDisplay("{ToString()}")]
+    [SuppressMessage("Microsoft.Naming", "CA1710:IdentifiersShouldHaveCorrectSuffix")]
     public class Rist<T> : IRist<T> {
         private readonly int _count;
         private readonly Func<int, T> _getter;
