@@ -207,6 +207,7 @@ namespace LinqToLists {
             return r;
         }
         
+        ///<summary>Returns a readable list with the same elements but in the reverse order.</summary>
         [Pure()]
         public static IRist<T> Reverse<T>(this IRist<T> list) {
             Contract.Requires<ArgumentException>(list != null);
@@ -214,6 +215,23 @@ namespace LinqToLists {
             var r = new Rist<T>(counter: () => list.Count, getter: i => list[list.Count - 1 - i]);
             Contract.Assume(r.Count == list.Count);
             return r;
+        }
+
+        ///<summary>Returns the last element in a non-empty readable list.</summary>
+        [Pure()]
+        [SuppressMessage("Microsoft.Design", "CA1062:Validate arguments of public methods", MessageId = "0", Justification = "Contract cycle check creates false-positive")]
+        public static T Last<T>(this IRist<T> list) {
+            Contract.Requires<ArgumentException>(list != null);
+            Contract.Requires<ArgumentException>(list.Count > 0);
+            return list[list.Count - 1];
+        }
+        
+        ///<summary>Returns the last element in a non-empty readable list, or a default value if the list is empty.</summary>
+        [Pure()]
+        [SuppressMessage("Microsoft.Design", "CA1062:Validate arguments of public methods", MessageId = "0", Justification = "Contract cycle check creates false-positive")]
+        public static T LastOrDefault<T>(this IRist<T> list, T defaultValue = default(T)) {
+            Contract.Requires<ArgumentException>(list != null);
+            return list.Count == 0 ? defaultValue : list[list.Count - 1];
         }
     }
 }

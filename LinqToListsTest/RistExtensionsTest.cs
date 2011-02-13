@@ -251,5 +251,30 @@ namespace LinqToListsTest {
             Assert.IsTrue(5.Range().Reverse().SequenceEqual(new[] { 4, 3, 2, 1, 0 }));
             Assert.IsTrue(4.Range().Reverse().SequenceEqual(new[] { 3, 2, 1, 0 }));
         }
+
+        [TestMethod()]
+        public void LastTest() {
+            Util.ExpectException<ArgumentException>(() => ((IRist<int>)null).Last());
+            Util.ExpectException<ArgumentException>(() => 0.Range().Last());
+
+            Assert.IsTrue(1.Range().Last() == 0);
+            Assert.IsTrue(2.Range().Last() == 1);
+            Assert.IsTrue(int.MaxValue.Range().Last() == int.MaxValue - 1);
+            Assert.IsTrue(new Rist<int>(counter: () => 11, getter: i => { if (i < 10) throw new ArgumentException(); else return i;}).Last() == 10);
+        }
+        [TestMethod()]
+        public void LastOrDefaultTest() {
+            Util.ExpectException<ArgumentException>(() => ((IRist<int>)null).LastOrDefault());
+            Util.ExpectException<ArgumentException>(() => 0.Range().Last());
+
+            Assert.IsTrue(0.Range().LastOrDefault() == 0);
+            Assert.IsTrue(0.Range().LastOrDefault(5) == 5);
+            Assert.IsTrue(1.Range().LastOrDefault() == 0);
+            Assert.IsTrue(1.Range().LastOrDefault(5) == 0);
+            Assert.IsTrue(2.Range().LastOrDefault() == 1);
+            Assert.IsTrue(2.Range().LastOrDefault(5) == 1);
+            Assert.IsTrue(int.MaxValue.Range().LastOrDefault() == int.MaxValue - 1);
+            Assert.IsTrue(new Rist<int>(counter: () => 11, getter: i => { if (i < 10) throw new ArgumentException(); else return i; }).LastOrDefault() == 10);
+        }
     }
 }
