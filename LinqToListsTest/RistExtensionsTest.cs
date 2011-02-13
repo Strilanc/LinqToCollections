@@ -9,7 +9,7 @@ namespace LinqToListsTest {
     public class RistExtensionsTest {
         [TestMethod()]
         public void AsRistIListTest() {
-            Util.ExpectException<ArgumentException>(() => RistExtensions.AsRist((IList<int>)null));
+            Util.ExpectException<ArgumentException>(() => ((IList<int>)null).AsRist());
 
             Assert.IsTrue(new[] { 0, 1, 2 }.AsRist().Count == 3);
             Assert.IsTrue(new[] { 0, 2, 5, 7 }.AsRist().SequenceEqual(new[] { 0, 2, 5, 7 }));
@@ -21,7 +21,7 @@ namespace LinqToListsTest {
         }
         [TestMethod()]
         public void AsRistIEnumerableTest() {
-            Util.ExpectException<ArgumentException>(() => RistExtensions.AsRist((IEnumerable<int>)null));
+            Util.ExpectException<ArgumentException>(() => ((IEnumerable<int>)null).AsRist());
 
             var list = new List<int>() { 2, 3 };
             var listAsRist = list.AsEnumerable().AsRist();
@@ -39,7 +39,7 @@ namespace LinqToListsTest {
         }
         [TestMethod()]
         public void ToRistTest() {
-            Util.ExpectException<ArgumentException>(() => RistExtensions.ToRist((IEnumerable<int>)null));
+            Util.ExpectException<ArgumentException>(() => ((IRist<int>)null).ToRist());
             
             var list = new List<int>() { 2, 3 };
             var rist = list.ToRist();
@@ -50,11 +50,11 @@ namespace LinqToListsTest {
 
         [TestMethod()]
         public void SubListTest() {
-            Util.ExpectException<ArgumentException>(() => RistExtensions.SubList((IRist<int>)null, 0, 0));
-            Util.ExpectException<ArgumentException>(() => RistExtensions.SubList(new[] { 1 }.AsRist(), -1, 0));
-            Util.ExpectException<ArgumentException>(() => RistExtensions.SubList(new[] { 1 }.AsRist(), 0, 2));
-            Util.ExpectException<ArgumentException>(() => RistExtensions.SubList(new[] { 1 }.AsRist(), 1, 1));
-            Util.ExpectException<ArgumentException>(() => RistExtensions.SubList(new[] { 1 }.AsRist(), 2, 0));
+            Util.ExpectException<ArgumentException>(() => ((IRist<int>)null).SubList(0, 0));
+            Util.ExpectException<ArgumentException>(() => new[] { 1 }.AsRist().SubList(-1, 0));
+            Util.ExpectException<ArgumentException>(() => new[] { 1 }.AsRist().SubList(0, 2));
+            Util.ExpectException<ArgumentException>(() => new[] { 1 }.AsRist().SubList(1, 1));
+            Util.ExpectException<ArgumentException>(() => new[] { 1 }.AsRist().SubList(2, 0));
 
             var r = Enumerable.Range(0, 10).AsRist().SubList(0, 10);
             Assert.IsTrue(r.Count == 10);
@@ -91,6 +91,7 @@ namespace LinqToListsTest {
 
         [TestMethod()]
         public void SkipExactTest() {
+            Util.ExpectException<ArgumentException>(() => ((IRist<int>)null).SkipExact(0));
             Util.ExpectException<ArgumentException>(() => new[] { 1, 2, 3 }.AsRist().SkipExact(-1));
             Util.ExpectException<ArgumentException>(() => new[] { 1, 2, 3 }.AsRist().SkipExact(4));
             Util.ExpectException<ArgumentException>(() => new[] { 1, 2 }.AsRist().SkipExact(-1));
@@ -103,6 +104,7 @@ namespace LinqToListsTest {
         }
         [TestMethod()]
         public void SkipLastExactTest() {
+            Util.ExpectException<ArgumentException>(() => ((IRist<int>)null).SkipLastExact(0));
             Util.ExpectException<ArgumentException>(() => new[] { 1, 2, 3 }.AsRist().SkipLastExact(-1));
             Util.ExpectException<ArgumentException>(() => new[] { 1, 2, 3 }.AsRist().SkipLastExact(4));
             Util.ExpectException<ArgumentException>(() => new[] { 1, 2 }.AsRist().SkipLastExact(-1));
@@ -115,6 +117,7 @@ namespace LinqToListsTest {
         }
         [TestMethod()]
         public void TakeExactTest() {
+            Util.ExpectException<ArgumentException>(() => ((IRist<int>)null).TakeExact(0));
             Util.ExpectException<ArgumentException>(() => new[] { 1, 2, 3 }.AsRist().TakeExact(-1));
             Util.ExpectException<ArgumentException>(() => new[] { 1, 2, 3 }.AsRist().TakeExact(4));
             Util.ExpectException<ArgumentException>(() => new[] { 1, 2 }.AsRist().TakeExact(-1));
@@ -127,6 +130,7 @@ namespace LinqToListsTest {
         }
         [TestMethod()]
         public void TakeLastExactTest() {
+            Util.ExpectException<ArgumentException>(() => ((IRist<int>)null).TakeLastExact(0));
             Util.ExpectException<ArgumentException>(() => new[] { 1, 2, 3 }.AsRist().TakeLastExact(-1));
             Util.ExpectException<ArgumentException>(() => new[] { 1, 2, 3 }.AsRist().TakeLastExact(4));
             Util.ExpectException<ArgumentException>(() => new[] { 1, 2 }.AsRist().TakeLastExact(-1));
@@ -140,6 +144,7 @@ namespace LinqToListsTest {
 
         [TestMethod()]
         public void SkipTest() {
+            Util.ExpectException<ArgumentException>(() => ((IRist<int>)null).Skip(0));
             Util.ExpectException<ArgumentException>(() => new[] { 1, 2, 3 }.AsRist().Skip(-1));
             Util.ExpectException<ArgumentException>(() => new[] { 1, 2 }.AsRist().Skip(-1));
 
@@ -152,6 +157,7 @@ namespace LinqToListsTest {
         }
         [TestMethod()]
         public void SkipLastTest() {
+            Util.ExpectException<ArgumentException>(() => ((IRist<int>)null).SkipLast(0));
             Util.ExpectException<ArgumentException>(() => new[] { 1, 2, 3 }.AsRist().SkipLast(-1));
             Util.ExpectException<ArgumentException>(() => new[] { 1, 2 }.AsRist().SkipLast(-1));
 
@@ -164,6 +170,7 @@ namespace LinqToListsTest {
         }
         [TestMethod()]
         public void TakeTest() {
+            Util.ExpectException<ArgumentException>(() => ((IRist<int>)null).Take(0));
             Util.ExpectException<ArgumentException>(() => new[] { 1, 2, 3 }.AsRist().Take(-1));
             Util.ExpectException<ArgumentException>(() => new[] { 1, 2 }.AsRist().Take(-1));
 
@@ -176,6 +183,7 @@ namespace LinqToListsTest {
         }
         [TestMethod()]
         public void TakeLastTest() {
+            Util.ExpectException<ArgumentException>(() => ((IRist<int>)null).TakeLast(0));
             Util.ExpectException<ArgumentException>(() => new[] { 1, 2, 3 }.AsRist().TakeLast(-1));
             Util.ExpectException<ArgumentException>(() => new[] { 1, 2 }.AsRist().TakeLast(-1));
 
