@@ -234,5 +234,14 @@ namespace LinqToListsTest {
             Assert.IsTrue(4.Range().Zip(5.Range(), (e1, e2) => e1 + e2).SequenceEqual(new[] { 0, 2, 4, 6 }));
             Assert.IsTrue(5.Range().Zip(new[] {true, false, true}, (e1, e2) => e2 ? e1 : -e1).SequenceEqual(new[] { 0, -1, 2 }));
         }
+
+        [TestMethod()]
+        public void ReverseTest() {
+            Util.ExpectException<ArgumentException>(() => ((IRist<int>)null).Reverse());
+
+            Assert.IsTrue(0.Range().Reverse().SequenceEqual(new int[0]));
+            Assert.IsTrue(5.Range().Reverse().SequenceEqual(new[] { 4, 3, 2, 1, 0 }));
+            Assert.IsTrue(4.Range().Reverse().SequenceEqual(new[] { 3, 2, 1, 0 }));
+        }
     }
 }

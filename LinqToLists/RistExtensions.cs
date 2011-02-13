@@ -206,5 +206,14 @@ namespace LinqToLists {
             Contract.Assume(r.Count == Math.Min(list1.Count, list2.Count));
             return r;
         }
+        
+        [Pure()]
+        public static IRist<T> Reverse<T>(this IRist<T> list) {
+            Contract.Requires<ArgumentException>(list != null);
+            Contract.Ensures(Contract.Result<IRist<T>>().Count == list.Count);
+            var r = new Rist<T>(counter: () => list.Count, getter: i => list[list.Count - 1 - i]);
+            Contract.Assume(r.Count == list.Count);
+            return r;
+        }
     }
 }
