@@ -276,5 +276,45 @@ namespace LinqToListsTest {
             Assert.IsTrue(int.MaxValue.Range().LastOrDefault() == int.MaxValue - 1);
             Assert.IsTrue(new Rist<int>(counter: () => 11, getter: i => { if (i < 10) throw new ArgumentException(); else return i; }).LastOrDefault() == 10);
         }
+
+        [TestMethod()]
+        public void AsIListTest() {
+            Util.ExpectException<ArgumentException>(() => ((IRist<int>)null).AsIList());
+            
+            var rawList = new List<int>() {0, 1, 2};
+            var asRist = rawList.AsRist();
+            var asRistAsList = rawList.AsRist().AsIList();
+            Assert.IsTrue(asRistAsList.IsReadOnly);
+            Assert.IsTrue(asRistAsList.Count == 3);
+            Assert.IsTrue(asRistAsList.SequenceEqual(new[] { 0, 1, 2 }));
+            Assert.ReferenceEquals(asRist, asRistAsList);
+            Assert.ReferenceEquals(asRist, asRistAsList.AsRist());
+            Util.ExpectException<InvalidOperationException>(() => asRistAsList.Add(0));
+            Util.ExpectException<InvalidOperationException>(() => asRistAsList.Remove(0));
+            Util.ExpectException<InvalidOperationException>(() => asRistAsList.Insert(0, 0));
+            Util.ExpectException<InvalidOperationException>(() => asRistAsList.RemoveAt(0));
+            Util.ExpectException<InvalidOperationException>(() => asRistAsList.Clear());
+            Util.ExpectException<InvalidOperationException>(() => asRistAsList[0] = 0);
+
+            var asList = 5.Range().AsIList();
+            var asListAsRist = asList.AsRist();
+            Assert.ReferenceEquals(asListAsRist, asList);
+            Assert.IsTrue(asList.SequenceEqual(new[] { 0, 1, 2, 3, 4 }));
+            Assert.IsTrue(asList.IsReadOnly);
+            Assert.IsTrue(asList.Count == 5);
+            Assert.IsTrue(asList.Contains(4));
+            Assert.IsTrue(asList.Contains(1));
+            Assert.IsTrue(asList.Contains(0));
+            Assert.IsTrue(!asList.Contains(-1));
+            Assert.IsTrue(asList.IndexOf(4) == 4);
+            Assert.IsTrue(asList.IndexOf(1) == 1);
+            Assert.IsTrue(asList.IndexOf(0) == 0);
+            Assert.IsTrue(asList.IndexOf(-1) == -1);
+            Assert.IsTrue(asList.IndexOf(-2) == -1);
+            
+            var d = new int[10];
+            asList.CopyTo(d, 2);
+            Assert.IsTrue(d.SequenceEqual(new[] { 0, 0, 0, 1, 2, 3, 4, 0, 0, 0 }));
+        }
     }
 }

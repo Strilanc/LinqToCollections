@@ -6,6 +6,19 @@ using System;
 
 namespace LinqToLists {
     public static class RistExtensions {
+        ///<summary>Exposes a readable list as an IList (readonly).</summary>
+        ///<remarks>Using AsRist on the result will use a cast instead of wrapping more (and AsIList on that will also cast instead of wrap).</remarks>
+        [Pure()]
+        public static IList<T> AsIList<T>(this IRist<T> list) {
+            Contract.Requires<ArgumentException>(list != null);
+            Contract.Ensures(Contract.Result<IList<T>>() != null);
+            Contract.Ensures(Contract.Result<IList<T>>().Count == list.Count);
+            Contract.Ensures(Contract.Result<IList<T>>().SequenceEqual(list));
+            var r = list as IList<T> ?? new RistAsIList<T>(list);
+            Contract.Assume(r.Count == list.Count);
+            Contract.Assume(r.SequenceEqual(list));
+            return r;
+        }
         ///<summary>Exposes a list as a readable list.</summary>
         [Pure()]
         public static IRist<T> AsRist<T>(this IList<T> list) {
