@@ -5,7 +5,7 @@ using System.Diagnostics.Contracts;
 using System.Diagnostics.CodeAnalysis;
 
 namespace LinqToLists {
-    ///<summary>Utility class for implementing a readable list via a count and getter delegate.</summary>
+    ///<summary>Utility class for implementing a readable list via counter and getter delegates.</summary>
     [DebuggerDisplay("{ToString()}")]
     [SuppressMessage("Microsoft.Naming", "CA1710:IdentifiersShouldHaveCorrectSuffix")]
     public class Rist<T> : IRist<T> {
@@ -23,7 +23,7 @@ namespace LinqToLists {
         ///<summary>Constructs a readable list implementation.</summary>
         ///<param name="counter">Gets the number of list items.</param>
         ///<param name="getter">Gets indexed list items.</param>
-        ///<param name="efficientIterator">Optionally used to provide a more efficient iterator than accessing each index in turn.</param>
+        ///<param name="efficientIterator">Optionally used to provide a more efficient or more capable iterator than accessing each index in turn.</param>
         public Rist(Func<int> counter, Func<int, T> getter, IEnumerable<T> efficientIterator = null) {
             Contract.Requires<ArgumentException>(counter != null);
             Contract.Requires<ArgumentException>(getter != null);

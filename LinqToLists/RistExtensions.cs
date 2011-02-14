@@ -13,9 +13,9 @@ namespace LinqToLists {
             Contract.Ensures(Contract.Result<IRist<T>>() != null);
             Contract.Ensures(Contract.Result<IRist<T>>().Count == list.Count);
             Contract.Ensures(Contract.Result<IRist<T>>().SequenceEqual(list));
-            var r =  new Rist<T>(getter: i => list[i],
-                                 counter: () => list.Count,
-                                 efficientIterator: list);
+            var r = list as IRist<T> ?? new Rist<T>(getter: i => list[i],
+                                                    counter: () => list.Count,
+                                                    efficientIterator: list);
             Contract.Assume(r.Count == list.Count);
             Contract.Assume(r.SequenceEqual(list));
             return r;
@@ -225,7 +225,6 @@ namespace LinqToLists {
             Contract.Requires<ArgumentException>(list.Count > 0);
             return list[list.Count - 1];
         }
-        
         ///<summary>Returns the last element in a non-empty readable list, or a default value if the list is empty.</summary>
         [Pure()]
         [SuppressMessage("Microsoft.Design", "CA1062:Validate arguments of public methods", MessageId = "0", Justification = "Contract cycle check creates false-positive")]
