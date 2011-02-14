@@ -50,14 +50,14 @@ namespace LinqToLists {
         }
 
         System.Collections.IEnumerator System.Collections.IEnumerable.GetEnumerator() { return GetEnumerator(); }
-        void IList<T>.Insert(int index, T item) { throw new InvalidOperationException("ReadOnly"); }
-        void IList<T>.RemoveAt(int index) { throw new InvalidOperationException("ReadOnly"); }
-        void ICollection<T>.Add(T item) { throw new InvalidOperationException("ReadOnly"); }
-        void ICollection<T>.Clear() { throw new InvalidOperationException("ReadOnly"); }
-        bool ICollection<T>.Remove(T item) { throw new InvalidOperationException("ReadOnly"); }
+        void IList<T>.Insert(int index, T item) { throw new NotSupportedException("Collection is read-only."); }
+        void IList<T>.RemoveAt(int index) { throw new NotSupportedException("Collection is read-only."); }
+        void ICollection<T>.Add(T item) { throw new NotSupportedException("Collection is read-only."); }
+        void ICollection<T>.Clear() { throw new NotSupportedException("Collection is read-only."); }
+        bool ICollection<T>.Remove(T item) { throw new NotSupportedException("Collection is read-only."); }
         T IList<T>.this[int index] {
             get { return this[index]; }
-            set { throw new InvalidOperationException("ReadOnly"); }
+            set { throw new NotSupportedException("Collection is read-only."); }
         }
     }
 }
