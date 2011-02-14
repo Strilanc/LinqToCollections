@@ -3,13 +3,14 @@ Building:
 - Disable signing or choose a different strong name file
 - Install Code Contracts ( http://research.microsoft.com/en-us/projects/contracts/ )
  ~ Not strictly necessary, but argument validation may be omitted without it.
- ~ Do not turn on the inclusion of runtime postcondition and invariant checks, except for testing (because some expensive-at-runtime ones are used).
+ ~ Activate only runtime precondition checking (some postconditions, invariants and assumptions are quite expensive to check).
 
 --- Notes ---
 How is this library useful?
 - Ask only for what you need. A method taking IList<T> may modify the list, but you trivially know it won't if it takes IRist<T>.
 - IEnumerable<T> is costly in time or memory when you need random access to the sequence elements.
-- Several operations become much more efficient (Last and Reverse in particular)
+- Several operations become much more efficient (Last and Reverse in particular).
+- Some operations stay efficient (Count in particular) when operations like projection don't degrade a list into an enumerable.
 
 Why use a new type instead of IList<T>?
 - Mainly the fact that IList<T> has mutating methods. Purity being obvious is important.
@@ -26,5 +27,6 @@ Why is the Rist<T> class used for 'custom' readable lists instead of individual 
 - Line savings. A custom class takes a dozen lines instead of one.
 - (This does come at the cost of some performance, due to the added indirection of the lambda.)
 Followup: why is SubList implemented with a custom class?
-- Prevents quadratic behavior from repeated application.
+- Prevents quadratic behavior from repeated application (due to increasing indirection).
 - Iteratively applying SubList/Take/Skip is an expected use case (eg. a parser keeps removing the parsed prefix of data).
+ ~ There is a similar optimization in AsIList to keep bouncing between IRist<T> and IList<T> from adding indirection.
