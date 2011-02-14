@@ -11,6 +11,11 @@ How is this library useful?
 - IEnumerable<T> is costly in time or memory when you need random access to the sequence elements.
 - Several operations become much more efficient (Last and Reverse in particular)
 
+Why use a new type instead of IList<T>?
+- Mainly the fact that IList<T> has mutating methods. Purity being obvious is important.
+- IList<T> also has several unnecessary methods, increasing the size and test surface of implementations.
+- The vain hope that Microsoft will take a hint and split their collection interfaces into smaller pieces (particularly along purity and variance boundaries).
+
 Why doesn't IRist<T> inherit IList<T> or ICollection<T>?
 - It would prevent covariance (eg. Contains is contravariant)
 - It would pollute the intended-to-be-pure interface with inappropriate mutating methods.
