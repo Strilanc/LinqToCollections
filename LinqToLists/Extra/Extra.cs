@@ -18,5 +18,25 @@ namespace LinqToLists.Extra {
             Contract.Assume(r.Count == count);
             return r;
         }
+        ///<summary>Exposes the non-negative signed bytes below the count as a readable list.</summary>
+        ///<summary>Exposes the non-negative bytes below the count as a readable list.</summary>
+        [Pure()]
+        public static IRist<byte> Range(this byte count) {
+            Contract.Ensures(Contract.Result<IRist<byte>>() != null);
+            Contract.Ensures(Contract.Result<IRist<byte>>().Count == count);
+            var r = new Rist<byte>(counter: () => count, getter: i => (byte)i);
+            Contract.Assume(r.Count == count);
+            return r;
+        }
+        ///<summary>Exposes the non-negative signed 16-bit integers below the count as a readable list.</summary>
+        [Pure()]
+        public static IRist<short> Range(this short count) {
+            Contract.Requires<ArgumentException>(count >= 0);
+            Contract.Ensures(Contract.Result<IRist<short>>() != null);
+            Contract.Ensures(Contract.Result<IRist<short>>().Count == count);
+            var r = new Rist<short>(counter: () => count, getter: i => (short)i);
+            Contract.Assume(r.Count == count);
+            return r;
+        }
     }
 }
