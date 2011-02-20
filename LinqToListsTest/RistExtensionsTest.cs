@@ -273,12 +273,12 @@ namespace LinqToListsTest {
             Assert.IsTrue(asRistAsList.SequenceEqual(new[] { 0, 1, 2 }));
             Assert.ReferenceEquals(asRist, asRistAsList);
             Assert.ReferenceEquals(asRist, asRistAsList.AsRist());
-            Util.ExpectException<InvalidOperationException>(() => asRistAsList.Add(0));
-            Util.ExpectException<InvalidOperationException>(() => asRistAsList.Remove(0));
-            Util.ExpectException<InvalidOperationException>(() => asRistAsList.Insert(0, 0));
-            Util.ExpectException<InvalidOperationException>(() => asRistAsList.RemoveAt(0));
-            Util.ExpectException<InvalidOperationException>(() => asRistAsList.Clear());
-            Util.ExpectException<InvalidOperationException>(() => asRistAsList[0] = 0);
+            Util.ExpectException<NotSupportedException>(() => asRistAsList.Add(0));
+            Util.ExpectException<NotSupportedException>(() => asRistAsList.Remove(0));
+            Util.ExpectException<NotSupportedException>(() => asRistAsList.Insert(0, 0));
+            Util.ExpectException<NotSupportedException>(() => asRistAsList.RemoveAt(0));
+            Util.ExpectException<NotSupportedException>(() => asRistAsList.Clear());
+            Util.ExpectException<NotSupportedException>(() => asRistAsList[0] = 0);
 
             var asList = 5.Range().AsIList();
             var asListAsRist = asList.AsRist();
