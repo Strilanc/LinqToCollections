@@ -38,5 +38,16 @@ namespace LinqToLists.Extra {
             Contract.Assume(r.Count == count);
             return r;
         }
+
+        ///<summary>Returns a readable list composed of a repeated value.</summary>
+        [Pure()]
+        public static IRist<T> Repeated<T>(this T value, int count) {
+            Contract.Requires<ArgumentException>(count >= 0);
+            Contract.Ensures(Contract.Result<IRist<T>>() != null);
+            Contract.Ensures(Contract.Result<IRist<T>>().Count == count);
+            var r = new Rist<T>(counter: () => count, getter: i => value);
+            Contract.Assume(r.Count == count);
+            return r;
+        }
     }
 }

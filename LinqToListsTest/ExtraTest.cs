@@ -54,5 +54,15 @@ namespace LinqToListsTest {
             Assert.IsTrue(((byte)1).Range().Count == 1);
             Assert.IsTrue(((byte)10).Range().SequenceEqual(Enumerable.Range(0, 10).Select(i => (byte)i)));
         }
+
+        [TestMethod]
+        public void RepeatedTest() {
+            Util.ExpectException<ArgumentException>(() => 1.Repeated(-1));
+
+            Assert.IsTrue(((Object)null).Repeated(0).Count == 0);
+            Assert.IsTrue(2.Repeated(int.MaxValue)[int.MaxValue - 1] == 2);
+            Assert.IsTrue(3.Repeated(0).SequenceEqual(new int[0]));
+            Assert.IsTrue(5.Repeated(3).SequenceEqual(new[] { 5, 5, 5 }));
+        }
     }
 }
