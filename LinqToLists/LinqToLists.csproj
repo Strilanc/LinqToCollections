@@ -78,6 +78,7 @@
     <Compile Include="RistExtensions.cs" />
     <Compile Include="RistAsIList.cs" />
     <Compile Include="RistView.cs" />
+    <Compile Include="Extra\Extra.cs" />
   </ItemGroup>
   <ItemGroup>
     <None Include="Strilanc-LinqToLists.pfx" />
