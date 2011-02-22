@@ -47,7 +47,7 @@ namespace LinqToLists {
         ///<summary>Exposes the underlying list of a given sequence as a readable list, creating a copy if the underlying type is not a list.</summary>
         ///<remarks>Just a cast when the sequence is an IRist, and equivalent to AsRist(IList) when the sequence is an IList.</remarks>
         [Pure()]
-        public static IRist<T> AsRist<T>(this IEnumerable<T> sequence) {
+        public static IRist<T> AsRistElseToRist<T>(this IEnumerable<T> sequence) {
             Contract.Requires<ArgumentException>(sequence != null);
             Contract.Ensures(Contract.Result<IRist<T>>() != null);
             Contract.Ensures(Contract.Result<IRist<T>>().SequenceEqual(sequence));
