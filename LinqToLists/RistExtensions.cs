@@ -5,6 +5,7 @@ using System.Linq;
 using System;
 
 namespace LinqToLists {
+    ///<summary>Contains extension methods having to do with the IRist interface.</summary>
     public static class RistExtensions {
         ///<summary>Exposes a readable list as an IList (readonly).</summary>
         ///<remarks>Using AsRist on the result will use a cast instead of wrapping more (and AsIList on that will also cast instead of wrap).</remarks>
@@ -133,7 +134,7 @@ namespace LinqToLists {
             return list.SubList(list.Count - exactTakeCount, exactTakeCount);
         }
 
-        ///<summary>Exposes the end of a readable list, after skipping up to the given number of items, as a readable list.</summary>
+        ///<summary>Exposes the start of a readable list, up to the given number of items, as a readable list.</summary>
         [Pure()]
         [SuppressMessage("Microsoft.Design", "CA1062:Validate arguments of public methods", MessageId = "0", Justification = "Contract cycle check creates false-positive")]
         public static IRist<T> Take<T>(this IRist<T> list, int maxTakeCount) {
@@ -143,7 +144,7 @@ namespace LinqToLists {
             Contract.Ensures(Contract.Result<IRist<T>>().Count == Math.Min(list.Count, maxTakeCount));
             return list.TakeExact(Math.Min(list.Count, maxTakeCount));
         }
-        ///<summary>Exposes the start of a readable list, up to the given number of items, as a readable list.</summary>
+        ///<summary>Exposes the end of a readable list, after skipping up to the given number of items, as a readable list.</summary>
         [Pure()]
         [SuppressMessage("Microsoft.Design", "CA1062:Validate arguments of public methods", MessageId = "0", Justification = "Contract cycle check creates false-positive")]
         public static IRist<T> Skip<T>(this IRist<T> list, int maxSkipCount) {
@@ -153,7 +154,7 @@ namespace LinqToLists {
             Contract.Ensures(Contract.Result<IRist<T>>().Count == list.Count - Math.Min(list.Count, maxSkipCount));
             return list.SkipExact(Math.Min(list.Count, maxSkipCount));
         }
-        ///<summary>Exposes the start of a readable list, before skipping up to the given number of items at the end, as a readable list.</summary>
+        ///<summary>Exposes the end of a readable list, down to the given number of items, as a readable list.</summary>
         [Pure()]
         [SuppressMessage("Microsoft.Design", "CA1062:Validate arguments of public methods", MessageId = "0", Justification = "Contract cycle check creates false-positive")]
         public static IRist<T> TakeLast<T>(this IRist<T> list, int maxTakeCount) {
@@ -163,7 +164,7 @@ namespace LinqToLists {
             Contract.Ensures(Contract.Result<IRist<T>>().Count == Math.Min(list.Count, maxTakeCount));
             return list.TakeLastExact(Math.Min(list.Count, maxTakeCount));
         }
-        ///<summary>Exposes the end of a readable list, down to the given number of items, as a readable list.</summary>
+        ///<summary>Exposes the start of a readable list, before skipping down to the given number of items at the end, as a readable list.</summary>
         [Pure()]
         [SuppressMessage("Microsoft.Design", "CA1062:Validate arguments of public methods", MessageId = "0", Justification = "Contract cycle check creates false-positive")]
         public static IRist<T> SkipLast<T>(this IRist<T> list, int maxSkipCount) {
@@ -174,7 +175,7 @@ namespace LinqToLists {
             return list.SkipLastExact(Math.Min(list.Count, maxSkipCount));
         }
 
-        ///<summary>Projects each element of a readable list into a new form by incorporating the element's index and exposes the results as a readable list.</summary>
+        ///<summary>Projects each element of a readable list into a new form and exposes the results as a readable list.</summary>
         [Pure()]
         public static IRist<TOut> Select<TIn, TOut>(this IRist<TIn> list, Func<TIn, TOut> projection) {
             Contract.Requires<ArgumentException>(list != null);
@@ -185,7 +186,7 @@ namespace LinqToLists {
             Contract.Assume(r.Count == list.Count);
             return r;
         }
-        ///<summary>Projects each element of a readable list into a new form and exposes the results as a readable list.</summary>
+        ///<summary>Projects each element of a readable list into a new form by incorporating the element's index and exposes the results as a readable list.</summary>
         [Pure()]
         public static IRist<TOut> Select<TIn, TOut>(this IRist<TIn> list, Func<TIn, int, TOut> projection) {
             Contract.Requires<ArgumentException>(list != null);
