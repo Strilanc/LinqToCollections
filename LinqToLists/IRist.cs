@@ -9,7 +9,7 @@ namespace LinqToLists {
     ///<typeparam name="T">The type of items in the list.</typeparam>
     [ContractClass(typeof(IRistContractClass<>))]
     [SuppressMessage("Microsoft.Naming", "CA1710:IdentifiersShouldHaveCorrectSuffix")]
-    public interface IRist<T> : IEnumerable<T> {
+    public interface IRist<out T> : IEnumerable<T> {
         ///<summary>Gets the number of items in the list.</summary>
         int Count { get; }
         ///<summary>Gets the list item at the given index.</summary>
