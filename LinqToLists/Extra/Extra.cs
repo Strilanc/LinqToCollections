@@ -18,7 +18,6 @@ namespace LinqToLists.Extra {
             Contract.Assume(r.Count == count);
             return r;
         }
-        ///<summary>Exposes the non-negative signed bytes below the count as a readable list.</summary>
         ///<summary>Exposes the non-negative bytes below the count as a readable list.</summary>
         [Pure()]
         public static IRist<byte> Range(this byte count) {
