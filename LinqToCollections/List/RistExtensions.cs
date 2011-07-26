@@ -4,7 +4,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System;
 
-namespace LinqToLists {
+namespace LinqToCollections.List {
     ///<summary>Contains extension methods having to do with the IRist interface.</summary>
     public static class RistExtensions {
         ///<summary>Exposes a readable list as an IList (readonly).</summary>

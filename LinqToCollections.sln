@@ -1,9 +1,9 @@
 ﻿
 Microsoft Visual Studio Solution File, Format Version 11.00
 # Visual Studio 2010
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "LinqToLists", "LinqToLists\LinqToLists.csproj", "{570EC1B1-4F85-4283-ABE4-858321637768}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "LinqToCollections", "LinqToCollections\LinqToCollections.csproj", "{570EC1B1-4F85-4283-ABE4-858321637768}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "LinqToListsTest", "LinqToListsTest\LinqToListsTest.csproj", "{E61D3786-2276-4909-A4E5-48E9778DE235}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "LinqToCollectionsTest", "LinqToCollectionsTest\LinqToCollectionsTest.csproj", "{E61D3786-2276-4909-A4E5-48E9778DE235}"
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Solution Items", "Solution Items", "{153FCB94-78AD-40CA-8BE0-8D00917675C1}"
 	ProjectSection(SolutionItems) = preProject

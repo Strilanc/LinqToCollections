@@ -5,7 +5,7 @@ using System.Text;
 using System.Diagnostics;
 using System.Diagnostics.Contracts;
 
-namespace LinqToLists {
+namespace LinqToCollections.List {
     ///<summary>Exposes a contiguous subset of a readable list as a readable list.</summary>
     ///<remarks>
     ///Used to prevent multiple subview nesting from creating many levels of indirection.

@@ -1,10 +1,10 @@
-﻿using LinqToLists;
+﻿using LinqToCollections.List;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 using System;
 using System.Collections.Generic;
 using System.Linq;
 
-namespace LinqToListsTest {
+namespace LinqToCollectionsTest {
     [TestClass()]
     public class RistTest {
         [TestMethod()]

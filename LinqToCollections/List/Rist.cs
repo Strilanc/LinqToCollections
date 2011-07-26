@@ -4,7 +4,7 @@ using System.Diagnostics;
 using System.Diagnostics.Contracts;
 using System.Diagnostics.CodeAnalysis;
 
-namespace LinqToLists {
+namespace LinqToCollections.List {
     ///<summary>Utility class for implementing a readable list via counter and getter delegates.</summary>
     [DebuggerDisplay("{ToString()}")]
     [SuppressMessage("Microsoft.Naming", "CA1710:IdentifiersShouldHaveCorrectSuffix")]

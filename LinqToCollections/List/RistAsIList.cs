@@ -4,7 +4,7 @@ using System.Linq;
 using System.Diagnostics.Contracts;
 using System.Diagnostics.CodeAnalysis;
 
-namespace LinqToLists {
+namespace LinqToCollections.List {
     ///<summary>Implements a ReadOnly IList by delegating calls to a readable list.</summary>
     internal sealed class RistAsIList<T> : IList<T>, IRist<T> {
         private readonly IRist<T> _list;

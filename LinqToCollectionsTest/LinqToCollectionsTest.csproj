@@ -9,7 +9,7 @@
     <ProjectGuid>{E61D3786-2276-4909-A4E5-48E9778DE235}</ProjectGuid>
     <OutputType>Library</OutputType>
     <AppDesignerFolder>Properties</AppDesignerFolder>
-    <RootNamespace>LinqToListsTest</RootNamespace>
+    <RootNamespace>LinqToCollectionsTest</RootNamespace>
     <AssemblyName>LinqToListsTest</AssemblyName>
     <TargetFrameworkVersion>v4.0</TargetFrameworkVersion>
     <FileAlignment>512</FileAlignment>
@@ -57,7 +57,7 @@
     <Compile Include="Util.cs" />
   </ItemGroup>
   <ItemGroup>
-    <ProjectReference Include="..\LinqToLists\LinqToLists.csproj">
+    <ProjectReference Include="..\LinqToCollections\LinqToCollections.csproj">
       <Project>{570EC1B1-4F85-4283-ABE4-858321637768}</Project>
       <Name>LinqToLists</Name>
     </ProjectReference>

@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using System.Diagnostics.Contracts;
 using System.Diagnostics.CodeAnalysis;
 
-namespace LinqToLists {
+namespace LinqToCollections.List {
     ///<summary>A readable list of items with known length.</summary>
     ///<remarks>Shorthand for 'IReadableList'.</remarks>
     ///<typeparam name="T">The type of items in the list.</typeparam>
