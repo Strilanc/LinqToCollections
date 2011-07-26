@@ -82,6 +82,9 @@
     <Compile Include="List\RistAsIList.cs" />
     <Compile Include="List\RistView.cs" />
     <Compile Include="Extra\Extra.cs" />
+    <Compile Include="Set\RetExtensions.cs" />
+    <Compile Include="Set\Ret.cs" />
+    <Compile Include="Set\IRet.cs" />
   </ItemGroup>
   <ItemGroup>
     <None Include="Strilanc-LinqToLists.pfx" />
