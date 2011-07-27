@@ -51,5 +51,13 @@ namespace LinqToCollections.Extra {
             Contract.Assume(r.Count == count);
             return r;
         }
+
+        ///<summary>Creates a key value pair.</summary>
+        [Pure()]
+        public static IKeyValue<TKey, TValue> KeyValue<TKey, TValue>(this TKey key, TValue value) {
+            Contract.Requires<ArgumentException>(key != null);
+            Contract.Ensures(Contract.Result<IKeyValue<TKey, TValue>>() != null);
+            return new KeyValue<TKey, TValue>(key, value);
+        }
     }
 }

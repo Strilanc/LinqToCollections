@@ -50,6 +50,8 @@
     </CodeAnalysisDependentAssemblyPaths>
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="MapExtensionsTest.cs" />
+    <Compile Include="MapTest.cs" />
     <Compile Include="RetExtensionsTest.cs" />
     <Compile Include="RetTest.cs" />
     <Compile Include="ExtraTest.cs" />

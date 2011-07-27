@@ -64,5 +64,12 @@ namespace LinqToCollectionsTest {
             Assert.IsTrue(3.Repeated(0).SequenceEqual(new int[0]));
             Assert.IsTrue(5.Repeated(3).SequenceEqual(new[] { 5, 5, 5 }));
         }
+
+        [TestMethod]
+        public void KeyValueTest() {
+            Util.ExpectException<ArgumentException>(() => ((Object)null).KeyValue(1));
+            Assert.IsTrue(1.KeyValue(2).Key == 1);
+            Assert.IsTrue(1.KeyValue(2).Value == 2);
+        }
     }
 }
