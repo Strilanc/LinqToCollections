@@ -7,12 +7,12 @@ using System.Diagnostics.CodeAnalysis;
 // General Information about an assembly is controlled through the following 
 // set of attributes. Change these attribute values to modify the information
 // associated with an assembly.
-[assembly: AssemblyTitle("LinqToLists")]
-[assembly: AssemblyDescription("")]
+[assembly: AssemblyTitle("LinqToCollections")]
+[assembly: AssemblyDescription("Readable queryable collection classes.")]
 [assembly: AssemblyConfiguration("")]
-[assembly: AssemblyCompany("Microsoft")]
-[assembly: AssemblyProduct("LinqToLists")]
-[assembly: AssemblyCopyright("Copyright © Microsoft 2011")]
+[assembly: AssemblyCompany("")]
+[assembly: AssemblyProduct("LinqToCollections")]
+[assembly: AssemblyCopyright("BSD")]
 [assembly: AssemblyTrademark("")]
 [assembly: AssemblyCulture("")]
 
