@@ -87,6 +87,7 @@ namespace LinqToCollectionsTest {
 
             var r8 = Enumerable.Range(0, 10).ToRist().SubList(1, 8).SubList(1, 6);
             Assert.IsTrue(r8.Count == 6);
+            Assert.IsTrue(r8[2] == 4);
             Assert.IsTrue(r8.SequenceEqual(Enumerable.Range(2, 6)));
         }
 
