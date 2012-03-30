@@ -38,7 +38,9 @@ namespace LinqToCollections.Map {
             return this.Equals(obj as IKeyValue<TKey, TValue>);
         }
         public override int GetHashCode() {
-            return _key.GetHashCode() ^ _value.GetHashCode() * 3;
+            unchecked {
+                return _key.GetHashCode() ^ _value.GetHashCode() * 3;
+            }
         }
     }
 }
