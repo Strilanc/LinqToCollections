@@ -32,5 +32,12 @@ namespace LinqToCollections.Map {
         public TValue this[TKey key] { get { return getter(key); } }
         public IEnumerator<IKeyValue<TKey, TValue>> GetEnumerator() { return keys.Select(e => new KeyValue<TKey, TValue>(e, this[e])).GetEnumerator(); }
         System.Collections.IEnumerator System.Collections.IEnumerable.GetEnumerator() { return this.GetEnumerator(); }
+
+        public override string ToString() {
+            const int MaxPreviewItemCount = 10;
+            var initialItems = this.Take(MaxPreviewItemCount + 1);
+            var suffix = initialItems.Count() == MaxPreviewItemCount + 1 ? ", ..." : "}";
+            return "{" + String.Join(", ", initialItems.Take(MaxPreviewItemCount)) + suffix;
+        }
     }
 }
