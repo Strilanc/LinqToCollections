@@ -1,0 +1,10 @@
+*/bin/*
+*/obj/*
+*.suo
+TestResults/*
+*.pfx
+*.ncrunchproject
+*.ncrunchsolution
+*.ncrunchsolution.cache
+*.crunchsolution.cache
+*.ncrunchsolution.user
