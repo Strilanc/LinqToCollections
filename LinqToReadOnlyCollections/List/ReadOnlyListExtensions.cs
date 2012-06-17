@@ -56,27 +56,28 @@ namespace LinqToCollections.List {
             return sequence.ToReadOnlyList();
         }
 
-        ///<summary>Exposes a contiguous subset of a readable list as a readable list.</summary>
+        ///<summary>Exposes the end of a readable list, after skipping up to the given number of items, as a readable list.</summary>
         [Pure()]
         [SuppressMessage("Microsoft.Design", "CA1062:Validate arguments of public methods", MessageId = "0", Justification = "Contract cycle check creates false-positive")]
-        public static IReadOnlyList<T> SubList<T>(this IReadOnlyList<T> list, int offset, int length) {
+        public static IReadOnlyList<T> Skip<T>(this IReadOnlyList<T> list, int maxSkipCount) {
             Contract.Requires<ArgumentException>(list != null);
-            Contract.Requires<ArgumentException>(offset >= 0);
-            Contract.Requires<ArgumentException>(length >= 0);
-            Contract.Requires<ArgumentException>(offset + length <= list.Count);
+            Contract.Requires<ArgumentException>(maxSkipCount >= 0);
             Contract.Ensures(Contract.Result<IReadOnlyList<T>>() != null);
-            Contract.Ensures(Contract.Result<IReadOnlyList<T>>().Count == length);
-
-            //prevent trivial indirection explosion
-            var view = list as ListView<T>;
-            if (view != null) {
-                Contract.Assume(offset + length <= view.Count);
-                return view.NestedView(offset, length);
-            }
-
-            return new ListView<T>(list, offset, length);
+            Contract.Ensures(Contract.Result<IReadOnlyList<T>>().Count == list.Count - Math.Min(list.Count, maxSkipCount));
+            if (maxSkipCount == 0) return list;
+            return new ReadOnlyList_Skip<T>(list, 0, maxSkipCount, maxSkipCount);
         }
-
+        ///<summary>Exposes the start of a readable list, before skipping down to the given number of items at the end, as a readable list.</summary>
+        [Pure()]
+        [SuppressMessage("Microsoft.Design", "CA1062:Validate arguments of public methods", MessageId = "0", Justification = "Contract cycle check creates false-positive")]
+        public static IReadOnlyList<T> SkipLast<T>(this IReadOnlyList<T> list, int maxSkipCount) {
+            Contract.Requires<ArgumentException>(list != null);
+            Contract.Requires<ArgumentException>(maxSkipCount >= 0);
+            Contract.Ensures(Contract.Result<IReadOnlyList<T>>() != null);
+            Contract.Ensures(Contract.Result<IReadOnlyList<T>>().Count == list.Count - Math.Min(list.Count, maxSkipCount));
+            if (maxSkipCount == 0) return list;
+            return new ReadOnlyList_Skip<T>(list, 0, maxSkipCount, 0);
+        }
         ///<summary>Exposes the end of a readable list, after skipping exactly the given number of items, as a readable list.</summary>
         [Pure]
         [SuppressMessage("Microsoft.Design", "CA1062:Validate arguments of public methods", MessageId = "0", Justification = "Contract cycle check creates false-positive")]
@@ -86,18 +87,8 @@ namespace LinqToCollections.List {
             Contract.Requires<ArgumentException>(exactSkipCount <= list.Count);
             Contract.Ensures(Contract.Result<IReadOnlyList<T>>() != null);
             Contract.Ensures(Contract.Result<IReadOnlyList<T>>().Count == list.Count - exactSkipCount);
-            return list.SubList(exactSkipCount, list.Count - exactSkipCount);
-        }
-        ///<summary>Exposes the start of a readable list, up to exactly the given number of items, as a readable list.</summary>
-        [Pure]
-        [SuppressMessage("Microsoft.Design", "CA1062:Validate arguments of public methods", MessageId = "0", Justification = "Contract cycle check creates false-positive")]
-        public static IReadOnlyList<T> TakeExact<T>(this IReadOnlyList<T> list, int exactTakeCount) {
-            Contract.Requires<ArgumentException>(list != null);
-            Contract.Requires<ArgumentException>(exactTakeCount >= 0);
-            Contract.Requires<ArgumentException>(exactTakeCount <= list.Count);
-            Contract.Ensures(Contract.Result<IReadOnlyList<T>>() != null);
-            Contract.Ensures(Contract.Result<IReadOnlyList<T>>().Count == exactTakeCount);
-            return list.SubList(0, exactTakeCount);
+            if (exactSkipCount == 0) return list;
+            return new ReadOnlyList_Skip<T>(list, exactSkipCount, 0, exactSkipCount);
         }
         ///<summary>Exposes the start of a readable list, before skipping exactly the given number of items at the end, as a readable list.</summary>
         [Pure]
@@ -108,18 +99,8 @@ namespace LinqToCollections.List {
             Contract.Requires<ArgumentException>(exactSkipCount <= list.Count);
             Contract.Ensures(Contract.Result<IReadOnlyList<T>>() != null);
             Contract.Ensures(Contract.Result<IReadOnlyList<T>>().Count == list.Count - exactSkipCount);
-            return list.SubList(0, list.Count - exactSkipCount);
-        }
-        ///<summary>Exposes the end of a readable list, down to exactly the given number of items, as a readable list.</summary>
-        [Pure]
-        [SuppressMessage("Microsoft.Design", "CA1062:Validate arguments of public methods", MessageId = "0", Justification = "Contract cycle check creates false-positive")]
-        public static IReadOnlyList<T> TakeLastExact<T>(this IReadOnlyList<T> list, int exactTakeCount) {
-            Contract.Requires<ArgumentException>(list != null);
-            Contract.Requires<ArgumentException>(exactTakeCount >= 0);
-            Contract.Requires<ArgumentException>(exactTakeCount <= list.Count);
-            Contract.Ensures(Contract.Result<IReadOnlyList<T>>() != null);
-            Contract.Ensures(Contract.Result<IReadOnlyList<T>>().Count == exactTakeCount);
-            return list.SubList(list.Count - exactTakeCount, exactTakeCount);
+            if (exactSkipCount == 0) return list;
+            return new ReadOnlyList_Skip<T>(list, exactSkipCount, 0, 0);
         }
 
         ///<summary>Exposes the start of a readable list, up to the given number of items, as a readable list.</summary>
@@ -130,17 +111,10 @@ namespace LinqToCollections.List {
             Contract.Requires<ArgumentException>(maxTakeCount >= 0);
             Contract.Ensures(Contract.Result<IReadOnlyList<T>>() != null);
             Contract.Ensures(Contract.Result<IReadOnlyList<T>>().Count == Math.Min(list.Count, maxTakeCount));
-            return list.TakeExact(Math.Min(list.Count, maxTakeCount));
-        }
-        ///<summary>Exposes the end of a readable list, after skipping up to the given number of items, as a readable list.</summary>
-        [Pure()]
-        [SuppressMessage("Microsoft.Design", "CA1062:Validate arguments of public methods", MessageId = "0", Justification = "Contract cycle check creates false-positive")]
-        public static IReadOnlyList<T> Skip<T>(this IReadOnlyList<T> list, int maxSkipCount) {
-            Contract.Requires<ArgumentException>(list != null);
-            Contract.Requires<ArgumentException>(maxSkipCount >= 0);
-            Contract.Ensures(Contract.Result<IReadOnlyList<T>>() != null);
-            Contract.Ensures(Contract.Result<IReadOnlyList<T>>().Count == list.Count - Math.Min(list.Count, maxSkipCount));
-            return list.SkipExact(Math.Min(list.Count, maxSkipCount));
+            return new ReadOnlyList<T>(
+                () => Math.Min(maxTakeCount, list.Count),
+                i => list[i],
+                Enumerable.Take(list, maxTakeCount));
         }
         ///<summary>Exposes the end of a readable list, down to the given number of items, as a readable list.</summary>
         [Pure()]
@@ -150,17 +124,39 @@ namespace LinqToCollections.List {
             Contract.Requires<ArgumentException>(maxTakeCount >= 0);
             Contract.Ensures(Contract.Result<IReadOnlyList<T>>() != null);
             Contract.Ensures(Contract.Result<IReadOnlyList<T>>().Count == Math.Min(list.Count, maxTakeCount));
-            return list.TakeLastExact(Math.Min(list.Count, maxTakeCount));
+            return new ReadOnlyList<T>(
+                () => Math.Min(maxTakeCount, list.Count),
+                i => list[Math.Max(list.Count - maxTakeCount, 0) + i]);
         }
-        ///<summary>Exposes the start of a readable list, before skipping down to the given number of items at the end, as a readable list.</summary>
-        [Pure()]
+        ///<summary>Exposes the start of a readable list, up to exactly the given number of items, as a readable list.</summary>
+        [Pure]
         [SuppressMessage("Microsoft.Design", "CA1062:Validate arguments of public methods", MessageId = "0", Justification = "Contract cycle check creates false-positive")]
-        public static IReadOnlyList<T> SkipLast<T>(this IReadOnlyList<T> list, int maxSkipCount) {
+        public static IReadOnlyList<T> TakeExact<T>(this IReadOnlyList<T> list, int exactTakeCount) {
             Contract.Requires<ArgumentException>(list != null);
-            Contract.Requires<ArgumentException>(maxSkipCount >= 0);
+            Contract.Requires<ArgumentException>(exactTakeCount >= 0);
+            Contract.Requires<ArgumentException>(exactTakeCount <= list.Count);
             Contract.Ensures(Contract.Result<IReadOnlyList<T>>() != null);
-            Contract.Ensures(Contract.Result<IReadOnlyList<T>>().Count == list.Count - Math.Min(list.Count, maxSkipCount));
-            return list.SkipLastExact(Math.Min(list.Count, maxSkipCount));
+            Contract.Ensures(Contract.Result<IReadOnlyList<T>>().Count == exactTakeCount);
+            return new ReadOnlyList<T>(
+                () => {
+                    if (list.Count < exactTakeCount) throw new InvalidOperationException("Took past end of list.");
+                    return exactTakeCount;
+                }, i => list[i]);
+        }
+        ///<summary>Exposes the end of a readable list, down to exactly the given number of items, as a readable list.</summary>
+        [Pure]
+        [SuppressMessage("Microsoft.Design", "CA1062:Validate arguments of public methods", MessageId = "0", Justification = "Contract cycle check creates false-positive")]
+        public static IReadOnlyList<T> TakeLastExact<T>(this IReadOnlyList<T> list, int exactTakeCount) {
+            Contract.Requires<ArgumentException>(list != null);
+            Contract.Requires<ArgumentException>(exactTakeCount >= 0);
+            Contract.Requires<ArgumentException>(exactTakeCount <= list.Count);
+            Contract.Ensures(Contract.Result<IReadOnlyList<T>>() != null);
+            Contract.Ensures(Contract.Result<IReadOnlyList<T>>().Count == exactTakeCount);
+            return new ReadOnlyList<T>(
+                () => {
+                    if (list.Count < exactTakeCount) throw new InvalidOperationException("Took past end of list.");
+                    return exactTakeCount;
+                }, i => list[list.Count - exactTakeCount + i]);
         }
 
         ///<summary>Projects each element of a readable list into a new form and exposes the results as a readable list.</summary>

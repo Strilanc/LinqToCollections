@@ -131,7 +131,7 @@
     <Compile Include="List\ReadOnlyList.cs" />
     <Compile Include="List\ReadOnlyListExtensions.cs" />
     <Compile Include="List\ReadOnlyListAsIList.cs" />
-    <Compile Include="List\ListView.cs" />
+    <Compile Include="List\ReadOnlyList_Skip.cs" />
     <Compile Include="Extra\Extra.cs" />
     <Compile Include="Set\RetExtensions.cs" />
     <Compile Include="Set\Ret.cs" />

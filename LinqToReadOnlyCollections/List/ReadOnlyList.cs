@@ -8,7 +8,7 @@ namespace LinqToCollections.List {
     ///<summary>Utility class for implementing a readable list via counter and getter delegates.</summary>
     [DebuggerDisplay("{ToString()}")]
     [SuppressMessage("Microsoft.Naming", "CA1710:IdentifiersShouldHaveCorrectSuffix")]
-    public class ReadOnlyList<T> : IReadOnlyList<T> {
+    public sealed class ReadOnlyList<T> : IReadOnlyList<T> {
         private readonly Func<int> _counter;
         private readonly Func<int, T> _getter;
         private readonly IEnumerable<T> _iterator;
