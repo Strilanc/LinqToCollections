@@ -55,7 +55,7 @@
     <Compile Include="Util.cs" />
   </ItemGroup>
   <ItemGroup>
-    <ProjectReference Include="..\LinqToCollections\LinqToCollections.csproj">
+    <ProjectReference Include="..\LinqToReadOnlyCollections\LinqToReadOnlyCollections.csproj">
       <Project>{570ec1b1-4f85-4283-abe4-858321637768}</Project>
       <Name>LinqToCollections</Name>
     </ProjectReference>

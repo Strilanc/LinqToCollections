@@ -107,10 +107,10 @@
     <DebugSymbols>true</DebugSymbols>
   </PropertyGroup>
   <PropertyGroup>
-    <SignAssembly>true</SignAssembly>
+    <SignAssembly>false</SignAssembly>
   </PropertyGroup>
   <PropertyGroup>
-    <AssemblyOriginatorKeyFile>Strilanc-LinqToLists.pfx</AssemblyOriginatorKeyFile>
+    <AssemblyOriginatorKeyFile>Strilanc-LinqToReadOnlyCollections.pfx</AssemblyOriginatorKeyFile>
   </PropertyGroup>
   <ItemGroup>
     <Reference Include="System" />
@@ -139,7 +139,7 @@
     <Compile Include="Set\IRet.cs" />
   </ItemGroup>
   <ItemGroup>
-    <None Include="Strilanc-LinqToLists.pfx" />
+    <None Include="Strilanc-LinqToReadOnlyCollections.pfx" />
   </ItemGroup>
   <ItemGroup>
     <CodeAnalysisDictionary Include="CustomDictionary.xml" />
