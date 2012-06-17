@@ -8,3 +8,5 @@ TestResults/*
 *.ncrunchsolution.cache
 *.crunchsolution.cache
 *.ncrunchsolution.user
+*.csproj.user
+*.vbproj.user

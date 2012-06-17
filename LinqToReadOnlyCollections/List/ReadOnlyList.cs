@@ -8,7 +8,7 @@ namespace LinqToCollections.List {
     ///<summary>Utility class for implementing a readable list via counter and getter delegates.</summary>
     [DebuggerDisplay("{ToString()}")]
     [SuppressMessage("Microsoft.Naming", "CA1710:IdentifiersShouldHaveCorrectSuffix")]
-    public class Rist<T> : IRist<T> {
+    public class ReadOnlyList<T> : IReadOnlyList<T> {
         private readonly Func<int> _counter;
         private readonly Func<int, T> _getter;
         private readonly IEnumerable<T> _iterator;
@@ -24,7 +24,7 @@ namespace LinqToCollections.List {
         ///<param name="counter">Gets the number of list items.</param>
         ///<param name="getter">Gets indexed list items.</param>
         ///<param name="efficientIterator">Optionally used to provide a more efficient or more capable iterator than accessing each index in turn.</param>
-        public Rist(Func<int> counter, Func<int, T> getter, IEnumerable<T> efficientIterator = null) {
+        public ReadOnlyList(Func<int> counter, Func<int, T> getter, IEnumerable<T> efficientIterator = null) {
             Contract.Requires<ArgumentException>(counter != null);
             Contract.Requires<ArgumentException>(getter != null);
             this._counter = counter;
@@ -44,7 +44,12 @@ namespace LinqToCollections.List {
                 return r;
             }
         }
-        public T this[int index] { get { return _getter(index); } }
+        public T this[int index] { 
+            get {
+                if (index < 0 || index >= Count) throw new ArgumentOutOfRangeException("index");
+                return _getter(index); 
+            } 
+        }
         public IEnumerator<T> GetEnumerator() { return this._iterator.GetEnumerator(); }
         System.Collections.IEnumerator System.Collections.IEnumerable.GetEnumerator() { return this.GetEnumerator(); }
 

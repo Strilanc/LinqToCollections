@@ -50,8 +50,8 @@
     <Compile Include="RetTest.cs" />
     <Compile Include="ExtraTest.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
-    <Compile Include="RistExtensionsTest.cs" />
-    <Compile Include="RistTest.cs" />
+    <Compile Include="ReadOnlyListExtensionsTest.cs" />
+    <Compile Include="ReadOnlyListTest.cs" />
     <Compile Include="Util.cs" />
   </ItemGroup>
   <ItemGroup>

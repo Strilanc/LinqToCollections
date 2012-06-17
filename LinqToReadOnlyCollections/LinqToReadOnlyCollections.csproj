@@ -75,7 +75,7 @@
     <CodeContractsRuntimeThrowOnFailure>True</CodeContractsRuntimeThrowOnFailure>
     <CodeContractsRuntimeCallSiteRequires>False</CodeContractsRuntimeCallSiteRequires>
     <CodeContractsRuntimeSkipQuantifiers>True</CodeContractsRuntimeSkipQuantifiers>
-    <CodeContractsRunCodeAnalysis>True</CodeContractsRunCodeAnalysis>
+    <CodeContractsRunCodeAnalysis>False</CodeContractsRunCodeAnalysis>
     <CodeContractsNonNullObligations>True</CodeContractsNonNullObligations>
     <CodeContractsBoundsObligations>True</CodeContractsBoundsObligations>
     <CodeContractsArithmeticObligations>True</CodeContractsArithmeticObligations>
@@ -122,17 +122,16 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="List\IRist.cs" />
     <Compile Include="Map\IKeyValue.cs" />
     <Compile Include="Map\IMap.cs" />
     <Compile Include="Map\KeyValue.cs" />
     <Compile Include="Map\Map.cs" />
     <Compile Include="Map\MapExtensions.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
-    <Compile Include="List\Rist.cs" />
-    <Compile Include="List\RistExtensions.cs" />
-    <Compile Include="List\RistAsIList.cs" />
-    <Compile Include="List\RistView.cs" />
+    <Compile Include="List\ReadOnlyList.cs" />
+    <Compile Include="List\ReadOnlyListExtensions.cs" />
+    <Compile Include="List\ReadOnlyListAsIList.cs" />
+    <Compile Include="List\ListView.cs" />
     <Compile Include="Extra\Extra.cs" />
     <Compile Include="Set\RetExtensions.cs" />
     <Compile Include="Set\Ret.cs" />

@@ -6,15 +6,15 @@ using System.Diagnostics.CodeAnalysis;
 
 namespace LinqToCollections.List {
     ///<summary>Implements a ReadOnly IList by delegating calls to a readable list.</summary>
-    internal sealed class RistAsIList<T> : IList<T>, IRist<T> {
-        private readonly IRist<T> _list;
+    internal sealed class ReadOnlyListAsIList<T> : IList<T>, IReadOnlyList<T> {
+        private readonly IReadOnlyList<T> _list;
         
         [ContractInvariantMethod]
         void ObjectInvariant() {
             Contract.Invariant(_list != null);
         }
 
-        public RistAsIList(IRist<T> list) {
+        public ReadOnlyListAsIList(IReadOnlyList<T> list) {
             Contract.Requires<ArgumentException>(list != null);
             Contract.Ensures(this.Count == list.Count);
             Contract.Ensures(this.SequenceEqual(list));

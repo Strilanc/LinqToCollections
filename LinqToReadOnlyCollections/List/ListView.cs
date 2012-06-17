@@ -12,8 +12,8 @@ namespace LinqToCollections.List {
     ///Assumes the underlying readable list does not change size.
     ///</remarks>
     [DebuggerDisplay("{ToString()}")]
-    internal sealed class RistView<T> : IRist<T> {
-        private readonly IRist<T> _subRist;
+    internal sealed class ListView<T> : IReadOnlyList<T> {
+        private readonly IReadOnlyList<T> _subRist;
         private readonly int _offset;
         private readonly int _length;
 
@@ -25,7 +25,7 @@ namespace LinqToCollections.List {
             Contract.Invariant(_offset + _length <= _subRist.Count);
         }
 
-        public RistView(IRist<T> subRist, int offset, int length) {
+        public ListView(IReadOnlyList<T> subRist, int offset, int length) {
             Contract.Requires<ArgumentException>(subRist != null);
             Contract.Requires<ArgumentException>(offset >= 0);
             Contract.Requires<ArgumentException>(length >= 0);
@@ -47,14 +47,14 @@ namespace LinqToCollections.List {
         public int Count { get { return _length; } }
 
         [Pure()]
-        public RistView<T> NestedView(int relativeOffset, int relativeLength) {
+        public ListView<T> NestedView(int relativeOffset, int relativeLength) {
             Contract.Requires<ArgumentException>(relativeOffset >= 0);
             Contract.Requires<ArgumentException>(relativeLength >= 0);
             Contract.Requires<ArgumentException>(relativeOffset + relativeLength <= Count);
-            Contract.Ensures(Contract.Result<RistView<T>>() != null);
-            Contract.Ensures(Contract.Result<RistView<T>>().Count == relativeLength);
+            Contract.Ensures(Contract.Result<ListView<T>>() != null);
+            Contract.Ensures(Contract.Result<ListView<T>>().Count == relativeLength);
             Contract.Assume(_offset + relativeOffset + relativeLength <= _subRist.Count);
-            return new RistView<T>(_subRist, _offset + relativeOffset, relativeLength);
+            return new ListView<T>(_subRist, _offset + relativeOffset, relativeLength);
         }
 
         public IEnumerator<T> GetEnumerator() {

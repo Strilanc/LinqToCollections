@@ -13,41 +13,41 @@ namespace LinqToCollections.Extra {
     public static class ExtraExtensions {
         ///<summary>Exposes the non-negative integers below the count as a readable list.</summary>
         [Pure()]
-        public static IRist<int> Range(this int count) {
+        public static IReadOnlyList<int> Range(this int count) {
             Contract.Requires<ArgumentException>(count >= 0);
-            Contract.Ensures(Contract.Result<IRist<int>>() != null);
-            Contract.Ensures(Contract.Result<IRist<int>>().Count == count);
-            var r = new Rist<int>(counter: () => count, getter: i => i);
+            Contract.Ensures(Contract.Result<IReadOnlyList<int>>() != null);
+            Contract.Ensures(Contract.Result<IReadOnlyList<int>>().Count == count);
+            var r = new ReadOnlyList<int>(counter: () => count, getter: i => i);
             Contract.Assume(r.Count == count);
             return r;
         }
         ///<summary>Exposes the non-negative bytes below the count as a readable list.</summary>
         [Pure()]
-        public static IRist<byte> Range(this byte count) {
-            Contract.Ensures(Contract.Result<IRist<byte>>() != null);
-            Contract.Ensures(Contract.Result<IRist<byte>>().Count == count);
-            var r = new Rist<byte>(counter: () => count, getter: i => (byte)i);
+        public static IReadOnlyList<byte> Range(this byte count) {
+            Contract.Ensures(Contract.Result<IReadOnlyList<byte>>() != null);
+            Contract.Ensures(Contract.Result<IReadOnlyList<byte>>().Count == count);
+            var r = new ReadOnlyList<byte>(counter: () => count, getter: i => (byte)i);
             Contract.Assume(r.Count == count);
             return r;
         }
         ///<summary>Exposes the non-negative signed 16-bit integers below the count as a readable list.</summary>
         [Pure()]
-        public static IRist<short> Range(this short count) {
+        public static IReadOnlyList<short> Range(this short count) {
             Contract.Requires<ArgumentException>(count >= 0);
-            Contract.Ensures(Contract.Result<IRist<short>>() != null);
-            Contract.Ensures(Contract.Result<IRist<short>>().Count == count);
-            var r = new Rist<short>(counter: () => count, getter: i => (short)i);
+            Contract.Ensures(Contract.Result<IReadOnlyList<short>>() != null);
+            Contract.Ensures(Contract.Result<IReadOnlyList<short>>().Count == count);
+            var r = new ReadOnlyList<short>(counter: () => count, getter: i => (short)i);
             Contract.Assume(r.Count == count);
             return r;
         }
 
         ///<summary>Returns a readable list composed of a repeated value.</summary>
         [Pure()]
-        public static IRist<T> Repeated<T>(this T value, int count) {
+        public static IReadOnlyList<T> Repeated<T>(this T value, int count) {
             Contract.Requires<ArgumentException>(count >= 0);
-            Contract.Ensures(Contract.Result<IRist<T>>() != null);
-            Contract.Ensures(Contract.Result<IRist<T>>().Count == count);
-            var r = new Rist<T>(counter: () => count, getter: i => value);
+            Contract.Ensures(Contract.Result<IReadOnlyList<T>>() != null);
+            Contract.Ensures(Contract.Result<IReadOnlyList<T>>().Count == count);
+            var r = new ReadOnlyList<T>(counter: () => count, getter: i => value);
             Contract.Assume(r.Count == count);
             return r;
         }
