@@ -61,6 +61,10 @@ namespace LinqToCollections.List {
         }
 
         public IEnumerator<T> GetEnumerator() {
+            if (_subList.Count < _skipExact) throw new InvalidOperationException("Skipped past end of list.");
+            return Enumerate();
+        }
+        private IEnumerator<T> Enumerate() {
             for (var i = 0; i < Count; i++)
                 yield return this[i];
         }

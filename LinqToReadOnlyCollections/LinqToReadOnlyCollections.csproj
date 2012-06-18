@@ -122,6 +122,9 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="Collection\ReadOnlyCollection.cs" />
+    <Compile Include="Collection\ReadOnlyCollectionAsICollection.cs" />
+    <Compile Include="Collection\ReadOnlyCollectionExtensions.cs" />
     <Compile Include="Map\IKeyValue.cs" />
     <Compile Include="Map\IMap.cs" />
     <Compile Include="Map\KeyValue.cs" />
