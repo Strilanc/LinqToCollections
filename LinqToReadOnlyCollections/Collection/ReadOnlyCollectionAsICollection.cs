@@ -1,7 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Diagnostics.Contracts;
 using System.Diagnostics.CodeAnalysis;
 
 namespace LinqToCollections.Collection {
@@ -9,18 +8,9 @@ namespace LinqToCollections.Collection {
     internal sealed class ReadOnlyCollectionAsICollection<T> : ICollection<T>, IReadOnlyCollection<T> {
         private readonly IReadOnlyCollection<T> collection;
         
-        [ContractInvariantMethod]
-        void ObjectInvariant() {
-            Contract.Invariant(collection != null);
-        }
-
         public ReadOnlyCollectionAsICollection(IReadOnlyCollection<T> collection) {
-            Contract.Requires<ArgumentException>(collection != null);
-            Contract.Ensures(this.Count == collection.Count);
-            Contract.Ensures(this.SequenceEqual(collection));
+            if (collection == null) throw new ArgumentNullException("collection");
             this.collection = collection;
-            Contract.Assume(this.Count == collection.Count);
-            Contract.Assume(this.SequenceEqual(collection));
         }
 
         public int Count { get { return collection.Count; } }
@@ -30,8 +20,9 @@ namespace LinqToCollections.Collection {
         public bool Contains(T item) {
             return collection.Contains(item);
         }
-        [SuppressMessage("Microsoft.Design", "CA1062:Validate arguments of public methods", MessageId = "0", Justification = "Contract cycle check creates false-positive")]
         public void CopyTo(T[] array, int arrayIndex) {
+            if (array == null) throw new ArgumentNullException("array");
+            if (arrayIndex < 0 || arrayIndex + Count > array.Length) throw new ArgumentOutOfRangeException("arrayIndex");
             using (var e = GetEnumerator()) {
                 for (int i = 0; e.MoveNext(); i++)
                     array[i + arrayIndex] = e.Current;

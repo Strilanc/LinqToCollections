@@ -2,7 +2,6 @@
 using System.Collections.Generic;
 using System.Linq;
 using LinqToCollections.Set;
-using System.Diagnostics.Contracts;
 using System.Diagnostics.CodeAnalysis;
 
 namespace LinqToCollections.Map {
@@ -12,18 +11,12 @@ namespace LinqToCollections.Map {
         private readonly IRet<TKey> keys;
         private readonly Func<TKey, TValue> getter;
         
-        [ContractInvariantMethod]
-        private void ObjectInvariant() {
-            Contract.Invariant(keys != null);
-            Contract.Invariant(getter != null);
-        }
-
         ///<summary>Constructs a readable map implementation.</summary>
         ///<param name="keys">The set of keys mapped to values.</param>
         ///<param name="getter">Retrieves the value mapped to by the given key.</param>
         public Map(IRet<TKey> keys, Func<TKey, TValue> getter) {
-            Contract.Requires<ArgumentException>(keys != null);
-            Contract.Requires<ArgumentException>(getter != null);
+            if (keys == null) throw new ArgumentNullException("keys");
+            if (getter == null) throw new ArgumentNullException("getter");
             this.keys = keys;
             this.getter = getter;
         }

@@ -1,7 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Diagnostics;
-using System.Diagnostics.Contracts;
 using System.Diagnostics.CodeAnalysis;
 
 namespace LinqToCollections.List {
@@ -13,20 +12,13 @@ namespace LinqToCollections.List {
         private readonly Func<int, T> _getter;
         private readonly IEnumerable<T> _iterator;
 
-        [ContractInvariantMethod()]
-        private void ObjectInvariant() {
-            Contract.Invariant(_counter != null);
-            Contract.Invariant(_getter != null);
-            Contract.Invariant(_iterator != null);
-        }
-
         ///<summary>Constructs a readable list implementation.</summary>
         ///<param name="counter">Gets the number of list items.</param>
         ///<param name="getter">Gets indexed list items.</param>
         ///<param name="efficientIterator">Optionally used to provide a more efficient or more capable iterator than accessing each index in turn.</param>
         public ReadOnlyList(Func<int> counter, Func<int, T> getter, IEnumerable<T> efficientIterator = null) {
-            Contract.Requires<ArgumentException>(counter != null);
-            Contract.Requires<ArgumentException>(getter != null);
+            if (counter == null) throw new ArgumentNullException("counter");
+            if (getter == null) throw new ArgumentNullException("getter");
             this._counter = counter;
             this._getter = getter;
             this._iterator = efficientIterator ?? DefaultIterator(counter, getter);

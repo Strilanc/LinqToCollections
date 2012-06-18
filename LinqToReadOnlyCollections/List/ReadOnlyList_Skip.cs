@@ -3,7 +3,6 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Diagnostics;
-using System.Diagnostics.Contracts;
 
 namespace LinqToCollections.List {
     [DebuggerDisplay("{ToString()}")]
@@ -13,22 +12,12 @@ namespace LinqToCollections.List {
         private readonly int _skipElastic;
         private readonly int _offset;
 
-        [ContractInvariantMethod()]
-        private void ObjectInvariant() {
-            Contract.Invariant(_subList != null);
-            Contract.Invariant(_offset >= 0);
-            Contract.Invariant(_offset <= _skipExact + _skipElastic);
-            Contract.Invariant(_skipExact >= 0);
-            Contract.Invariant(_skipElastic >= 0);
-        }
-
         public ReadOnlyList_Skip(IReadOnlyList<T> subList, int skipExact, int skipElastic, int offset) {
-            Contract.Requires<ArgumentException>(subList != null);
-            Contract.Requires<ArgumentException>(skipExact >= 0);
-            Contract.Requires<ArgumentException>(skipExact <= subList.Count);
-            Contract.Requires<ArgumentException>(skipElastic >= 0);
-            Contract.Requires<ArgumentException>(offset >= 0);
-            Contract.Requires<ArgumentException>(offset <= skipExact + skipElastic);
+            if (subList == null) throw new ArgumentNullException("subList");
+            if (skipElastic < 0) throw new ArgumentOutOfRangeException("skipElastic");
+            if (skipExact < 0 || skipExact > subList.Count) throw new ArgumentOutOfRangeException("skipExact");
+            if (offset < 0 || offset > skipExact + skipElastic) throw new ArgumentOutOfRangeException("offset");
+
             this._subList = subList;
             this._skipExact = skipExact;
             this._skipElastic = skipElastic;

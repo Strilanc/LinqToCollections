@@ -1,7 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Diagnostics;
-using System.Diagnostics.Contracts;
 using System.Diagnostics.CodeAnalysis;
 
 namespace LinqToCollections.Collection {
@@ -12,18 +11,12 @@ namespace LinqToCollections.Collection {
         private readonly Func<int> _counter;
         private readonly Func<IEnumerator<T>> _iterator;
 
-        [ContractInvariantMethod()]
-        private void ObjectInvariant() {
-            Contract.Invariant(_counter != null);
-            Contract.Invariant(_iterator != null);
-        }
-
         ///<summary>Constructs a readable collection implementation.</summary>
         ///<param name="counter">Gets the number of Collection items.</param>
         ///<param name="efficientIterator">Iterates the items in the collection.</param>
         public ReadOnlyCollection(Func<int> counter, Func<IEnumerator<T>> iterator) {
-            Contract.Requires<ArgumentException>(counter != null);
-            Contract.Requires<ArgumentException>(iterator != null);
+            if (counter == null) throw new ArgumentNullException("counter");
+            if (iterator == null) throw new ArgumentNullException("iterator");
             this._counter = counter;
             this._iterator = iterator;
         }

@@ -2,7 +2,6 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
-using System.Diagnostics.Contracts;
 using System.Diagnostics.CodeAnalysis;
 
 namespace LinqToCollections.Set {
@@ -12,18 +11,12 @@ namespace LinqToCollections.Set {
         private readonly Func<T, bool> container;
         private readonly IEnumerable<T> iterator;
         
-        [ContractInvariantMethod]
-        private void ObjectInvariant() {
-            Contract.Invariant(container != null);
-            Contract.Invariant(iterator != null);
-        }
-
         ///<summary>Constructs a readable set implementation.</summary>
         ///<param name="container">Determines if an item is in the set.</param>
         ///<param name="iterator">Iterates the items in the set.</param>
         public Ret(Func<T, bool> container, IEnumerable<T> iterator) {
-            Contract.Requires<ArgumentException>(container != null);
-            Contract.Requires<ArgumentException>(iterator != null);
+            if (container == null) throw new ArgumentNullException("container");
+            if (iterator == null) throw new ArgumentNullException("iterator");
             this.container = container;
             this.iterator = iterator;
         }
