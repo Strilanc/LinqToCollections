@@ -59,7 +59,7 @@ namespace LinqToCollections.Collection {
             return new ReadOnlyCollection<T>(
                 () => {
                     if (collection.Count < exactTakeCount) throw new InvalidOperationException("Took past end of list.");
-                    return collection.Count - exactTakeCount;
+                    return exactTakeCount;
                 }, () => {
                     if (collection.Count < exactTakeCount) throw new InvalidOperationException("Took past end of list.");
                     return Enumerable.Take(collection, exactTakeCount).GetEnumerator();
@@ -85,7 +85,7 @@ namespace LinqToCollections.Collection {
             return new ReadOnlyCollection<T>(
                 () => {
                     if (collection.Count < exactTakeCount) throw new InvalidOperationException("Took past end of list.");
-                    return collection.Count - exactTakeCount;
+                    return exactTakeCount;
                 }, () => {
                     if (collection.Count < exactTakeCount) throw new InvalidOperationException("Took past end of list.");
                     return Enumerable.Skip(collection, collection.Count - exactTakeCount).GetEnumerator();

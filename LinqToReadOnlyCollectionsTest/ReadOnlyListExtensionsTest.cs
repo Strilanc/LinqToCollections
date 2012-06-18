@@ -84,7 +84,7 @@ namespace LinqToCollectionsTest {
             L.Remove(2);
             Util.ExpectException<InvalidOperationException>(() => { var x = M.Count; });
             Util.ExpectException<InvalidOperationException>(() => { var x = M[0]; });
-            Util.ExpectException<InvalidOperationException>(() => M.Any());
+            Util.ExpectException<InvalidOperationException>(() => M.GetEnumerator());
         }
         [TestMethod()]
         public void SkipLastExactTest() {
@@ -116,7 +116,7 @@ namespace LinqToCollectionsTest {
             L.Remove(2);
             Util.ExpectException<InvalidOperationException>(() => { var x = M.Count; });
             Util.ExpectException<InvalidOperationException>(() => { var x = M[0]; });
-            Util.ExpectException<InvalidOperationException>(() => M.Any());
+            Util.ExpectException<InvalidOperationException>(() => M.GetEnumerator());
         }
         [TestMethod()]
         public void TakeExactTest() {
