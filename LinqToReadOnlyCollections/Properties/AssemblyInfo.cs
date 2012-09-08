@@ -6,11 +6,11 @@ using System.Diagnostics.CodeAnalysis;
 // General Information about an assembly is controlled through the following 
 // set of attributes. Change these attribute values to modify the information
 // associated with an assembly.
-[assembly: AssemblyTitle("LinqToCollections")]
+[assembly: AssemblyTitle("LinqToReadOnlyCollections")]
 [assembly: AssemblyDescription("Readable queryable collection classes.")]
 [assembly: AssemblyConfiguration("")]
 [assembly: AssemblyCompany("")]
-[assembly: AssemblyProduct("LinqToCollections")]
+[assembly: AssemblyProduct("LinqToReadOnlyCollections")]
 [assembly: AssemblyCopyright("BSD")]
 [assembly: AssemblyTrademark("")]
 [assembly: AssemblyCulture("")]
@@ -37,4 +37,4 @@ using System.Diagnostics.CodeAnalysis;
 [assembly: AssemblyFileVersion("1.0.0.0")]
 
 [assembly: CLSCompliant(true)]
-[assembly: SuppressMessage("Microsoft.Naming", "CA1716:IdentifiersShouldNotMatchKeywords", MessageId = "Set", Scope = "namespace", Target = "LinqToCollections.Set")]
+[assembly: SuppressMessage("Microsoft.Naming", "CA1716:IdentifiersShouldNotMatchKeywords", MessageId = "Set", Scope = "namespace", Target = "LinqToReadOnlyCollections.Set")]

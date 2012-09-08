@@ -1,7 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 
-namespace LinqToCollections.List {
+namespace LinqToReadOnlyCollections.List {
     ///<summary>Implements a ReadOnly IList by delegating calls to a readable list.</summary>
     internal sealed class ReadOnlyListIList<T> : IList<T>, IReadOnlyList<T> {
         private readonly IReadOnlyList<T> _list;

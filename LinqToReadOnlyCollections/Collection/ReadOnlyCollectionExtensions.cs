@@ -2,7 +2,7 @@
 using System.Linq;
 using System;
 
-namespace LinqToCollections.Collection {
+namespace LinqToReadOnlyCollections.Collection {
     ///<summary>Contains extension methods having to do with the IReadOnlyCollection interface.</summary>
     public static class ReadOnlyCollectionExtensions {
         ///<summary>Exposes a collection as a readable collection.</summary>

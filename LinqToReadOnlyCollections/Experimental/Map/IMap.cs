@@ -1,8 +1,8 @@
 ﻿using System.Collections.Generic;
-using LinqToCollections.Set;
+using LinqToReadOnlyCollections.Experimental.Set;
 using System.Diagnostics.CodeAnalysis;
 
-namespace LinqToCollections.Map {
+namespace LinqToReadOnlyCollections.Experimental.Map {
     ///<summary>A readable map from keys to values.</summary>
     [SuppressMessage("Microsoft.Naming", "CA1710:IdentifiersShouldHaveCorrectSuffix", Justification="'Map' is better than 'Collection'")]
     public interface IMap<TKey, out TValue> : IEnumerable<IKeyValue<TKey, TValue>> {

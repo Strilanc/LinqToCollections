@@ -1,6 +1,6 @@
 ﻿using System;
 
-namespace LinqToCollections.Map {
+namespace LinqToReadOnlyCollections.Experimental.Map {
     ///<summary>Contains extension methods to convert from any type to map types.</summary>
     public static class ExtraExtensions {
         ///<summary>Creates a key value pair.</summary>

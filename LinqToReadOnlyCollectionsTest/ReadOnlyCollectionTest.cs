@@ -1,10 +1,10 @@
-﻿using LinqToCollections.Collection;
+﻿using LinqToReadOnlyCollections.Collection;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 using System;
 using System.Collections.Generic;
 using System.Linq;
 
-namespace LinqToCollectionsTest {
+namespace LinqToReadOnlyCollectionsTest {
     [TestClass]
     public class ReadOnlyCollectionTest {
         private static IReadOnlyCollection<int> Rng(int i) {
@@ -420,7 +420,7 @@ namespace LinqToCollectionsTest {
 
             var rawCollection = new List<int> { 0, 1, 2 };
             var asReadOnlyCollection = rawCollection.AsReadOnlyCollection();
-            var asReadOnlyCollectionAsCollection = rawCollection.AsReadOnlyCollection().AsICollection();
+            var asReadOnlyCollectionAsCollection = asReadOnlyCollection.AsICollection();
             var asReadOnlyCollectionAsCollectionAsReadOnlyCollection = asReadOnlyCollectionAsCollection.AsReadOnlyCollection();
             Assert.IsTrue(asReadOnlyCollectionAsCollection.IsReadOnly);
             Assert.IsTrue(asReadOnlyCollectionAsCollection.Count == 3);

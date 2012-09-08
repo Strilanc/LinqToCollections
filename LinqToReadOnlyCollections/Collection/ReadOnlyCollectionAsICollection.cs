@@ -2,8 +2,8 @@
 using System.Collections.Generic;
 using System.Linq;
 
-namespace LinqToCollections.Collection {
-    ///<summary>Implements a ReadOnly ICollection by delegating calls to a readable _collection.</summary>
+namespace LinqToReadOnlyCollections.Collection {
+    ///<summary>Implements an ICollection that is readonly by delegating calls to an IReadOnlyCollection.</summary>
     internal sealed class ReadOnlyCollectionAsICollection<T> : ICollection<T>, IReadOnlyCollection<T> {
         private readonly IReadOnlyCollection<T> _collection;
         

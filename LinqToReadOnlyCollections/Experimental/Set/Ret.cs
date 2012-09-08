@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Diagnostics.CodeAnalysis;
 
-namespace LinqToCollections.Set {
+namespace LinqToReadOnlyCollections.Experimental.Set {
     ///<summary>Utility class for implementing a readable set via a _container delegate and an _iterator.</summary>
     [SuppressMessage("Microsoft.Naming", "CA1710:IdentifiersShouldHaveCorrectSuffix", Justification = "'Ret' is better than 'Collection'")]
     public class Ret<T> : IRet<T> {

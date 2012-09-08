@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Diagnostics;
 
-namespace LinqToCollections.List {
+namespace LinqToReadOnlyCollections.List {
     [DebuggerDisplay("{ToString()}")]
     internal sealed class ReadOnlySubList<T> : IReadOnlyList<T> {
         private readonly IReadOnlyList<T> _subList;

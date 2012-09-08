@@ -1,13 +1,35 @@
-﻿using LinqToCollections.Set;
-using LinqToCollections.List;
+﻿using System.Collections.Generic;
+using LinqToReadOnlyCollections.List;
+using LinqToReadOnlyCollections.Experimental.Set;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 using System;
 using System.Linq;
-using System.Collections.Generic;
 
-namespace LinqToCollectionsTest {
+namespace LinqToReadOnlyCollectionsTest {
     [TestClass]
-    public class RetExtensionsTest {
+    public class RetTest {
+        [TestMethod]
+        public void ConstructorTest() {
+            Util.ExpectException<ArgumentException>(() => new Ret<int>(container: null, iterator: new int[0]));
+            Util.ExpectException<ArgumentException>(() => new Ret<int>(container: e => false, iterator: null));
+
+            var r = new Ret<Int32>(container: e => e >= 0 && e < 5, iterator: new[] { 0, 1, 2, 3, 4 });
+            Assert.IsTrue(!r.Contains(-1));
+            Assert.IsTrue(r.Contains(0));
+            Assert.IsTrue(r.Contains(1));
+            Assert.IsTrue(r.Contains(2));
+            Assert.IsTrue(r.Contains(3));
+            Assert.IsTrue(r.Contains(4));
+            Assert.IsTrue(!r.Contains(5));
+            Assert.IsTrue(!r.Contains(Int32.MaxValue));
+            Assert.IsTrue(r.SequenceEqual(new[] { 0, 1, 2, 3, 4 }));
+
+            var r2 = new Ret<Int32>(container: e => e == 2, iterator: new[] {2, 3});
+            Assert.IsTrue(!r2.Contains(1));
+            Assert.IsTrue(r2.Contains(2));
+            Assert.IsTrue(!r2.Contains(3)); //container trumps iterator on Contains
+            Assert.IsTrue(r2.SequenceEqual(new[] { 2, 3 }));
+        }
         [TestMethod]
         public void ToRetTest() {
             Util.ExpectException<ArgumentException>(() => ((IEnumerable<int>)null).ToRet());
@@ -90,8 +112,10 @@ namespace LinqToCollectionsTest {
             var w0 = new[] { 2, 3, 5, 7 }.ToRet().Where(e => e % 2 == 1);
             Assert.IsTrue(w0.SetEquals(new[] { 3, 5, 7 }.ToRet()));
             Assert.IsTrue(w0.Count() == 3);
-            Assert.IsTrue(w0.Where(e => true).Count() == 3);
-            Assert.IsTrue(w0.Where(e => false).Count() == 0);
+            var w0T = w0.Where(e => true);
+            var w0F = w0.Where(e => false);
+            Assert.IsTrue(w0T.Count() == 3);
+            Assert.IsTrue(!w0F.Any());
 
             var w1 = new Ret<Byte>(e => e > 10, Byte.MaxValue.Range().Skip(10)).Where(e => e % 2 == 1);
             Assert.IsTrue(!w1.Contains(9));

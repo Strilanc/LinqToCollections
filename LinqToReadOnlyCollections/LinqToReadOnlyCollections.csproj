@@ -8,8 +8,8 @@
     <ProjectGuid>{570EC1B1-4F85-4283-ABE4-858321637768}</ProjectGuid>
     <OutputType>Library</OutputType>
     <AppDesignerFolder>Properties</AppDesignerFolder>
-    <RootNamespace>LinqToCollections</RootNamespace>
-    <AssemblyName>LinqToCollections</AssemblyName>
+    <RootNamespace>LinqToReadOnlyCollections</RootNamespace>
+    <AssemblyName>LinqToReadOnlyCollections</AssemblyName>
     <TargetFrameworkVersion>v4.5</TargetFrameworkVersion>
     <FileAlignment>512</FileAlignment>
     <CodeContractsAssemblyMode>0</CodeContractsAssemblyMode>
@@ -126,6 +126,9 @@
     <Compile Include="Collection\ReadOnlyCollection.cs" />
     <Compile Include="Collection\ReadOnlyCollectionAsICollection.cs" />
     <Compile Include="Collection\ReadOnlyCollectionExtensions.cs" />
+    <Compile Include="Dictionary\ReadOnlyDictionary.cs" />
+    <Compile Include="Dictionary\ReadOnlyDictionaryAsIDictionary.cs" />
+    <Compile Include="Dictionary\ReadOnlyDictionaryExtensions.cs" />
     <Compile Include="Experimental\Map\ValueToMapExtensions.cs" />
     <Compile Include="Experimental\Map\IKeyValue.cs" />
     <Compile Include="Experimental\Map\IMap.cs" />

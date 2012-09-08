@@ -1,9 +1,9 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
-using LinqToCollections.Set;
+using LinqToReadOnlyCollections.Experimental.Set;
 
-namespace LinqToCollections.Map {
+namespace LinqToReadOnlyCollections.Experimental.Map {
     public static class MapExtensions {
         ///<summary>Exposes an IDictionary as a readable map.</summary>
         public static IMap<TKey, TValue> AsMap<TKey, TValue>(this IDictionary<TKey, TValue> dictionary) {

@@ -1,7 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 
-namespace LinqToCollections.List {
+namespace LinqToReadOnlyCollections.List {
     ///<summary>Contains extension methods to convert from any type to list types.</summary>
     public static class ValueToReadOnlyListExtensions {
         ///<summary>Exposes the non-negative integers below the count as a readable list.</summary>

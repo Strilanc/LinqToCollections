@@ -1,10 +1,10 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
-using LinqToCollections.Set;
+using LinqToReadOnlyCollections.Experimental.Set;
 using System.Diagnostics.CodeAnalysis;
 
-namespace LinqToCollections.Map {
+namespace LinqToReadOnlyCollections.Experimental.Map {
     ///<summary>Utility class for implementing a readable map via a _keys set and _getter delegate.</summary>
     [SuppressMessage("Microsoft.Naming", "CA1710:IdentifiersShouldHaveCorrectSuffix", Justification = "'Map' is better than 'Collection'")]
     public class Map<TKey, TValue> : IMap<TKey, TValue> {

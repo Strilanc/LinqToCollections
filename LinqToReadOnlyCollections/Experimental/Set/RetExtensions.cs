@@ -2,7 +2,7 @@
 using System.Collections.Generic;
 using System.Linq;
 
-namespace LinqToCollections.Set {
+namespace LinqToReadOnlyCollections.Experimental.Set {
     public static class RetExtensions {
         ///<summary>Creates a new readable set composed of items from a shallow copy of a sequence.</summary>
         public static IRet<T> ToRet<T>(this IEnumerable<T> sequence) {

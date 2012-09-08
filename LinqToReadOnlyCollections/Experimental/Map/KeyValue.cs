@@ -1,7 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 
-namespace LinqToCollections.Map {
+namespace LinqToReadOnlyCollections.Experimental.Map {
     ///<summary>Basic implementation of a key value pair.</summary>
     public class KeyValue<TKey, TValue> : IKeyValue<TKey, TValue>, IEquatable<IKeyValue<TKey, TValue>> {
         private readonly TKey _key;

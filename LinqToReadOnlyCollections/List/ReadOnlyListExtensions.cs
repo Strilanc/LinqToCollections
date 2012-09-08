@@ -2,7 +2,7 @@
 using System.Linq;
 using System;
 
-namespace LinqToCollections.List {
+namespace LinqToReadOnlyCollections.List {
     ///<summary>Contains extension methods related to read-only lists.</summary>
     public static class ReadOnlyListExtensions {
         ///<summary>Exposes a list as a read-only list.</summary>
@@ -135,7 +135,7 @@ namespace LinqToCollections.List {
         ///<summary>Returns the last element in a non-empty readable list.</summary>
         public static T Last<T>(this IReadOnlyList<T> list) {
             if (list == null) throw new ArgumentNullException("list");
-            if (list.Count < 1) throw new ArgumentOutOfRangeException("list.Count < 1");
+            if (list.Count < 1) throw new ArgumentOutOfRangeException("list", "list.Count < 1");
             return list[list.Count - 1];
         }
         ///<summary>Returns the last element in a non-empty readable list, or a default value if the list is empty.</summary>
