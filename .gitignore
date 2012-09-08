@@ -10,3 +10,4 @@ TestResults/*
 *.ncrunchsolution.user
 *.csproj.user
 *.vbproj.user
+_ReSharper.*
