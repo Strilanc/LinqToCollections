@@ -6,13 +6,13 @@ using System.Diagnostics;
 
 namespace LinqToCollections.List {
     [DebuggerDisplay("{ToString()}")]
-    internal sealed class ReadOnlyList_Skip<T> : IReadOnlyList<T> {
+    internal sealed class ReadOnlySubList<T> : IReadOnlyList<T> {
         private readonly IReadOnlyList<T> _subList;
         private readonly int _skipExact;
         private readonly int _skipElastic;
         private readonly int _offset;
 
-        public ReadOnlyList_Skip(IReadOnlyList<T> subList, int skipExact, int skipElastic, int offset) {
+        public ReadOnlySubList(IReadOnlyList<T> subList, int skipExact, int skipElastic, int offset) {
             if (subList == null) throw new ArgumentNullException("subList");
             if (skipElastic < 0) throw new ArgumentOutOfRangeException("skipElastic");
             if (skipExact < 0 || skipExact > subList.Count) throw new ArgumentOutOfRangeException("skipExact");
@@ -23,7 +23,7 @@ namespace LinqToCollections.List {
             this._skipElastic = skipElastic;
             this._offset = offset;
 
-            var p = subList as ReadOnlyList_Skip<T>;
+            var p = subList as ReadOnlySubList<T>;
             if (p != null) {
                 if (this._skipExact > 0) {
                     this._skipExact += p._skipElastic;

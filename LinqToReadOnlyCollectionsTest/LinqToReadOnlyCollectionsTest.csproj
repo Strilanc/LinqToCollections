@@ -49,7 +49,7 @@
     <Compile Include="MapTest.cs" />
     <Compile Include="RetExtensionsTest.cs" />
     <Compile Include="RetTest.cs" />
-    <Compile Include="ExtraTest.cs" />
+    <Compile Include="ValueToTest.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="ReadOnlyListExtensionsTest.cs" />
     <Compile Include="ReadOnlyListTest.cs" />

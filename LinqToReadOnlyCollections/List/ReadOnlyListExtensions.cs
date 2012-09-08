@@ -1,5 +1,4 @@
-﻿using System.Diagnostics.CodeAnalysis;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using System.Linq;
 using System;
 
@@ -19,7 +18,7 @@ namespace LinqToCollections.List {
         public static IList<T> AsIList<T>(this IReadOnlyList<T> list) {
             if (list == null) throw new ArgumentNullException("list");
             return list as IList<T> 
-                ?? new ReadOnlyListAsIList<T>(list);
+                ?? new ReadOnlyListIList<T>(list);
         }
         ///<summary>Creates a copy of the given sequence and exposes the copy as a readable list.</summary>
         public static IReadOnlyList<T> ToReadOnlyList<T>(this IEnumerable<T> sequence) {
@@ -45,28 +44,28 @@ namespace LinqToCollections.List {
             if (list == null) throw new ArgumentNullException("list");
             if (maxSkipCount < 0) throw new ArgumentOutOfRangeException("maxSkipCount");
             if (maxSkipCount == 0) return list;
-            return new ReadOnlyList_Skip<T>(list, 0, maxSkipCount, maxSkipCount);
+            return new ReadOnlySubList<T>(list, 0, maxSkipCount, maxSkipCount);
         }
         ///<summary>Exposes the start of a readable list, before skipping down to the given number of items at the end, as a readable list.</summary>
         public static IReadOnlyList<T> SkipLast<T>(this IReadOnlyList<T> list, int maxSkipCount) {
             if (list == null) throw new ArgumentNullException("list");
             if (maxSkipCount < 0) throw new ArgumentOutOfRangeException("maxSkipCount");
             if (maxSkipCount == 0) return list;
-            return new ReadOnlyList_Skip<T>(list, 0, maxSkipCount, 0);
+            return new ReadOnlySubList<T>(list, 0, maxSkipCount, 0);
         }
         ///<summary>Exposes the end of a readable list, after skipping exactly the given number of items, as a readable list.</summary>
         public static IReadOnlyList<T> SkipExact<T>(this IReadOnlyList<T> list, int exactSkipCount) {
             if (list == null) throw new ArgumentNullException("list");
             if (exactSkipCount < 0 || exactSkipCount > list.Count) throw new ArgumentOutOfRangeException("exactSkipCount");
             if (exactSkipCount == 0) return list;
-            return new ReadOnlyList_Skip<T>(list, exactSkipCount, 0, exactSkipCount);
+            return new ReadOnlySubList<T>(list, exactSkipCount, 0, exactSkipCount);
         }
         ///<summary>Exposes the start of a readable list, before skipping exactly the given number of items at the end, as a readable list.</summary>
         public static IReadOnlyList<T> SkipLastExact<T>(this IReadOnlyList<T> list, int exactSkipCount) {
             if (list == null) throw new ArgumentNullException("list");
             if (exactSkipCount < 0 || exactSkipCount > list.Count) throw new ArgumentOutOfRangeException("exactSkipCount");
             if (exactSkipCount == 0) return list;
-            return new ReadOnlyList_Skip<T>(list, exactSkipCount, 0, 0);
+            return new ReadOnlySubList<T>(list, exactSkipCount, 0, 0);
         }
 
         ///<summary>Exposes the start of a readable list, up to the given number of items, as a readable list.</summary>
@@ -136,7 +135,7 @@ namespace LinqToCollections.List {
         ///<summary>Returns the last element in a non-empty readable list.</summary>
         public static T Last<T>(this IReadOnlyList<T> list) {
             if (list == null) throw new ArgumentNullException("list");
-            if (list.Count < 1) throw new ArgumentOutOfRangeException("list.Count");
+            if (list.Count < 1) throw new ArgumentOutOfRangeException("list.Count < 1");
             return list[list.Count - 1];
         }
         ///<summary>Returns the last element in a non-empty readable list, or a default value if the list is empty.</summary>

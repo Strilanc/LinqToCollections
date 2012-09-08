@@ -1,15 +1,9 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Linq;
-using System.Diagnostics.CodeAnalysis;
-using LinqToCollections.List;
-using LinqToCollections.Map;
-using LinqToCollections.Set;
 
-namespace LinqToCollections.Extra {
-    ///<summary>Contains extension methods which affect non-list types.</summary>
-    ///<remarks>Not included in the main namespace to avoid unwanted pollution.</remarks>
-    public static class ExtraExtensions {
+namespace LinqToCollections.List {
+    ///<summary>Contains extension methods to convert from any type to list types.</summary>
+    public static class ValueToReadOnlyListExtensions {
         ///<summary>Exposes the non-negative integers below the count as a readable list.</summary>
         public static IReadOnlyList<int> Range(this int count) {
             if (count < 0) throw new ArgumentOutOfRangeException("count");
@@ -29,12 +23,6 @@ namespace LinqToCollections.Extra {
         public static IReadOnlyList<T> Repeated<T>(this T value, int count) {
             if (count < 0) throw new ArgumentOutOfRangeException("count");
             return new ReadOnlyList<T>(counter: () => count, getter: i => value);
-        }
-
-        ///<summary>Creates a key value pair.</summary>
-        public static IKeyValue<TKey, TValue> KeyValue<TKey, TValue>(this TKey key, TValue value) {
-            if (key == null) throw new ArgumentNullException("key");
-            return new KeyValue<TKey, TValue>(key, value);
         }
     }
 }

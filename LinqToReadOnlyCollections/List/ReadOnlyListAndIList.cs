@@ -5,10 +5,10 @@ using System.Diagnostics.CodeAnalysis;
 
 namespace LinqToCollections.List {
     ///<summary>Implements a ReadOnly IList by delegating calls to a readable list.</summary>
-    internal sealed class ReadOnlyListAsIList<T> : IList<T>, IReadOnlyList<T> {
+    internal sealed class ReadOnlyListIList<T> : IList<T>, IReadOnlyList<T> {
         private readonly IReadOnlyList<T> _list;
         
-        public ReadOnlyListAsIList(IReadOnlyList<T> list) {
+        public ReadOnlyListIList(IReadOnlyList<T> list) {
             if (list == null) throw new ArgumentNullException("list");
             this._list = list;
         }

@@ -126,26 +126,24 @@
     <Compile Include="Collection\ReadOnlyCollection.cs" />
     <Compile Include="Collection\ReadOnlyCollectionAsICollection.cs" />
     <Compile Include="Collection\ReadOnlyCollectionExtensions.cs" />
-    <Compile Include="Map\IKeyValue.cs" />
-    <Compile Include="Map\IMap.cs" />
-    <Compile Include="Map\KeyValue.cs" />
-    <Compile Include="Map\Map.cs" />
-    <Compile Include="Map\MapExtensions.cs" />
+    <Compile Include="Experimental\Map\ValueToMapExtensions.cs" />
+    <Compile Include="Experimental\Map\IKeyValue.cs" />
+    <Compile Include="Experimental\Map\IMap.cs" />
+    <Compile Include="Experimental\Map\KeyValue.cs" />
+    <Compile Include="Experimental\Map\Map.cs" />
+    <Compile Include="Experimental\Map\MapExtensions.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="List\ReadOnlyList.cs" />
     <Compile Include="List\ReadOnlyListExtensions.cs" />
-    <Compile Include="List\ReadOnlyListAsIList.cs" />
-    <Compile Include="List\ReadOnlyList_Skip.cs" />
-    <Compile Include="Extra\Extra.cs" />
-    <Compile Include="Set\RetExtensions.cs" />
-    <Compile Include="Set\Ret.cs" />
-    <Compile Include="Set\IRet.cs" />
+    <Compile Include="List\ReadOnlyListAndIList.cs" />
+    <Compile Include="List\ReadOnlySubList.cs" />
+    <Compile Include="List\ValueToReadOnlyListExtensions.cs" />
+    <Compile Include="Experimental\Set\RetExtensions.cs" />
+    <Compile Include="Experimental\Set\Ret.cs" />
+    <Compile Include="Experimental\Set\IRet.cs" />
   </ItemGroup>
   <ItemGroup>
     <None Include="Strilanc-LinqToReadOnlyCollections.pfx" />
-  </ItemGroup>
-  <ItemGroup>
-    <CodeAnalysisDictionary Include="CustomDictionary.xml" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 

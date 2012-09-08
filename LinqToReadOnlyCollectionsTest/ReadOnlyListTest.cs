@@ -5,9 +5,9 @@ using System.Collections.Generic;
 using System.Linq;
 
 namespace LinqToCollectionsTest {
-    [TestClass()]
+    [TestClass]
     public class ReadOnlyListTest {
-        [TestMethod()]
+        [TestMethod]
         public void ConstructorTest() {
             Util.ExpectException<ArgumentException>(() => new ReadOnlyList<int>(counter: null, getter: i => i));
             Util.ExpectException<ArgumentException>(() => new ReadOnlyList<int>(counter: () => 0, getter: null));
@@ -32,7 +32,7 @@ namespace LinqToCollectionsTest {
             Util.ExpectException<ArgumentException>(() => { var x = r[7]; });
         }
 
-        [TestMethod()]
+        [TestMethod]
         public void EfficientIteratorTest() {
             var r = new ReadOnlyList<Int32>(counter: () => { throw new ArgumentException(); }, getter: i => { throw new ArgumentException(); }, efficientIterator: new[] { 0, 1, 2 });
             Util.ExpectException<ArgumentException>(() => { var x = r[0]; });

@@ -5,9 +5,9 @@ using System.Collections.Generic;
 using System.Linq;
 
 namespace LinqToCollectionsTest {
-    [TestClass()]
+    [TestClass]
     public class RetTest {
-        [TestMethod()]
+        [TestMethod]
         public void ConstructorTest() {
             Util.ExpectException<ArgumentException>(() => new Ret<int>(container: null, iterator: new int[0]));
             Util.ExpectException<ArgumentException>(() => new Ret<int>(container: e => false, iterator: null));

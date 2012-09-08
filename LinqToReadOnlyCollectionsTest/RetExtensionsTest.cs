@@ -1,14 +1,14 @@
 ﻿using LinqToCollections.Set;
-using LinqToCollections.Extra;
+using LinqToCollections.List;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 using System;
 using System.Linq;
 using System.Collections.Generic;
 
 namespace LinqToCollectionsTest {
-    [TestClass()]
+    [TestClass]
     public class RetExtensionsTest {
-        [TestMethod()]
+        [TestMethod]
         public void ToRetTest() {
             Util.ExpectException<ArgumentException>(() => ((IEnumerable<int>)null).ToRet());
 
@@ -34,7 +34,7 @@ namespace LinqToCollectionsTest {
             Assert.IsTrue(s2.Contains(4));
             Assert.IsTrue(!s2.Contains(5));
         }
-        [TestMethod()]
+        [TestMethod]
         public void AsRetTest() {
             Util.ExpectException<ArgumentException>(() => ((ISet<int>)null).AsRet());
 
@@ -60,29 +60,29 @@ namespace LinqToCollectionsTest {
             Assert.IsTrue(s2.Contains(4));
             Assert.IsTrue(!s2.Contains(5));
         }
-        [TestMethod()]
+        [TestMethod]
         public void SetEqualsTest() {
             Util.ExpectException<ArgumentException>(() => ((IRet<int>)null).SetEquals(new[] { 1 }.ToRet()));
             Util.ExpectException<ArgumentException>(() => new[] { 1 }.ToRet().SetEquals(null));
-            var s0a = new HashSet<int>().AsRet();
-            var s0b = new Ret<int>(e => false, new int[0]);
-            var s1a = new HashSet<int>(new[] { 1 }).AsRet();
-            var s1b = new HashSet<int>(new[] { 1 }).AsRet();
-            var s2a = new HashSet<int>(new[] { 4, 1, 3, 3 }).AsRet();
-            var s2b = new HashSet<int>(new[] { 1, 3, 4 }).AsRet();
+            var s0A = new HashSet<int>().AsRet();
+            var s0B = new Ret<int>(e => false, new int[0]);
+            var s1A = new HashSet<int>(new[] { 1 }).AsRet();
+            var s1B = new HashSet<int>(new[] { 1 }).AsRet();
+            var s2A = new HashSet<int>(new[] { 4, 1, 3, 3 }).AsRet();
+            var s2B = new HashSet<int>(new[] { 1, 3, 4 }).AsRet();
 
-            Assert.IsTrue(s0a.SetEquals(s0b));
-            Assert.IsTrue(s0b.SetEquals(s0a));
-            Assert.IsTrue(s1a.SetEquals(s1b));
-            Assert.IsTrue(s1b.SetEquals(s1a));
-            Assert.IsTrue(s2a.SetEquals(s2b));
-            Assert.IsTrue(s2b.SetEquals(s2a));
-            Assert.IsTrue(!s0a.SetEquals(s1a));
-            Assert.IsTrue(!s0b.SetEquals(s2b));
-            Assert.IsTrue(!s1a.SetEquals(s0b));
-            Assert.IsTrue(!s1b.SetEquals(s2b));
+            Assert.IsTrue(s0A.SetEquals(s0B));
+            Assert.IsTrue(s0B.SetEquals(s0A));
+            Assert.IsTrue(s1A.SetEquals(s1B));
+            Assert.IsTrue(s1B.SetEquals(s1A));
+            Assert.IsTrue(s2A.SetEquals(s2B));
+            Assert.IsTrue(s2B.SetEquals(s2A));
+            Assert.IsTrue(!s0A.SetEquals(s1A));
+            Assert.IsTrue(!s0B.SetEquals(s2B));
+            Assert.IsTrue(!s1A.SetEquals(s0B));
+            Assert.IsTrue(!s1B.SetEquals(s2B));
         }
-        [TestMethod()]
+        [TestMethod]
         public void WhereTest() {
             Util.ExpectException<ArgumentException>(() => ((IRet<int>)null).Where(e => true));
             Util.ExpectException<ArgumentException>(() => new[] { 1 }.ToRet().Where(null));
@@ -101,7 +101,7 @@ namespace LinqToCollectionsTest {
             Assert.IsTrue(w1.Contains(13));
             Assert.IsTrue(w1.SequenceEqual(Byte.MaxValue.Range().Skip(10).Where(e => e % 2 == 1)));
         }
-        [TestMethod()]
+        [TestMethod]
         public void UnionTest() {
             Util.ExpectException<ArgumentException>(() => ((IRet<int>)null).Union(new[] { 1 }.ToRet()));
             Util.ExpectException<ArgumentException>(() => new[] { 1 }.ToRet().Union(null));
@@ -111,7 +111,7 @@ namespace LinqToCollectionsTest {
             var u1 = b1.Union(b2);
             Assert.IsTrue(u1.SetEquals(Byte.MaxValue.Range().Where(e => e % 2 == 1 || e % 3 == 1).ToRet()));
         }
-        [TestMethod()]
+        [TestMethod]
         public void IntersectTest() {
             Util.ExpectException<ArgumentException>(() => ((IRet<int>)null).Intersect(new[] { 1 }.ToRet()));
             Util.ExpectException<ArgumentException>(() => new[] { 1 }.ToRet().Intersect(null));
@@ -120,7 +120,7 @@ namespace LinqToCollectionsTest {
             var u1 = b1.Intersect(b2);
             Assert.IsTrue(u1.SetEquals(Byte.MaxValue.Range().Where(e => e % 2 == 1 && e % 3 == 1).ToRet()));
         }
-        [TestMethod()]
+        [TestMethod]
         public void ExceptTest() {
             Util.ExpectException<ArgumentException>(() => ((IRet<int>)null).Except(new[] { 1 }.ToRet()));
             Util.ExpectException<ArgumentException>(() => new[] { 1 }.ToRet().Except(null));
@@ -129,7 +129,7 @@ namespace LinqToCollectionsTest {
             var u1 = b1.Except(b2);
             Assert.IsTrue(u1.SetEquals(Byte.MaxValue.Range().Where(e => e % 2 == 1 && e % 3 != 1).ToRet()));
         }
-        [TestMethod()]
+        [TestMethod]
         public void IntersectsTest() {
             Util.ExpectException<ArgumentException>(() => ((IRet<int>)null).Intersect(new[] { 1 }.ToRet()));
             Util.ExpectException<ArgumentException>(() => new[] { 1 }.ToRet().Intersect(null));
@@ -143,7 +143,7 @@ namespace LinqToCollectionsTest {
             Assert.IsTrue(b3.Intersects(b1));
             Assert.IsTrue(!b3.Intersects(b2));
         }
-        [TestMethod()]
+        [TestMethod]
         public void IsSubsetOfTest() {
             Util.ExpectException<ArgumentException>(() => ((IRet<int>)null).IsSubsetOf(new[] { 1 }.ToRet()));
             Util.ExpectException<ArgumentException>(() => new[] { 1 }.ToRet().IsSubsetOf(null));
@@ -160,7 +160,7 @@ namespace LinqToCollectionsTest {
             Assert.IsTrue(!b3.IsSubsetOf(b2));
             Assert.IsTrue(b3.IsSubsetOf(b1));
         }
-        [TestMethod()]
+        [TestMethod]
         public void IsStrictSubsetOfTest() {
             Util.ExpectException<ArgumentException>(() => ((IRet<int>)null).IsStrictSubsetOf(new[] { 1 }.ToRet()));
             Util.ExpectException<ArgumentException>(() => new[] { 1 }.ToRet().IsStrictSubsetOf(null));
@@ -177,7 +177,7 @@ namespace LinqToCollectionsTest {
             Assert.IsTrue(!b3.IsStrictSubsetOf(b2));
             Assert.IsTrue(b3.IsStrictSubsetOf(b1));
         }
-        [TestMethod()]
+        [TestMethod]
         public void IsDisjointFromTest() {
             Util.ExpectException<ArgumentException>(() => ((IRet<int>)null).IsDisjointFrom(new[] { 1 }.ToRet()));
             Util.ExpectException<ArgumentException>(() => new[] { 1 }.ToRet().IsDisjointFrom(null));

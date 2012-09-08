@@ -1,14 +1,13 @@
-﻿using LinqToCollections;
-using LinqToCollections.Extra;
+﻿using LinqToCollections.List;
+using LinqToCollections.Map;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 using System;
 using System.Linq;
-using System.Collections.Generic;
 
 namespace LinqToCollectionsTest {
-    [TestClass()]
-    public class ExtraTest {
-        [TestMethod()]
+    [TestClass]
+    public class ValueToTest {
+        [TestMethod]
         public void RangeTestInt32() {
             Util.ExpectException<ArgumentException>(() => (-1).Range());
             Util.ExpectException<ArgumentException>(() => int.MinValue.Range());
@@ -24,7 +23,7 @@ namespace LinqToCollectionsTest {
             Assert.IsTrue(1.Range().Count == 1);
             Assert.IsTrue(10.Range().SequenceEqual(Enumerable.Range(0, 10)));
         }
-        [TestMethod()]
+        [TestMethod]
         public void RangeTestInt16() {
             Util.ExpectException<ArgumentException>(() => ((short)-1).Range());
             Util.ExpectException<ArgumentException>(() => short.MinValue.Range());
@@ -40,7 +39,7 @@ namespace LinqToCollectionsTest {
             Assert.IsTrue(((short)1).Range().Count == 1);
             Assert.IsTrue(((short)10).Range().SequenceEqual(Enumerable.Range(0, 10).Select(i => (short)i)));
         }
-        [TestMethod()]
+        [TestMethod]
         public void RangeTestUInt8() {
             Util.ExpectException<ArgumentException>(() => { var x = byte.MaxValue.Range()[byte.MaxValue]; });
             Util.ExpectException<ArgumentException>(() => { var x = ((byte)0).Range()[0]; });

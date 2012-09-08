@@ -6,9 +6,9 @@ using System.Collections.Generic;
 using System.Linq;
 
 namespace LinqToCollectionsTest {
-    [TestClass()]
+    [TestClass]
     public class MapTest {
-        [TestMethod()]
+        [TestMethod]
         public void ConstructorTest() {
             Util.ExpectException<ArgumentException>(() => new Map<int, int>(null, e => e));
             Util.ExpectException<ArgumentException>(() => new Map<int, int>(new Ret<int>(e => false, new int[0]), null));
