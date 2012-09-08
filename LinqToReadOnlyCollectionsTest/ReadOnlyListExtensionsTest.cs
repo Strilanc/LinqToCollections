@@ -419,12 +419,13 @@ namespace LinqToCollectionsTest {
             
             var rawList = new List<int> {0, 1, 2};
             var asReadOnlyList = rawList.AsReadOnlyList();
-            var asReadOnlyListAsList = rawList.AsReadOnlyList().AsIList();
+            var asReadOnlyListAsList = asReadOnlyList.AsIList();
+            var asReadOnlyListAsListAsReadOnlyList = asReadOnlyListAsList.AsReadOnlyList();
             Assert.IsTrue(asReadOnlyListAsList.IsReadOnly);
             Assert.IsTrue(asReadOnlyListAsList.Count == 3);
             Assert.IsTrue(asReadOnlyListAsList.SequenceEqual(new[] { 0, 1, 2 }));
-            Assert.AreSame(asReadOnlyList, asReadOnlyListAsList);
-            Assert.AreSame(asReadOnlyList, asReadOnlyListAsList.AsReadOnlyList());
+            Assert.AreSame(asReadOnlyListAsListAsReadOnlyList, asReadOnlyListAsList);
+            Assert.AreSame(asReadOnlyListAsListAsReadOnlyList, asReadOnlyListAsListAsReadOnlyList.AsIList());
             Util.ExpectException<NotSupportedException>(() => asReadOnlyListAsList.Add(0));
             Util.ExpectException<NotSupportedException>(() => asReadOnlyListAsList.Remove(0));
             Util.ExpectException<NotSupportedException>(() => asReadOnlyListAsList.Insert(0, 0));

@@ -107,7 +107,7 @@ namespace LinqToCollectionsTest {
             Assert.IsTrue(mi.SequenceEqual(new int[0]));
             li.Remove(2);
             Util.ExpectException<InvalidOperationException>(Util.Ack(() => mi.Count));
-            Util.ExpectException<InvalidOperationException>(Util.Ack(() => mi.GetEnumerator()));
+            Util.ExpectException<InvalidOperationException>(Util.Ack(mi.GetEnumerator));
         }
         [TestMethod]
         public void SkipLastExactTest() {
@@ -421,11 +421,12 @@ namespace LinqToCollectionsTest {
             var rawCollection = new List<int> { 0, 1, 2 };
             var asReadOnlyCollection = rawCollection.AsReadOnlyCollection();
             var asReadOnlyCollectionAsCollection = rawCollection.AsReadOnlyCollection().AsICollection();
+            var asReadOnlyCollectionAsCollectionAsReadOnlyCollection = asReadOnlyCollectionAsCollection.AsReadOnlyCollection();
             Assert.IsTrue(asReadOnlyCollectionAsCollection.IsReadOnly);
             Assert.IsTrue(asReadOnlyCollectionAsCollection.Count == 3);
             Assert.IsTrue(asReadOnlyCollectionAsCollection.SequenceEqual(new[] { 0, 1, 2 }));
-            Assert.AreSame(asReadOnlyCollection, asReadOnlyCollectionAsCollection);
-            Assert.AreSame(asReadOnlyCollection, asReadOnlyCollectionAsCollection.AsReadOnlyCollection());
+            Assert.AreSame(asReadOnlyCollectionAsCollectionAsReadOnlyCollection, asReadOnlyCollectionAsCollection);
+            Assert.AreSame(asReadOnlyCollectionAsCollectionAsReadOnlyCollection, asReadOnlyCollectionAsCollectionAsReadOnlyCollection.AsICollection());
             Util.ExpectException<NotSupportedException>(() => asReadOnlyCollectionAsCollection.Add(0));
             Util.ExpectException<NotSupportedException>(() => asReadOnlyCollectionAsCollection.Remove(0));
             Util.ExpectException<NotSupportedException>(asReadOnlyCollectionAsCollection.Clear);
