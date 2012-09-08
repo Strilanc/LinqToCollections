@@ -7,7 +7,7 @@ using System.Linq;
 namespace LinqToCollectionsTest {
     [TestClass]
     public class ReadOnlyCollectionTest {
-        private static IReadOnlyCollection<int> rng(int i) {
+        private static IReadOnlyCollection<int> Rng(int i) {
             return Enumerable.Range(0, i).ToArray();
         }
 
@@ -28,7 +28,7 @@ namespace LinqToCollectionsTest {
         [TestMethod]
         public void EfficientIteratorTest() {
             var r = new ReadOnlyCollection<Int32>(counter: () => { throw new ArgumentException(); }, iterator: Enumerable.Range(0, 3).GetEnumerator);
-            Util.ExpectException<ArgumentException>(() => { var x = r.Count; });
+            Util.ExpectException<ArgumentException>(Util.Ack(() => r.Count));
             Assert.IsTrue(r.SequenceEqual(new[] { 0, 1, 2 }));
         }
 
@@ -38,23 +38,23 @@ namespace LinqToCollectionsTest {
 
             Assert.IsTrue(new[] { 0, 1, 2 }.AsReadOnlyCollection().Count == 3);
             Assert.IsTrue(new[] { 0, 2, 5, 7 }.AsReadOnlyCollection().SequenceEqual(new[] { 0, 2, 5, 7 }));
-            var collection = new List<int>() { 2, 3 };
-            var ReadOnlyCollection = collection.AsReadOnlyCollection();
-            Assert.IsTrue(ReadOnlyCollection.SequenceEqual(new[] { 2, 3 }));
+            var collection = new List<int> { 2, 3 };
+            var asReadOnlyCollection = collection.AsReadOnlyCollection();
+            Assert.IsTrue(asReadOnlyCollection.SequenceEqual(new[] { 2, 3 }));
             collection.Add(5);
-            Assert.IsTrue(ReadOnlyCollection.SequenceEqual(new[] { 2, 3, 5 }));
+            Assert.IsTrue(asReadOnlyCollection.SequenceEqual(new[] { 2, 3, 5 }));
         }
         [TestMethod]
         public void AsElseToReadOnlyCollectionTest() {
             Util.ExpectException<ArgumentException>(() => ((IEnumerable<int>)null).AsElseToReadOnlyCollection());
 
-            var collection = new List<int>() { 2, 3 };
+            var collection = new List<int> { 2, 3 };
             var collectionAsReadOnlyCollection = collection.AsElseToReadOnlyCollection();
             var projectionAsReadOnlyCollection = collection.Select(i => i + 1).AsElseToReadOnlyCollection();
             var enumerableProjectionAsReadOnlyCollection = collection.AsEnumerable().Select(i => i + 1).AsElseToReadOnlyCollection();
 
             //IReadOnlyCollection ==> gives back input
-            Assert.ReferenceEquals(collectionAsReadOnlyCollection, collectionAsReadOnlyCollection.AsElseToReadOnlyCollection());
+            Assert.AreSame(collectionAsReadOnlyCollection, collectionAsReadOnlyCollection.AsElseToReadOnlyCollection());
 
             //ICollection ==> viewed as ReadOnlyCollection, IEnumerable ==> copied
             Assert.IsTrue(collectionAsReadOnlyCollection.SequenceEqual(new[] { 2, 3 }));
@@ -71,11 +71,11 @@ namespace LinqToCollectionsTest {
         public void ToRistTest() {
             Util.ExpectException<ArgumentException>(() => ((IReadOnlyCollection<int>)null).ToReadOnlyCollection());
 
-            var collection = new List<int>() { 2, 3 };
-            var ReadOnlyCollection = collection.ToReadOnlyCollection();
-            Assert.IsTrue(ReadOnlyCollection.SequenceEqual(new[] { 2, 3 }));
+            var collection = new List<int> { 2, 3 };
+            var toReadOnlyCollection = collection.ToReadOnlyCollection();
+            Assert.IsTrue(toReadOnlyCollection.SequenceEqual(new[] { 2, 3 }));
             collection.Add(1);
-            Assert.IsTrue(ReadOnlyCollection.SequenceEqual(new[] { 2, 3 }));
+            Assert.IsTrue(toReadOnlyCollection.SequenceEqual(new[] { 2, 3 }));
         }
 
         [TestMethod]
@@ -92,22 +92,22 @@ namespace LinqToCollectionsTest {
             Assert.IsTrue(new[] { 1, 2, 3, 4 }.AsReadOnlyCollection().SkipExact(3).SequenceEqual(new[] { 4 }));
 
             // mutations propagate
-            var L = new List<int> { 1, 2, 3 };
-            var M = L.SkipExact(2);
-            Assert.IsTrue(M.Count == 1);
-            Assert.IsTrue(M.SequenceEqual(new[] { 3 }));
-            L.Insert(0, 0);
-            Assert.IsTrue(M.Count == 2);
-            Assert.IsTrue(M.SequenceEqual(new[] { 2, 3 }));
-            L.Remove(3);
-            Assert.IsTrue(M.Count == 1);
-            Assert.IsTrue(M.SequenceEqual(new[] { 2 }));
-            L.Remove(1);
-            Assert.IsTrue(M.Count == 0);
-            Assert.IsTrue(M.SequenceEqual(new int[0]));
-            L.Remove(2);
-            Util.ExpectException<InvalidOperationException>(() => { var x = M.Count; });
-            Util.ExpectException<InvalidOperationException>(() => M.GetEnumerator());
+            var li = new List<int> { 1, 2, 3 };
+            var mi = li.SkipExact(2);
+            Assert.IsTrue(mi.Count == 1);
+            Assert.IsTrue(mi.SequenceEqual(new[] { 3 }));
+            li.Insert(0, 0);
+            Assert.IsTrue(mi.Count == 2);
+            Assert.IsTrue(mi.SequenceEqual(new[] { 2, 3 }));
+            li.Remove(3);
+            Assert.IsTrue(mi.Count == 1);
+            Assert.IsTrue(mi.SequenceEqual(new[] { 2 }));
+            li.Remove(1);
+            Assert.IsTrue(mi.Count == 0);
+            Assert.IsTrue(mi.SequenceEqual(new int[0]));
+            li.Remove(2);
+            Util.ExpectException<InvalidOperationException>(Util.Ack(() => mi.Count));
+            Util.ExpectException<InvalidOperationException>(Util.Ack(() => mi.GetEnumerator()));
         }
         [TestMethod]
         public void SkipLastExactTest() {
@@ -123,22 +123,22 @@ namespace LinqToCollectionsTest {
             Assert.IsTrue(new[] { 1, 2, 3, 4 }.AsReadOnlyCollection().SkipLastExact(3).SequenceEqual(new[] { 1 }));
 
             // mutations propagate
-            var L = new List<int> { 1, 2, 3 };
-            var M = L.SkipLastExact(2);
-            Assert.IsTrue(M.Count == 1);
-            Assert.IsTrue(M.SequenceEqual(new[] { 1 }));
-            L.Insert(0, 0);
-            Assert.IsTrue(M.Count == 2);
-            Assert.IsTrue(M.SequenceEqual(new[] { 0, 1 }));
-            L.Remove(3);
-            Assert.IsTrue(M.Count == 1);
-            Assert.IsTrue(M.SequenceEqual(new[] { 0 }));
-            L.Remove(1);
-            Assert.IsTrue(M.Count == 0);
-            Assert.IsTrue(M.SequenceEqual(new int[0]));
-            L.Remove(2);
-            Util.ExpectException<InvalidOperationException>(() => { var x = M.Count; });
-            Util.ExpectException<InvalidOperationException>(() => M.GetEnumerator());
+            var li = new List<int> { 1, 2, 3 };
+            var mi = li.SkipLastExact(2);
+            Assert.IsTrue(mi.Count == 1);
+            Assert.IsTrue(mi.SequenceEqual(new[] { 1 }));
+            li.Insert(0, 0);
+            Assert.IsTrue(mi.Count == 2);
+            Assert.IsTrue(mi.SequenceEqual(new[] { 0, 1 }));
+            li.Remove(3);
+            Assert.IsTrue(mi.Count == 1);
+            Assert.IsTrue(mi.SequenceEqual(new[] { 0 }));
+            li.Remove(1);
+            Assert.IsTrue(mi.Count == 0);
+            Assert.IsTrue(mi.SequenceEqual(new int[0]));
+            li.Remove(2);
+            Util.ExpectException<InvalidOperationException>(Util.Ack(() => mi.Count));
+            Util.ExpectException<InvalidOperationException>(Util.Ack(mi.GetEnumerator));
         }
         [TestMethod]
         public void TakeExactTest() {
@@ -154,22 +154,22 @@ namespace LinqToCollectionsTest {
             Assert.IsTrue(new[] { 1, 2, 3, 4 }.AsReadOnlyCollection().TakeExact(3).SequenceEqual(new[] { 1, 2, 3 }));
 
             // mutations propagate
-            var L = new List<int> { 1, 2, 3 };
-            var M = L.TakeExact(2);
-            Assert.IsTrue(M.Count == 2);
-            Assert.IsTrue(M.SequenceEqual(new[] { 1, 2 }));
-            L.Insert(0, 0);
-            Assert.IsTrue(M.Count == 2);
-            Assert.IsTrue(M.SequenceEqual(new[] { 0, 1 }));
-            L.Remove(3);
-            Assert.IsTrue(M.Count == 2);
-            Assert.IsTrue(M.SequenceEqual(new[] { 0, 1 }));
-            L.Remove(1);
-            Assert.IsTrue(M.Count == 2);
-            Assert.IsTrue(M.SequenceEqual(new[] { 0, 2 }));
-            L.Remove(2);
-            Util.ExpectException<InvalidOperationException>(() => { var x = M.Count; });
-            Util.ExpectException<InvalidOperationException>(() => M.GetEnumerator());
+            var li = new List<int> { 1, 2, 3 };
+            var mi = li.TakeExact(2);
+            Assert.IsTrue(mi.Count == 2);
+            Assert.IsTrue(mi.SequenceEqual(new[] { 1, 2 }));
+            li.Insert(0, 0);
+            Assert.IsTrue(mi.Count == 2);
+            Assert.IsTrue(mi.SequenceEqual(new[] { 0, 1 }));
+            li.Remove(3);
+            Assert.IsTrue(mi.Count == 2);
+            Assert.IsTrue(mi.SequenceEqual(new[] { 0, 1 }));
+            li.Remove(1);
+            Assert.IsTrue(mi.Count == 2);
+            Assert.IsTrue(mi.SequenceEqual(new[] { 0, 2 }));
+            li.Remove(2);
+            Util.ExpectException<InvalidOperationException>(Util.Ack(() => mi.Count));
+            Util.ExpectException<InvalidOperationException>(Util.Ack(mi.GetEnumerator));
         }
         [TestMethod]
         public void TakeLastExactTest() {
@@ -185,22 +185,22 @@ namespace LinqToCollectionsTest {
             Assert.IsTrue(new[] { 1, 2, 3, 4 }.AsReadOnlyCollection().TakeLastExact(3).SequenceEqual(new[] { 2, 3, 4 }));
 
             // mutations propagate
-            var L = new List<int> { 1, 2, 3 };
-            var M = L.TakeLastExact(2);
-            Assert.IsTrue(M.Count == 2);
-            Assert.IsTrue(M.SequenceEqual(new[] { 2, 3 }));
-            L.Insert(0, 0);
-            Assert.IsTrue(M.Count == 2);
-            Assert.IsTrue(M.SequenceEqual(new[] { 2, 3 }));
-            L.Remove(3);
-            Assert.IsTrue(M.Count == 2);
-            Assert.IsTrue(M.SequenceEqual(new[] { 1, 2 }));
-            L.Remove(1);
-            Assert.IsTrue(M.Count == 2);
-            Assert.IsTrue(M.SequenceEqual(new[] { 0, 2 }));
-            L.Remove(2);
-            Util.ExpectException<InvalidOperationException>(() => { var x = M.Count; });
-            Util.ExpectException<InvalidOperationException>(() => M.GetEnumerator());
+            var li = new List<int> { 1, 2, 3 };
+            var mi = li.TakeLastExact(2);
+            Assert.IsTrue(mi.Count == 2);
+            Assert.IsTrue(mi.SequenceEqual(new[] { 2, 3 }));
+            li.Insert(0, 0);
+            Assert.IsTrue(mi.Count == 2);
+            Assert.IsTrue(mi.SequenceEqual(new[] { 2, 3 }));
+            li.Remove(3);
+            Assert.IsTrue(mi.Count == 2);
+            Assert.IsTrue(mi.SequenceEqual(new[] { 1, 2 }));
+            li.Remove(1);
+            Assert.IsTrue(mi.Count == 2);
+            Assert.IsTrue(mi.SequenceEqual(new[] { 0, 2 }));
+            li.Remove(2);
+            Util.ExpectException<InvalidOperationException>(Util.Ack(() => mi.Count));
+            Util.ExpectException<InvalidOperationException>(Util.Ack(mi.GetEnumerator));
         }
 
         [TestMethod]
@@ -217,25 +217,25 @@ namespace LinqToCollectionsTest {
             Assert.IsTrue(new[] { 1, 2, 3, 4 }.AsReadOnlyCollection().Skip(3).SequenceEqual(new[] { 4 }));
 
             // mutations propagate
-            var L = new List<int> { 1, 2, 3 };
-            var M = L.Skip(2);
-            Assert.IsTrue(M.Count == 1);
-            Assert.IsTrue(M.SequenceEqual(new[] { 3 }));
-            L.Insert(0, 0);
-            Assert.IsTrue(M.Count == 2);
-            Assert.IsTrue(M.SequenceEqual(new[] { 2, 3 }));
-            L.Remove(3);
-            Assert.IsTrue(M.Count == 1);
-            Assert.IsTrue(M.SequenceEqual(new[] { 2 }));
-            L.Remove(1);
-            Assert.IsTrue(M.Count == 0);
-            Assert.IsTrue(M.SequenceEqual(new int[0]));
-            L.Remove(2);
-            Assert.IsTrue(M.Count == 0);
-            Assert.IsTrue(M.SequenceEqual(new int[0]));
-            L.Remove(0);
-            Assert.IsTrue(M.Count == 0);
-            Assert.IsTrue(M.SequenceEqual(new int[0]));
+            var li = new List<int> { 1, 2, 3 };
+            var mi = li.Skip(2);
+            Assert.IsTrue(mi.Count == 1);
+            Assert.IsTrue(mi.SequenceEqual(new[] { 3 }));
+            li.Insert(0, 0);
+            Assert.IsTrue(mi.Count == 2);
+            Assert.IsTrue(mi.SequenceEqual(new[] { 2, 3 }));
+            li.Remove(3);
+            Assert.IsTrue(mi.Count == 1);
+            Assert.IsTrue(mi.SequenceEqual(new[] { 2 }));
+            li.Remove(1);
+            Assert.IsTrue(mi.Count == 0);
+            Assert.IsTrue(mi.SequenceEqual(new int[0]));
+            li.Remove(2);
+            Assert.IsTrue(mi.Count == 0);
+            Assert.IsTrue(mi.SequenceEqual(new int[0]));
+            li.Remove(0);
+            Assert.IsTrue(mi.Count == 0);
+            Assert.IsTrue(mi.SequenceEqual(new int[0]));
         }
         [TestMethod]
         public void SkipLastTest() {
@@ -251,25 +251,25 @@ namespace LinqToCollectionsTest {
             Assert.IsTrue(new[] { 1, 2, 3, 4 }.AsReadOnlyCollection().SkipLast(3).SequenceEqual(new[] { 1 }));
 
             // mutations propagate
-            var L = new List<int> { 1, 2, 3 };
-            var M = L.SkipLast(2);
-            Assert.IsTrue(M.Count == 1);
-            Assert.IsTrue(M.SequenceEqual(new[] { 1 }));
-            L.Insert(0, 0);
-            Assert.IsTrue(M.Count == 2);
-            Assert.IsTrue(M.SequenceEqual(new[] { 0, 1 }));
-            L.Remove(3);
-            Assert.IsTrue(M.Count == 1);
-            Assert.IsTrue(M.SequenceEqual(new[] { 0 }));
-            L.Remove(1);
-            Assert.IsTrue(M.Count == 0);
-            Assert.IsTrue(M.SequenceEqual(new int[0]));
-            L.Remove(2);
-            Assert.IsTrue(M.Count == 0);
-            Assert.IsTrue(M.SequenceEqual(new int[0]));
-            L.Remove(0);
-            Assert.IsTrue(M.Count == 0);
-            Assert.IsTrue(M.SequenceEqual(new int[0]));
+            var li = new List<int> { 1, 2, 3 };
+            var mi = li.SkipLast(2);
+            Assert.IsTrue(mi.Count == 1);
+            Assert.IsTrue(mi.SequenceEqual(new[] { 1 }));
+            li.Insert(0, 0);
+            Assert.IsTrue(mi.Count == 2);
+            Assert.IsTrue(mi.SequenceEqual(new[] { 0, 1 }));
+            li.Remove(3);
+            Assert.IsTrue(mi.Count == 1);
+            Assert.IsTrue(mi.SequenceEqual(new[] { 0 }));
+            li.Remove(1);
+            Assert.IsTrue(mi.Count == 0);
+            Assert.IsTrue(mi.SequenceEqual(new int[0]));
+            li.Remove(2);
+            Assert.IsTrue(mi.Count == 0);
+            Assert.IsTrue(mi.SequenceEqual(new int[0]));
+            li.Remove(0);
+            Assert.IsTrue(mi.Count == 0);
+            Assert.IsTrue(mi.SequenceEqual(new int[0]));
         }
         [TestMethod]
         public void TakeTest() {
@@ -285,48 +285,48 @@ namespace LinqToCollectionsTest {
             Assert.IsTrue(new[] { 1, 2, 3, 4 }.AsReadOnlyCollection().Take(3).SequenceEqual(new[] { 1, 2, 3 }));
 
             // mutations propagate
-            var L = new List<int> { 1, 2, 3 };
-            var M = L.Take(2);
-            Assert.IsTrue(M.Count == 2);
-            Assert.IsTrue(M.SequenceEqual(new[] { 1, 2 }));
-            L.Insert(0, 0);
-            Assert.IsTrue(M.Count == 2);
-            Assert.IsTrue(M.SequenceEqual(new[] { 0, 1 }));
-            L.Remove(3);
-            Assert.IsTrue(M.Count == 2);
-            Assert.IsTrue(M.SequenceEqual(new[] { 0, 1 }));
-            L.Remove(1);
-            Assert.IsTrue(M.Count == 2);
-            Assert.IsTrue(M.SequenceEqual(new[] { 0, 2 }));
-            L.Remove(2);
-            Assert.IsTrue(M.Count == 1);
-            Assert.IsTrue(M.SequenceEqual(new[] { 0 }));
-            L.Remove(0);
-            Assert.IsTrue(M.Count == 0);
-            Assert.IsTrue(!M.Any());
+            var li = new List<int> { 1, 2, 3 };
+            var mi = li.Take(2);
+            Assert.IsTrue(mi.Count == 2);
+            Assert.IsTrue(mi.SequenceEqual(new[] { 1, 2 }));
+            li.Insert(0, 0);
+            Assert.IsTrue(mi.Count == 2);
+            Assert.IsTrue(mi.SequenceEqual(new[] { 0, 1 }));
+            li.Remove(3);
+            Assert.IsTrue(mi.Count == 2);
+            Assert.IsTrue(mi.SequenceEqual(new[] { 0, 1 }));
+            li.Remove(1);
+            Assert.IsTrue(mi.Count == 2);
+            Assert.IsTrue(mi.SequenceEqual(new[] { 0, 2 }));
+            li.Remove(2);
+            Assert.IsTrue(mi.Count == 1);
+            Assert.IsTrue(mi.SequenceEqual(new[] { 0 }));
+            li.Remove(0);
+            Assert.IsTrue(mi.Count == 0);
+            Assert.IsTrue(!mi.Any());
         }
         [TestMethod]
         public void MultiSkipTest() {
-            var L = new List<int> { 1, 2, 3, 4, 5 };
-            Assert.IsTrue(!L.SkipExact(5).Skip(1).Any());
-            Util.ExpectException<ArgumentException>(() => L.Skip(1).SkipExact(5));
-            Assert.IsTrue(!L.SkipExact(3).SkipExact(2).Any());
-            Util.ExpectException<ArgumentException>(() => L.SkipExact(3).SkipExact(3));
-            Assert.IsTrue(L.SkipExact(1).Skip(2).SkipExact(1).SequenceEqual(new[] { 5 }));
-            Util.ExpectException<ArgumentException>(() => L.SkipExact(1).Skip(2).SkipExact(3));
-            Assert.IsTrue(L.SkipLast(2).Skip(2).SequenceEqual(new[] { 3 }));
-            Assert.IsTrue(L.SkipLastExact(2).Skip(2).SequenceEqual(new[] { 3 }));
-            Assert.IsTrue(L.SkipLastExact(2).SkipExact(2).SequenceEqual(new[] { 3 }));
-            Assert.IsTrue(L.SkipExact(2).SkipLastExact(2).SequenceEqual(new[] { 3 }));
-            var M = L.Skip(0).Skip(1).SkipLast(1).SkipExact(1).SkipLastExact(1);
-            Assert.IsTrue(M.SequenceEqual(new[] { 3 }));
-            Assert.IsTrue(!M.SkipLastExact(1).Any());
-            Assert.IsTrue(!M.SkipExact(1).Any());
-            Util.ExpectException<ArgumentException>(() => M.SkipExact(2));
-            Assert.IsTrue(!M.SkipExact(1).Skip(1).Any());
-            Assert.IsTrue(!M.SkipExact(1).SkipLast(1).Any());
-            Util.ExpectException<ArgumentException>(() => M.SkipExact(1).SkipLastExact(1));
-            Util.ExpectException<ArgumentException>(() => M.Skip(1).SkipLastExact(1));
+            var li = new List<int> { 1, 2, 3, 4, 5 };
+            Assert.IsTrue(!li.SkipExact(5).Skip(1).Any());
+            Util.ExpectException<ArgumentException>(() => li.Skip(1).SkipExact(5));
+            Assert.IsTrue(!li.SkipExact(3).SkipExact(2).Any());
+            Util.ExpectException<ArgumentException>(() => li.SkipExact(3).SkipExact(3));
+            Assert.IsTrue(li.SkipExact(1).Skip(2).SkipExact(1).SequenceEqual(new[] { 5 }));
+            Util.ExpectException<ArgumentException>(() => li.SkipExact(1).Skip(2).SkipExact(3));
+            Assert.IsTrue(li.SkipLast(2).Skip(2).SequenceEqual(new[] { 3 }));
+            Assert.IsTrue(li.SkipLastExact(2).Skip(2).SequenceEqual(new[] { 3 }));
+            Assert.IsTrue(li.SkipLastExact(2).SkipExact(2).SequenceEqual(new[] { 3 }));
+            Assert.IsTrue(li.SkipExact(2).SkipLastExact(2).SequenceEqual(new[] { 3 }));
+            var mi = li.Skip(0).Skip(1).SkipLast(1).SkipExact(1).SkipLastExact(1);
+            Assert.IsTrue(mi.SequenceEqual(new[] { 3 }));
+            Assert.IsTrue(!mi.SkipLastExact(1).Any());
+            Assert.IsTrue(!mi.SkipExact(1).Any());
+            Util.ExpectException<ArgumentException>(() => mi.SkipExact(2));
+            Assert.IsTrue(!mi.SkipExact(1).Skip(1).Any());
+            Assert.IsTrue(!mi.SkipExact(1).SkipLast(1).Any());
+            Util.ExpectException<ArgumentException>(() => mi.SkipExact(1).SkipLastExact(1));
+            Util.ExpectException<ArgumentException>(() => mi.Skip(1).SkipLastExact(1));
         }
         [TestMethod]
         public void TakeLastTest() {
@@ -342,25 +342,25 @@ namespace LinqToCollectionsTest {
             Assert.IsTrue(new[] { 1, 2, 3, 4 }.AsReadOnlyCollection().TakeLast(3).SequenceEqual(new[] { 2, 3, 4 }));
 
             // mutations propagate
-            var L = new List<int> { 1, 2, 3 };
-            var M = L.TakeLast(2);
-            Assert.IsTrue(M.Count == 2);
-            Assert.IsTrue(M.SequenceEqual(new[] { 2, 3 }));
-            L.Insert(0, 0);
-            Assert.IsTrue(M.Count == 2);
-            Assert.IsTrue(M.SequenceEqual(new[] { 2, 3 }));
-            L.Remove(3);
-            Assert.IsTrue(M.Count == 2);
-            Assert.IsTrue(M.SequenceEqual(new[] { 1, 2 }));
-            L.Remove(1);
-            Assert.IsTrue(M.Count == 2);
-            Assert.IsTrue(M.SequenceEqual(new[] { 0, 2 }));
-            L.Remove(2);
-            Assert.IsTrue(M.Count == 1);
-            Assert.IsTrue(M.SequenceEqual(new[] { 0 }));
-            L.Remove(0);
-            Assert.IsTrue(M.Count == 0);
-            Assert.IsTrue(!M.Any());
+            var li = new List<int> { 1, 2, 3 };
+            var mi = li.TakeLast(2);
+            Assert.IsTrue(mi.Count == 2);
+            Assert.IsTrue(mi.SequenceEqual(new[] { 2, 3 }));
+            li.Insert(0, 0);
+            Assert.IsTrue(mi.Count == 2);
+            Assert.IsTrue(mi.SequenceEqual(new[] { 2, 3 }));
+            li.Remove(3);
+            Assert.IsTrue(mi.Count == 2);
+            Assert.IsTrue(mi.SequenceEqual(new[] { 1, 2 }));
+            li.Remove(1);
+            Assert.IsTrue(mi.Count == 2);
+            Assert.IsTrue(mi.SequenceEqual(new[] { 0, 2 }));
+            li.Remove(2);
+            Assert.IsTrue(mi.Count == 1);
+            Assert.IsTrue(mi.SequenceEqual(new[] { 0 }));
+            li.Remove(0);
+            Assert.IsTrue(mi.Count == 0);
+            Assert.IsTrue(!mi.Any());
         }
 
         [TestMethod]
@@ -368,71 +368,71 @@ namespace LinqToCollectionsTest {
             Util.ExpectException<ArgumentException>(() => ((IReadOnlyCollection<int>)null).Select(i => i));
             Util.ExpectException<ArgumentException>(() => new int[0].AsReadOnlyCollection().Select((Func<int, int>)null));
 
-            Assert.IsTrue(rng(5).Select(i => i * i).SequenceEqual(new[] { 0, 1, 4, 9, 16 }));
-            Assert.IsTrue(rng(0).Select(i => i * i).SequenceEqual(new int[0]));
-            Assert.IsTrue(rng(4).Select(i => i + i).SequenceEqual(new[] { 0, 2, 4, 6 }));
+            Assert.IsTrue(Rng(5).Select(i => i * i).SequenceEqual(new[] { 0, 1, 4, 9, 16 }));
+            Assert.IsTrue(Rng(0).Select(i => i * i).SequenceEqual(new int[0]));
+            Assert.IsTrue(Rng(4).Select(i => i + i).SequenceEqual(new[] { 0, 2, 4, 6 }));
         }
         [TestMethod]
         public void Select2Test() {
             Util.ExpectException<ArgumentException>(() => ((IReadOnlyCollection<int>)null).Select((e, i) => i));
             Util.ExpectException<ArgumentException>(() => new int[0].AsReadOnlyCollection().Select((Func<int, int, int>)null));
 
-            Assert.IsTrue(rng(5).Select((e, i) => i * e).SequenceEqual(new[] { 0, 1, 4, 9, 16 }));
-            Assert.IsTrue(rng(0).Select((e, i) => i * e).SequenceEqual(new int[0]));
+            Assert.IsTrue(Rng(5).Select((e, i) => i * e).SequenceEqual(new[] { 0, 1, 4, 9, 16 }));
+            Assert.IsTrue(Rng(0).Select((e, i) => i * e).SequenceEqual(new int[0]));
             Assert.IsTrue(new[] { 2, 3, 5 }.AsReadOnlyCollection().Select((e, i) => e).SequenceEqual(new[] { 2, 3, 5 }));
             Assert.IsTrue(new[] { 2, 3, 5 }.AsReadOnlyCollection().Select((e, i) => i).SequenceEqual(new[] { 0, 1, 2 }));
             Assert.IsTrue(new[] { 2, 3, 5 }.AsReadOnlyCollection().Select((e, i) => e + i).SequenceEqual(new[] { 2, 4, 7 }));
         }
         [TestMethod]
         public void ZipTest() {
-            Util.ExpectException<ArgumentException>(() => ((IReadOnlyCollection<int>)null).Zip(new int[0], (i1, i2) => i1));
+            Util.ExpectException<ArgumentException>(() => ReadOnlyCollectionExtensions.Zip<int, int, int>(null, new int[0], (i1, i2) => i1));
             Util.ExpectException<ArgumentException>(() => new int[0].AsReadOnlyCollection().Zip((IReadOnlyCollection<int>)null, (i1, i2) => i1));
             Util.ExpectException<ArgumentException>(() => new int[0].AsReadOnlyCollection().Zip(new int[0], (Func<int, int, int>)null));
 
-            Assert.IsTrue(rng(5).Zip(rng(4), (e1, e2) => e1 + e2).SequenceEqual(new[] { 0, 2, 4, 6 }));
-            Assert.IsTrue(rng(4).Zip(rng(5), (e1, e2) => e1 + e2).SequenceEqual(new[] { 0, 2, 4, 6 }));
-            Assert.IsTrue(rng(5).Zip(new[] { true, false, true }, (e1, e2) => e2 ? e1 : -e1).SequenceEqual(new[] { 0, -1, 2 }));
+            Assert.IsTrue(Rng(5).Zip(Rng(4), (e1, e2) => e1 + e2).SequenceEqual(new[] { 0, 2, 4, 6 }));
+            Assert.IsTrue(Rng(4).Zip(Rng(5), (e1, e2) => e1 + e2).SequenceEqual(new[] { 0, 2, 4, 6 }));
+            Assert.IsTrue(Rng(5).Zip(new[] { true, false, true }, (e1, e2) => e2 ? e1 : -e1).SequenceEqual(new[] { 0, -1, 2 }));
         }
 
         [TestMethod]
         public void ReverseTest() {
             Util.ExpectException<ArgumentException>(() => ((IReadOnlyCollection<int>)null).Reverse());
 
-            Assert.IsTrue(rng(0).Reverse().SequenceEqual(new int[0]));
-            Assert.IsTrue(rng(5).Reverse().SequenceEqual(new[] { 4, 3, 2, 1, 0 }));
-            Assert.IsTrue(rng(4).Reverse().SequenceEqual(new[] { 3, 2, 1, 0 }));
+            Assert.IsTrue(Rng(0).Reverse().SequenceEqual(new int[0]));
+            Assert.IsTrue(Rng(5).Reverse().SequenceEqual(new[] { 4, 3, 2, 1, 0 }));
+            Assert.IsTrue(Rng(4).Reverse().SequenceEqual(new[] { 3, 2, 1, 0 }));
         }
 
         [TestMethod]
         public void LastOrDefaultTest() {
             Util.ExpectException<ArgumentException>(() => ((IReadOnlyCollection<int>)null).LastOrDefault());
-            Assert.IsTrue(rng(0).LastOrDefault() == 0);
-            Assert.IsTrue(rng(0).LastOrDefault(5) == 5);
-            Assert.IsTrue(rng(1).LastOrDefault() == 0);
-            Assert.IsTrue(rng(1).LastOrDefault(5) == 0);
-            Assert.IsTrue(rng(2).LastOrDefault() == 1);
-            Assert.IsTrue(rng(2).LastOrDefault(5) == 1);
+            Assert.IsTrue(Rng(0).LastOrDefault() == 0);
+            Assert.IsTrue(Rng(0).LastOrDefault(5) == 5);
+            Assert.IsTrue(Rng(1).LastOrDefault() == 0);
+            Assert.IsTrue(Rng(1).LastOrDefault(5) == 0);
+            Assert.IsTrue(Rng(2).LastOrDefault() == 1);
+            Assert.IsTrue(Rng(2).LastOrDefault(5) == 1);
         }
 
         [TestMethod]
         public void AsICollectionTest() {
             Util.ExpectException<ArgumentException>(() => ((IReadOnlyCollection<int>)null).AsICollection());
 
-            var rawCollection = new List<int>() { 0, 1, 2 };
-            var AsReadOnlyCollection = rawCollection.AsReadOnlyCollection();
-            var AsReadOnlyCollectionAsCollection = rawCollection.AsReadOnlyCollection().AsICollection();
-            Assert.IsTrue(AsReadOnlyCollectionAsCollection.IsReadOnly);
-            Assert.IsTrue(AsReadOnlyCollectionAsCollection.Count == 3);
-            Assert.IsTrue(AsReadOnlyCollectionAsCollection.SequenceEqual(new[] { 0, 1, 2 }));
-            Assert.ReferenceEquals(AsReadOnlyCollection, AsReadOnlyCollectionAsCollection);
-            Assert.ReferenceEquals(AsReadOnlyCollection, AsReadOnlyCollectionAsCollection.AsReadOnlyCollection());
-            Util.ExpectException<NotSupportedException>(() => AsReadOnlyCollectionAsCollection.Add(0));
-            Util.ExpectException<NotSupportedException>(() => AsReadOnlyCollectionAsCollection.Remove(0));
-            Util.ExpectException<NotSupportedException>(() => AsReadOnlyCollectionAsCollection.Clear());
+            var rawCollection = new List<int> { 0, 1, 2 };
+            var asReadOnlyCollection = rawCollection.AsReadOnlyCollection();
+            var asReadOnlyCollectionAsCollection = rawCollection.AsReadOnlyCollection().AsICollection();
+            Assert.IsTrue(asReadOnlyCollectionAsCollection.IsReadOnly);
+            Assert.IsTrue(asReadOnlyCollectionAsCollection.Count == 3);
+            Assert.IsTrue(asReadOnlyCollectionAsCollection.SequenceEqual(new[] { 0, 1, 2 }));
+            Assert.AreSame(asReadOnlyCollection, asReadOnlyCollectionAsCollection);
+            Assert.AreSame(asReadOnlyCollection, asReadOnlyCollectionAsCollection.AsReadOnlyCollection());
+            Util.ExpectException<NotSupportedException>(() => asReadOnlyCollectionAsCollection.Add(0));
+            Util.ExpectException<NotSupportedException>(() => asReadOnlyCollectionAsCollection.Remove(0));
+            Util.ExpectException<NotSupportedException>(asReadOnlyCollectionAsCollection.Clear);
 
-            var asCollection = rng(5).AsICollection();
+            var asCollection = Rng(5).AsICollection();
             var asCollectionAsReadOnlyCollection = asCollection.AsReadOnlyCollection();
-            Assert.ReferenceEquals(asCollectionAsReadOnlyCollection, asCollection);
+            Assert.AreSame(asCollectionAsReadOnlyCollection, asCollection);
             Assert.IsTrue(asCollection.SequenceEqual(new[] { 0, 1, 2, 3, 4 }));
             Assert.IsTrue(asCollection.IsReadOnly);
             Assert.IsTrue(asCollection.Count == 5);

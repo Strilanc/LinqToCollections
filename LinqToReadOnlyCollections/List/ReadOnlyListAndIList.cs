@@ -1,7 +1,5 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Linq;
-using System.Diagnostics.CodeAnalysis;
 
 namespace LinqToCollections.List {
     ///<summary>Implements a ReadOnly IList by delegating calls to a readable list.</summary>
@@ -24,7 +22,7 @@ namespace LinqToCollections.List {
         public bool IsReadOnly { get { return true; } }
         public int IndexOf(T item) {
             var eq = EqualityComparer<T>.Default;
-            for (int i = 0; i < Count; i++)
+            for (var i = 0; i < Count; i++)
                 if (eq.Equals(item, this[i]))
                     return i;
             return -1;
@@ -35,7 +33,7 @@ namespace LinqToCollections.List {
         public void CopyTo(T[] array, int arrayIndex) {
             if (array == null) throw new ArgumentNullException("array");
             if (arrayIndex < 0 || arrayIndex + Count > array.Length) throw new ArgumentOutOfRangeException("arrayIndex");
-            for (int i = 0; i < Count; i++)
+            for (var i = 0; i < Count; i++)
                 array[i + arrayIndex] = this[i];
         }
 

@@ -1,30 +1,29 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Diagnostics.CodeAnalysis;
 
 namespace LinqToCollections.Collection {
-    ///<summary>Implements a ReadOnly ICollection by delegating calls to a readable collection.</summary>
+    ///<summary>Implements a ReadOnly ICollection by delegating calls to a readable _collection.</summary>
     internal sealed class ReadOnlyCollectionAsICollection<T> : ICollection<T>, IReadOnlyCollection<T> {
-        private readonly IReadOnlyCollection<T> collection;
+        private readonly IReadOnlyCollection<T> _collection;
         
         public ReadOnlyCollectionAsICollection(IReadOnlyCollection<T> collection) {
             if (collection == null) throw new ArgumentNullException("collection");
-            this.collection = collection;
+            this._collection = collection;
         }
 
-        public int Count { get { return collection.Count; } }
-        public IEnumerator<T> GetEnumerator() { return collection.GetEnumerator(); }
+        public int Count { get { return this._collection.Count; } }
+        public IEnumerator<T> GetEnumerator() { return this._collection.GetEnumerator(); }
 
         public bool IsReadOnly { get { return true; } }
         public bool Contains(T item) {
-            return collection.Contains(item);
+            return this._collection.Contains(item);
         }
         public void CopyTo(T[] array, int arrayIndex) {
             if (array == null) throw new ArgumentNullException("array");
             if (arrayIndex < 0 || arrayIndex + Count > array.Length) throw new ArgumentOutOfRangeException("arrayIndex");
             using (var e = GetEnumerator()) {
-                for (int i = 0; e.MoveNext(); i++)
+                for (var i = 0; e.MoveNext(); i++)
                     array[i + arrayIndex] = e.Current;
             }
         }

@@ -1,5 +1,4 @@
-﻿using System.Diagnostics.CodeAnalysis;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using System.Linq;
 using System;
 
@@ -157,7 +156,7 @@ namespace LinqToCollections.Collection {
         ///<summary>Returns the last element in a non-empty readable collection, or a default value if the collection is empty.</summary>
         public static T LastOrDefault<T>(this IReadOnlyCollection<T> collection, T defaultValue = default(T)) {
             if (collection == null) throw new ArgumentNullException("collection");
-            return collection.Count == 0 ? defaultValue : Enumerable.Last(collection);
+            return collection.Count == 0 ? defaultValue : collection.Last();
         }
     }
 }

@@ -1,7 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Diagnostics.CodeAnalysis;
 using LinqToCollections.Set;
 
 namespace LinqToCollections.Map {
@@ -9,7 +8,7 @@ namespace LinqToCollections.Map {
         ///<summary>Exposes an IDictionary as a readable map.</summary>
         public static IMap<TKey, TValue> AsMap<TKey, TValue>(this IDictionary<TKey, TValue> dictionary) {
             if (dictionary == null) throw new ArgumentNullException("dictionary");
-            return new Map<TKey, TValue>(new Ret<TKey>(e => dictionary.ContainsKey(e), dictionary.Select(e => e.Key)), e => dictionary[e]);
+            return new Map<TKey, TValue>(new Ret<TKey>(dictionary.ContainsKey, dictionary.Select(e => e.Key)), e => dictionary[e]);
         }
 
         ///<summary>Creates a readable map by projecting sequence elements into key value pairs.</summary>

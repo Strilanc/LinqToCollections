@@ -11,9 +11,9 @@ namespace LinqToCollectionsTest {
         public void RangeTestInt32() {
             Util.ExpectException<ArgumentException>(() => (-1).Range());
             Util.ExpectException<ArgumentException>(() => int.MinValue.Range());
-            Util.ExpectException<ArgumentException>(() => { var x = int.MaxValue.Range()[int.MaxValue]; });
-            Util.ExpectException<ArgumentException>(() => { var x = 0.Range()[0]; });
-            Util.ExpectException<ArgumentException>(() => { var x = 1.Range()[1]; });
+            Util.ExpectException<ArgumentException>(Util.Ack(() => int.MaxValue.Range()[int.MaxValue]));
+            Util.ExpectException<ArgumentException>(Util.Ack(() => 0.Range()[0]));
+            Util.ExpectException<ArgumentException>(Util.Ack(() => 1.Range()[1]));
 
             Assert.IsTrue(int.MaxValue.Range().Count == int.MaxValue);
             Assert.IsTrue(int.MaxValue.Range()[0] == 0);
@@ -27,9 +27,9 @@ namespace LinqToCollectionsTest {
         public void RangeTestInt16() {
             Util.ExpectException<ArgumentException>(() => ((short)-1).Range());
             Util.ExpectException<ArgumentException>(() => short.MinValue.Range());
-            Util.ExpectException<ArgumentException>(() => { var x = short.MaxValue.Range()[short.MaxValue]; });
-            Util.ExpectException<ArgumentException>(() => { var x = ((short)0).Range()[0]; });
-            Util.ExpectException<ArgumentException>(() => { var x = ((short)1).Range()[1]; });
+            Util.ExpectException<ArgumentException>(Util.Ack(() => short.MaxValue.Range()[short.MaxValue]));
+            Util.ExpectException<ArgumentException>(Util.Ack(() => ((short)0).Range()[0]));
+            Util.ExpectException<ArgumentException>(Util.Ack(() => ((short)1).Range()[1]));
 
             Assert.IsTrue(short.MaxValue.Range().Count == short.MaxValue);
             Assert.IsTrue(short.MaxValue.Range()[0] == 0);
@@ -41,9 +41,9 @@ namespace LinqToCollectionsTest {
         }
         [TestMethod]
         public void RangeTestUInt8() {
-            Util.ExpectException<ArgumentException>(() => { var x = byte.MaxValue.Range()[byte.MaxValue]; });
-            Util.ExpectException<ArgumentException>(() => { var x = ((byte)0).Range()[0]; });
-            Util.ExpectException<ArgumentException>(() => { var x = ((byte)1).Range()[1]; });
+            Util.ExpectException<ArgumentException>(Util.Ack(() => byte.MaxValue.Range()[byte.MaxValue]));
+            Util.ExpectException<ArgumentException>(Util.Ack(() => ((byte)0).Range()[0]));
+            Util.ExpectException<ArgumentException>(Util.Ack(() => ((byte)1).Range()[1]));
 
             Assert.IsTrue(byte.MaxValue.Range().Count == byte.MaxValue);
             Assert.IsTrue(byte.MaxValue.Range()[0] == 0);

@@ -24,8 +24,8 @@ namespace LinqToCollections.List {
             this._iterator = efficientIterator ?? DefaultIterator(counter, getter);
         }
         private static IEnumerable<T> DefaultIterator(Func<int> counter, Func<int, T> getter) {
-            int n = counter();
-            for (int i = 0; i < n; i++)
+            var n = counter();
+            for (var i = 0; i < n; i++)
                 yield return getter(i);
         }
 

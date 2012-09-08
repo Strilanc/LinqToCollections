@@ -2,8 +2,6 @@
 using LinqToCollections.Set;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 using System;
-using System.Collections.Generic;
-using System.Linq;
 
 namespace LinqToCollectionsTest {
     [TestClass]

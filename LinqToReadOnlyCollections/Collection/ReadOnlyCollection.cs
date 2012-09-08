@@ -13,7 +13,7 @@ namespace LinqToCollections.Collection {
 
         ///<summary>Constructs a readable collection implementation.</summary>
         ///<param name="counter">Gets the number of Collection items.</param>
-        ///<param name="efficientIterator">Iterates the items in the collection.</param>
+        ///<param name="iterator">Iterates the items in the collection.</param>
         public ReadOnlyCollection(Func<int> counter, Func<IEnumerator<T>> iterator) {
             if (counter == null) throw new ArgumentNullException("counter");
             if (iterator == null) throw new ArgumentNullException("iterator");

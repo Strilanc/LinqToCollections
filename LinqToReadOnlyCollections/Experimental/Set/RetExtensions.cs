@@ -1,8 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Text;
-using System.Diagnostics.CodeAnalysis;
 
 namespace LinqToCollections.Set {
     public static class RetExtensions {
@@ -14,7 +12,7 @@ namespace LinqToCollections.Set {
         ///<summary>Exposes a standard set as a readable set.</summary>
         public static IRet<T> AsRet<T>(this ISet<T> set) {
             if (set == null) throw new ArgumentNullException("set");
-            return new Ret<T>(e => set.Contains(e), set);
+            return new Ret<T>(set.Contains, set);
         }
         ///<summary>Filters the items in a readable set.</summary>
         public static IRet<T> Where<T>(this IRet<T> set, Func<T, bool> filter) {
@@ -32,7 +30,7 @@ namespace LinqToCollections.Set {
         public static IRet<T> Intersect<T>(this IRet<T> set1, IRet<T> set2) {
             if (set1 == null) throw new ArgumentNullException("set1");
             if (set2 == null) throw new ArgumentNullException("set2");
-            return set1.Where(e => set2.Contains(e));
+            return set1.Where(set2.Contains);
         }
         ///<summary>Returns a readable set with items in one readable set but not another.</summary>
         public static IRet<T> Except<T>(this IRet<T> set1, IRet<T> set2) {
@@ -50,7 +48,7 @@ namespace LinqToCollections.Set {
         public static bool IsSubsetOf<T>(this IRet<T> set1, IRet<T> set2) {
             if (set1 == null) throw new ArgumentNullException("set1");
             if (set2 == null) throw new ArgumentNullException("set2");
-            return set1.All(e => set2.Contains(e));
+            return set1.All(set2.Contains);
         }
         ///<summary>Determines if a readable set only has items from another readable set, but is not equivalent to the other set.</summary>
         public static bool IsStrictSubsetOf<T>(this IRet<T> set1, IRet<T> set2) {

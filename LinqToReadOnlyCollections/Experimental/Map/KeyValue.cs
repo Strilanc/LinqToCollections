@@ -1,8 +1,5 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Diagnostics.CodeAnalysis;
 
 namespace LinqToCollections.Map {
     ///<summary>Basic implementation of a key value pair.</summary>
@@ -11,7 +8,7 @@ namespace LinqToCollections.Map {
         private readonly TValue _value;
         
         public KeyValue(TKey key, TValue value) {
-            if (key == null) throw new ArgumentNullException("key");
+            if (ReferenceEquals(key, null)) throw new ArgumentNullException("key");
             this._key = key; 
             this._value = value; 
         }

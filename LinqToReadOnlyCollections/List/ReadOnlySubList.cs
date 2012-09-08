@@ -1,7 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Text;
 using System.Diagnostics;
 
 namespace LinqToCollections.List {
@@ -63,7 +62,7 @@ namespace LinqToCollections.List {
 
         public override string ToString() {
             const int MaxPreviewItemCount = 10;
-            var initialItems = String.Join(", ", System.Linq.Enumerable.Take(this, 10));
+            var initialItems = String.Join(", ", Enumerable.Take(this, 10));
             var suffix = Count > MaxPreviewItemCount ? "..." : "]";
             return "Count: " + Count + ", Items: [" + initialItems + suffix;
         }
