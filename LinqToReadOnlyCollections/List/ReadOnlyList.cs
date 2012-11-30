@@ -194,10 +194,15 @@ namespace LinqToReadOnlyCollections.List {
                 i => (short)(i + short.MinValue));
         }
 
+        ///<summary>Returns a readable list with no items.</summary>
+        public static IReadOnlyList<T> Empty<T>() {
+            return new AnonymousReadOnlyList<T>(() => 0, i => default(T));
+        }
         ///<summary>Returns a readable list composed of a value repeated a desired number of times.</summary>
         public static IReadOnlyList<T> Repeated<T>(T value, int count) {
             if (count < 0) throw new ArgumentOutOfRangeException("count");
-            return new AnonymousReadOnlyList<T>(counter: () => count, getter: i => value);
+            if (count == 0) return Empty<T>(); // avoid closing over count or value
+            return new AnonymousReadOnlyList<T>(() => count, i => value);
         }
     }
 }
