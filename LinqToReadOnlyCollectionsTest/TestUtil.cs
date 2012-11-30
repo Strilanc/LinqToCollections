@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Diagnostics;
 using System.Linq;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 
@@ -47,31 +48,39 @@ internal static class TestUtil {
         AssertThrows<InvalidOperationException>(() => list[0]);
         AssertThrows<InvalidOperationException>(() => list.GetEnumerator());
     }
+    [DebuggerStepThrough]
     public static T AssertNotCollected<T>(this WeakReference<T> weak) where T : class {
         T val;
         weak.TryGetTarget(out val).AssertIsTrue();
         return val;
     }
+    [DebuggerStepThrough]
     public static void AssertCollected<T>(this WeakReference<T> weak) where T : class {
         T val;
         weak.TryGetTarget(out val).AssertIsFalse();
     }
+    [DebuggerStepThrough]
     public static void AssertListIsEmpty<T>(this IReadOnlyList<T> actual) {
         actual.Count.AssertEquals(0);
         Assert.IsTrue(actual.SequenceEqual(new T[0]));
     }
+    [DebuggerStepThrough]
     public static void AssertSequenceIsEmpty<T>(this IEnumerable<T> actual) {
         Assert.IsTrue(actual.SequenceEqual(new T[0]));
     }
+    [DebuggerStepThrough]
     public static void AssertEquals<T1, T2>(this T1 actual, T2 expected) {
         Assert.AreEqual(actual: actual, expected: expected);
     }
+    [DebuggerStepThrough]
     public static void AssertReferenceEquals<T1, T2>(this T1 actual, T2 expected) {
         Assert.AreSame(actual: actual, expected: expected);
     }
+    [DebuggerStepThrough]
     public static void AssertIsTrue(this bool value) {
         Assert.IsTrue(value);
     }
+    [DebuggerStepThrough]
     public static void AssertIsFalse(this bool value) {
         Assert.IsFalse(value);
     }

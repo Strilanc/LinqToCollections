@@ -36,7 +36,7 @@ namespace LinqToReadOnlyCollections.List {
                 return From(
                     p.SubList, 
                     Math.Max(minCount, p.MinCount), 
-                    Math.Min(maxCount, p.MaxCount),
+                    Math.Min(Math.Max(maxCount, p.MinCount), p.MaxCount),
                     isTakeLast);
 
             return new ListTake<T>(subList, minCount, maxCount, isTakeLast);

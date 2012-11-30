@@ -9,10 +9,11 @@ public class ListSkipTest {
     private static readonly IReadOnlyList<int> NullList = null;
 
     private static Func<IReadOnlyList<int>, int, IEnumerable<int>> ReferenceImplementation(bool last, bool exact) {
-        if (exact) return (e, i) => {
-            if (e.Count < i) throw new ArgumentOutOfRangeException();
-            return ReferenceImplementation(last, false)(e, i);
-        };
+        if (exact)
+            return (e, i) => {
+                if (e.Count < i) throw new ArgumentOutOfRangeException();
+                return ReferenceImplementation(last, false)(e, i);
+            };
         if (last) return (e, i) => Enumerable.Take(e, e.Count - i);
         return Enumerable.Skip;
     }
@@ -60,8 +61,8 @@ public class ListSkipTest {
 
     [TestMethod]
     public void SkipsTrackMutations() {
-        foreach (var last in new[] { false, true }) {
-            foreach (var exact in new[] { false, true }) {
+        foreach (var last in new[] {false, true}) {
+            foreach (var exact in new[] {false, true}) {
                 var li = 3.Range().ToList();
                 var s = Skipper(last, exact)(li, 2);
                 foreach (var action in new Action[] {() => li.Add(3), () => li.Remove(2), () => li.Remove(3), () => li.Clear()}) {
@@ -70,7 +71,7 @@ public class ListSkipTest {
                         s.AssertListBroken();
                     } else {
                         s.AssertListEquals(ReferenceImplementation(last, exact)(li, 2));
-                    } 
+                    }
                 }
             }
         }
@@ -103,7 +104,7 @@ public class ListSkipTest {
     [TestMethod]
     public void SkipOptimizes() {
         var x = new[] {ReadOnlyList.Empty<int>(), 5.Range(), new int[6], new List<int> {1, 2}};
-        
+
         // skipping none is ignored
         foreach (var e in x) {
             e.Skip(0).AssertReferenceEquals(e);
@@ -112,7 +113,7 @@ public class ListSkipTest {
             e.SkipLastExact(0).AssertReferenceEquals(e);
         }
 
-        // skipping all is simplified
+        // skipping all is emptied
         foreach (var e in x) {
             foreach (var i in new[] {e.Count, e.Count + 1, 100}) {
                 var b = !(e is List<int>);
@@ -125,19 +126,30 @@ public class ListSkipTest {
             }
         }
 
-        // double skipping is simplified
-        var r0 = 6.Range();
-        var w0 = r0.WeakRef();
-        var r1 = r0.Skip(2);
-        var w1 = r1.WeakRef();
-        var r2 = r1.Skip(2);
-        var r3 = r1.SkipExact(2);
-        r0 = null;
-        r1 = null;
-        GC.Collect();
-        w0.AssertNotCollected();
-        w1.AssertCollected();
-        r2.AssertListEquals(4, 5);
-        r3.AssertListEquals(4, 5);
+        // double skipping is merged
+        foreach (var last1 in new[] {false, true}) {
+            foreach (var exact1 in new[] {false, true}) {
+                foreach (var last2 in new[] {false, true}) {
+                    foreach (var exact2 in new[] {false, true}) {
+                        // scope inside an action to prevent the debugger from holding onto references
+                        new Action(() => {
+                            var root = 6.Range();
+                            var transient = Skipper(last1, exact1)(root, 2);
+                            var result = Skipper(last2, exact2)(transient, 2);
+
+                            var weakRoot = root.WeakRef();
+                            var weakTransient = transient.WeakRef();
+                            root = null;
+                            transient = null;
+                            GC.Collect();
+
+                            weakRoot.AssertNotCollected();
+                            weakTransient.AssertCollected();
+                            GC.KeepAlive(result);
+                        }).Invoke();
+                    }
+                }
+            }
+        }
     }
 }
