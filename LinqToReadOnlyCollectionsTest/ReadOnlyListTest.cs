@@ -9,10 +9,10 @@ namespace LinqToReadOnlyCollectionsTest {
     public class ReadOnlyListTest {
         [TestMethod]
         public void ConstructorTest() {
-            Util.ExpectException<ArgumentException>(() => new ReadOnlyList<int>(counter: null, getter: i => i));
-            Util.ExpectException<ArgumentException>(() => new ReadOnlyList<int>(counter: () => 0, getter: null));
+            Util.ExpectException<ArgumentException>(() => new AnonymousReadOnlyList<int>(counter: null, getter: i => i));
+            Util.ExpectException<ArgumentException>(() => new AnonymousReadOnlyList<int>(counter: () => 0, getter: null));
 
-            var r = new ReadOnlyList<Int32>(counter: () => 5, getter: i => i);
+            var r = new AnonymousReadOnlyList<Int32>(counter: () => 5, getter: i => i);
             Assert.IsTrue(r.Count == 5);
             Assert.IsTrue(r[0] == 0);
             Assert.IsTrue(r[1] == 1);
@@ -21,7 +21,7 @@ namespace LinqToReadOnlyCollectionsTest {
             Util.ExpectException<ArgumentException>(Util.Ack(() => r[-1]));
             Util.ExpectException<ArgumentException>(Util.Ack(() => r[5]));
 
-            var r2 = new ReadOnlyList<Int32>(counter: () => 7, getter: i => 1 - i);
+            var r2 = new AnonymousReadOnlyList<Int32>(counter: () => 7, getter: i => 1 - i);
             Assert.IsTrue(r2.Count == 7);
             Assert.IsTrue(r2[6] == -5);
             Assert.IsTrue(r2[5] == -4);
@@ -34,7 +34,7 @@ namespace LinqToReadOnlyCollectionsTest {
 
         [TestMethod]
         public void EfficientIteratorTest() {
-            var r = new ReadOnlyList<Int32>(counter: () => { throw new ArgumentException(); }, getter: i => { throw new ArgumentException(); }, efficientIterator: new[] { 0, 1, 2 });
+            var r = new AnonymousReadOnlyList<Int32>(counter: () => { throw new ArgumentException(); }, getter: i => { throw new ArgumentException(); }, efficientIterator: new[] { 0, 1, 2 });
             Util.ExpectException<ArgumentException>(Util.Ack(() => r[0]));
             Util.ExpectException<ArgumentException>(Util.Ack(() => r.Count));
             Assert.IsTrue(r.SequenceEqual(new[] { 0, 1, 2 }));
@@ -422,7 +422,7 @@ namespace LinqToReadOnlyCollectionsTest {
             Assert.IsTrue(1.Range().Last() == 0);
             Assert.IsTrue(2.Range().Last() == 1);
             Assert.IsTrue(int.MaxValue.Range().Last() == int.MaxValue - 1);
-            Assert.IsTrue(new ReadOnlyList<int>(counter: () => 11, getter: i => {
+            Assert.IsTrue(new AnonymousReadOnlyList<int>(counter: () => 11, getter: i => {
                 if (i < 10) throw new ArgumentException();
                 return i;
             }).Last() == 10);
@@ -439,7 +439,7 @@ namespace LinqToReadOnlyCollectionsTest {
             Assert.IsTrue(2.Range().LastOrDefault() == 1);
             Assert.IsTrue(2.Range().LastOrDefault(5) == 1);
             Assert.IsTrue(int.MaxValue.Range().LastOrDefault() == int.MaxValue - 1);
-            Assert.IsTrue(new ReadOnlyList<int>(counter: () => 11, getter: i => {
+            Assert.IsTrue(new AnonymousReadOnlyList<int>(counter: () => 11, getter: i => {
                 if (i < 10) throw new ArgumentException();
                 return i;
             }).LastOrDefault() == 10);

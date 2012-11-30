@@ -1,17 +1,16 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Linq;
 using System.Diagnostics;
 
 namespace LinqToReadOnlyCollections.List {
     [DebuggerDisplay("{ToString()}")]
-    internal sealed class ReadOnlySubList<T> : IReadOnlyList<T> {
+    internal sealed class ListSkip<T> : AbstractReadOnlyList<T> {
         private readonly IReadOnlyList<T> _subList;
         private readonly int _skipExact;
         private readonly int _skipElastic;
         private readonly int _offset;
 
-        public ReadOnlySubList(IReadOnlyList<T> subList, int skipExact, int skipElastic, int offset) {
+        public ListSkip(IReadOnlyList<T> subList, int skipExact, int skipElastic, int offset) {
             if (subList == null) throw new ArgumentNullException("subList");
             if (skipElastic < 0) throw new ArgumentOutOfRangeException("skipElastic");
             if (skipExact < 0 || skipExact > subList.Count) throw new ArgumentOutOfRangeException("skipExact");
@@ -22,7 +21,7 @@ namespace LinqToReadOnlyCollections.List {
             this._skipElastic = skipElastic;
             this._offset = offset;
 
-            var p = subList as ReadOnlySubList<T>;
+            var p = subList as ListSkip<T>;
             if (p != null) {
                 if (this._skipExact > 0) {
                     this._skipExact += p._skipElastic;
@@ -35,36 +34,22 @@ namespace LinqToReadOnlyCollections.List {
             }
         }
 
-        public T this[int index] {
+        public override T this[int index] {
             get {
                 if (index < 0 || index > Count) throw new ArgumentOutOfRangeException("index");
                 return _subList[index + _offset];
             }
         }
-        public int Count {
+        public override int Count {
             get {
                 if (_subList.Count < _skipExact) throw new InvalidOperationException("Skipped past end of list.");
                 return Math.Max(0, _subList.Count - _skipExact - _skipElastic);
             }
         }
 
-        public IEnumerator<T> GetEnumerator() {
+        public override IEnumerator<T> GetEnumerator() {
             if (_subList.Count < _skipExact) throw new InvalidOperationException("Skipped past end of list.");
-            return Enumerate();
-        }
-        private IEnumerator<T> Enumerate() {
-            for (var i = 0; i < Count; i++)
-                yield return this[i];
-        }
-        System.Collections.IEnumerator System.Collections.IEnumerable.GetEnumerator() {
-            return GetEnumerator();
-        }
-
-        public override string ToString() {
-            const int MaxPreviewItemCount = 10;
-            var initialItems = String.Join(", ", Enumerable.Take(this, 10));
-            var suffix = Count > MaxPreviewItemCount ? "..." : "]";
-            return "Count: " + Count + ", Items: [" + initialItems + suffix;
+            return base.GetEnumerator();
         }
     }
 }

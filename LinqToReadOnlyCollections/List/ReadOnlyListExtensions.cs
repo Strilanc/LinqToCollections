@@ -44,28 +44,28 @@ namespace LinqToReadOnlyCollections.List {
             if (list == null) throw new ArgumentNullException("list");
             if (maxSkipCount < 0) throw new ArgumentOutOfRangeException("maxSkipCount");
             if (maxSkipCount == 0) return list;
-            return new ReadOnlySubList<T>(list, 0, maxSkipCount, maxSkipCount);
+            return new ListSkip<T>(list, 0, maxSkipCount, maxSkipCount);
         }
         ///<summary>Exposes the start of a readable list, before skipping down to the given number of items at the end, as a readable list.</summary>
         public static IReadOnlyList<T> SkipLast<T>(this IReadOnlyList<T> list, int maxSkipCount) {
             if (list == null) throw new ArgumentNullException("list");
             if (maxSkipCount < 0) throw new ArgumentOutOfRangeException("maxSkipCount");
             if (maxSkipCount == 0) return list;
-            return new ReadOnlySubList<T>(list, 0, maxSkipCount, 0);
+            return new ListSkip<T>(list, 0, maxSkipCount, 0);
         }
         ///<summary>Exposes the end of a readable list, after skipping exactly the given number of items, as a readable list.</summary>
         public static IReadOnlyList<T> SkipExact<T>(this IReadOnlyList<T> list, int exactSkipCount) {
             if (list == null) throw new ArgumentNullException("list");
             if (exactSkipCount < 0 || exactSkipCount > list.Count) throw new ArgumentOutOfRangeException("exactSkipCount");
             if (exactSkipCount == 0) return list;
-            return new ReadOnlySubList<T>(list, exactSkipCount, 0, exactSkipCount);
+            return new ListSkip<T>(list, exactSkipCount, 0, exactSkipCount);
         }
         ///<summary>Exposes the start of a readable list, before skipping exactly the given number of items at the end, as a readable list.</summary>
         public static IReadOnlyList<T> SkipLastExact<T>(this IReadOnlyList<T> list, int exactSkipCount) {
             if (list == null) throw new ArgumentNullException("list");
             if (exactSkipCount < 0 || exactSkipCount > list.Count) throw new ArgumentOutOfRangeException("exactSkipCount");
             if (exactSkipCount == 0) return list;
-            return new ReadOnlySubList<T>(list, exactSkipCount, 0, 0);
+            return new ListSkip<T>(list, exactSkipCount, 0, 0);
         }
 
         ///<summary>Exposes the start of a readable list, up to the given number of items, as a readable list.</summary>

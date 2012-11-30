@@ -129,21 +129,13 @@
     <Compile Include="Dictionary\ReadOnlyDictionary.cs" />
     <Compile Include="Dictionary\ReadOnlyDictionaryAsIDictionary.cs" />
     <Compile Include="Dictionary\ReadOnlyDictionaryExtensions.cs" />
-    <Compile Include="Experimental\Map\ValueToMapExtensions.cs" />
-    <Compile Include="Experimental\Map\IKeyValue.cs" />
-    <Compile Include="Experimental\Map\IMap.cs" />
-    <Compile Include="Experimental\Map\KeyValue.cs" />
-    <Compile Include="Experimental\Map\Map.cs" />
-    <Compile Include="Experimental\Map\MapExtensions.cs" />
+    <Compile Include="List\AbstractReadOnlyList.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
-    <Compile Include="List\ReadOnlyList.cs" />
+    <Compile Include="List\AnonymousReadOnlyList.cs" />
     <Compile Include="List\ReadOnlyListExtensions.cs" />
     <Compile Include="List\ReadOnlyListAndIList.cs" />
-    <Compile Include="List\ReadOnlySubList.cs" />
+    <Compile Include="List\ListSkip.cs" />
     <Compile Include="List\ValueToReadOnlyListExtensions.cs" />
-    <Compile Include="Experimental\Set\RetExtensions.cs" />
-    <Compile Include="Experimental\Set\Ret.cs" />
-    <Compile Include="Experimental\Set\IRet.cs" />
   </ItemGroup>
   <ItemGroup>
     <None Include="Strilanc-LinqToReadOnlyCollections.pfx" />
