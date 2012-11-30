@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 
 namespace LinqToReadOnlyCollections.List {
-    internal sealed class ListTake<T> : AbstractReadOnlyList<T>, IPotentialMaxCount {
+    internal sealed class ListTake<T> : AbstractReadOnlyList<T>, IBoundedCount {
         public readonly IReadOnlyList<T> SubList;
         public readonly int RequiredTake;
         public readonly int ActualTake;

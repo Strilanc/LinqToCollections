@@ -3,11 +3,11 @@ using System.Collections.Generic;
 
 namespace LinqToReadOnlyCollections.List {
     ///<summary>Implements a readonly list implemented with delegates passed to its constructor.</summary>
-    public sealed class AnonymousReadOnlyList<T> : AbstractReadOnlyList<T>, IPotentialMaxCount {
+    public sealed class AnonymousReadOnlyList<T> : AbstractReadOnlyList<T>, IBoundedCount {
         private readonly int? _maxCount;
         private readonly int _minCount;
-        int? IPotentialMaxCount.MaxCount { get { return _maxCount; } }
-        int IPotentialMaxCount.MinCount { get { return _minCount; } }
+        int? IBoundedCount.MaxCount { get { return _maxCount; } }
+        int IBoundedCount.MinCount { get { return _minCount; } }
 
         private readonly Func<int> _counter;
         private readonly Func<int, T> _getter;

@@ -130,7 +130,7 @@
     <Compile Include="Dictionary\ReadOnlyDictionaryAsIDictionary.cs" />
     <Compile Include="Dictionary\ReadOnlyDictionaryExtensions.cs" />
     <Compile Include="List\AbstractReadOnlyList.cs" />
-    <Compile Include="List\IPotentialMaxCount.cs" />
+    <Compile Include="List\IBoundedCount.cs" />
     <Compile Include="List\ListEmpty.cs" />
     <Compile Include="List\ListTake.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />

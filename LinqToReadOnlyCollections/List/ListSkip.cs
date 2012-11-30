@@ -2,7 +2,7 @@
 using System.Collections.Generic;
 
 namespace LinqToReadOnlyCollections.List {
-    internal sealed class ListSkip<T> : AbstractReadOnlyList<T>, IPotentialMaxCount {
+    internal sealed class ListSkip<T> : AbstractReadOnlyList<T>, IBoundedCount {
         public readonly IReadOnlyList<T> SubList;
         public readonly int MinSkip;
         public readonly int MaxSkip;
