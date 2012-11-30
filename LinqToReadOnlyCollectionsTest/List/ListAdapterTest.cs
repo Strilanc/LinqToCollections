@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections;
 using System.Collections.Generic;
 using LinqToReadOnlyCollections.List;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
@@ -8,12 +9,10 @@ public class ListAdapterTest {
     [TestMethod]
     public void AsReadOnlyList() {
         // actually read-only, not just "if you don't cast" read-only
-        var li = new List<int>();
-        var ar = new int[5];
-        li.AsReadOnlyList().AssertListEquals(li);
-        ar.AsReadOnlyList().AssertListEquals(ar);
-        li.AsReadOnlyList().AssertReferenceDoesNotEqual(li);
-        ar.AsReadOnlyList().AssertReferenceDoesNotEqual(ar);
+        foreach (var e in new IList<int>[] { new List<int>(), new int[5] }) {
+            e.AsReadOnlyList().AssertReferenceDoesNotEqual(e);
+            e.AsReadOnlyList().AssertListEquals(e);
+        }
     }
     [TestMethod]
     public void AsIList() {
