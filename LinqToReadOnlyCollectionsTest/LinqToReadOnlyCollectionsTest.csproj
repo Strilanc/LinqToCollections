@@ -44,11 +44,12 @@
     </CodeAnalysisDependentAssemblyPaths>
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="List\AnonymousReadOnlyListTest.cs" />
     <Compile Include="ReadOnlyCollectionTest.cs" />
     <Compile Include="ValueToTest.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="List\ReadOnlyListTest.cs" />
-    <Compile Include="Util.cs" />
+    <Compile Include="TestUtil.cs" />
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\LinqToReadOnlyCollections\LinqToReadOnlyCollections.csproj">

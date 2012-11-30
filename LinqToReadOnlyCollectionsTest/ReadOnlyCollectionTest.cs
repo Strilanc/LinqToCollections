@@ -13,8 +13,8 @@ namespace LinqToReadOnlyCollectionsTest {
 
         [TestMethod]
         public void ConstructorTest() {
-            Util.ExpectException<ArgumentException>(() => new ReadOnlyCollection<int>(counter: null, iterator: Enumerable.Range(0, 0).GetEnumerator));
-            Util.ExpectException<ArgumentException>(() => new ReadOnlyCollection<int>(counter: () => 0, iterator: null));
+            TestUtil.AssertThrows<ArgumentException>(() => new ReadOnlyCollection<int>(counter: null, iterator: Enumerable.Range(0, 0).GetEnumerator));
+            TestUtil.AssertThrows<ArgumentException>(() => new ReadOnlyCollection<int>(counter: () => 0, iterator: null));
 
             var r = new ReadOnlyCollection<Int32>(counter: () => 5, iterator: Enumerable.Range(0, 5).GetEnumerator);
             Assert.IsTrue(r.Count == 5);
@@ -28,13 +28,13 @@ namespace LinqToReadOnlyCollectionsTest {
         [TestMethod]
         public void EfficientIteratorTest() {
             var r = new ReadOnlyCollection<Int32>(counter: () => { throw new ArgumentException(); }, iterator: Enumerable.Range(0, 3).GetEnumerator);
-            Util.ExpectException<ArgumentException>(Util.Ack(() => r.Count));
+            TestUtil.AssertThrows<ArgumentException>((() => r.Count));
             Assert.IsTrue(r.SequenceEqual(new[] { 0, 1, 2 }));
         }
 
         [TestMethod]
         public void AsReadOnlyCollectionTest() {
-            Util.ExpectException<ArgumentException>(() => ((ICollection<int>)null).AsReadOnlyCollection());
+            TestUtil.AssertThrows<ArgumentException>(() => ((ICollection<int>)null).AsReadOnlyCollection());
 
             Assert.IsTrue(new[] { 0, 1, 2 }.AsReadOnlyCollection().Count == 3);
             Assert.IsTrue(new[] { 0, 2, 5, 7 }.AsReadOnlyCollection().SequenceEqual(new[] { 0, 2, 5, 7 }));
@@ -46,7 +46,7 @@ namespace LinqToReadOnlyCollectionsTest {
         }
         [TestMethod]
         public void AsElseToReadOnlyCollectionTest() {
-            Util.ExpectException<ArgumentException>(() => ((IEnumerable<int>)null).AsElseToReadOnlyCollection());
+            TestUtil.AssertThrows<ArgumentException>(() => ((IEnumerable<int>)null).AsElseToReadOnlyCollection());
 
             var collection = new List<int> { 2, 3 };
             var collectionAsReadOnlyCollection = collection.AsElseToReadOnlyCollection();
@@ -69,7 +69,7 @@ namespace LinqToReadOnlyCollectionsTest {
         }
         [TestMethod]
         public void ToRistTest() {
-            Util.ExpectException<ArgumentException>(() => ((IReadOnlyCollection<int>)null).ToReadOnlyCollection());
+            TestUtil.AssertThrows<ArgumentException>(() => ((IReadOnlyCollection<int>)null).ToReadOnlyCollection());
 
             var collection = new List<int> { 2, 3 };
             var toReadOnlyCollection = collection.ToReadOnlyCollection();
@@ -80,11 +80,11 @@ namespace LinqToReadOnlyCollectionsTest {
 
         [TestMethod]
         public void SkipExactTest() {
-            Util.ExpectException<ArgumentException>(() => ((IReadOnlyCollection<int>)null).SkipExact(0));
-            Util.ExpectException<ArgumentException>(() => new[] { 1, 2, 3 }.AsReadOnlyCollection().SkipExact(-1));
-            Util.ExpectException<ArgumentException>(() => new[] { 1, 2, 3 }.AsReadOnlyCollection().SkipExact(4));
-            Util.ExpectException<ArgumentException>(() => new[] { 1, 2 }.AsReadOnlyCollection().SkipExact(-1));
-            Util.ExpectException<ArgumentException>(() => new[] { 1, 2 }.AsReadOnlyCollection().SkipExact(3));
+            TestUtil.AssertThrows<ArgumentException>(() => ((IReadOnlyCollection<int>)null).SkipExact(0));
+            TestUtil.AssertThrows<ArgumentException>(() => new[] { 1, 2, 3 }.AsReadOnlyCollection().SkipExact(-1));
+            TestUtil.AssertThrows<ArgumentException>(() => new[] { 1, 2, 3 }.AsReadOnlyCollection().SkipExact(4));
+            TestUtil.AssertThrows<ArgumentException>(() => new[] { 1, 2 }.AsReadOnlyCollection().SkipExact(-1));
+            TestUtil.AssertThrows<ArgumentException>(() => new[] { 1, 2 }.AsReadOnlyCollection().SkipExact(3));
 
             Assert.IsTrue(new[] { 1, 2, 3 }.AsReadOnlyCollection().SkipExact(0).SequenceEqual(new[] { 1, 2, 3 }));
             Assert.IsTrue(new[] { 1, 2, 3 }.AsReadOnlyCollection().SkipExact(3).SequenceEqual(new int[0]));
@@ -106,16 +106,16 @@ namespace LinqToReadOnlyCollectionsTest {
             Assert.IsTrue(mi.Count == 0);
             Assert.IsTrue(mi.SequenceEqual(new int[0]));
             li.Remove(2);
-            Util.ExpectException<InvalidOperationException>(Util.Ack(() => mi.Count));
-            Util.ExpectException<InvalidOperationException>(Util.Ack(mi.GetEnumerator));
+            TestUtil.AssertThrows<InvalidOperationException>((() => mi.Count));
+            TestUtil.AssertThrows<InvalidOperationException>(() => mi.GetEnumerator());
         }
         [TestMethod]
         public void SkipLastExactTest() {
-            Util.ExpectException<ArgumentException>(() => ((IReadOnlyCollection<int>)null).SkipLastExact(0));
-            Util.ExpectException<ArgumentException>(() => new[] { 1, 2, 3 }.AsReadOnlyCollection().SkipLastExact(-1));
-            Util.ExpectException<ArgumentException>(() => new[] { 1, 2, 3 }.AsReadOnlyCollection().SkipLastExact(4));
-            Util.ExpectException<ArgumentException>(() => new[] { 1, 2 }.AsReadOnlyCollection().SkipLastExact(-1));
-            Util.ExpectException<ArgumentException>(() => new[] { 1, 2 }.AsReadOnlyCollection().SkipLastExact(3));
+            TestUtil.AssertThrows<ArgumentException>(() => ((IReadOnlyCollection<int>)null).SkipLastExact(0));
+            TestUtil.AssertThrows<ArgumentException>(() => new[] { 1, 2, 3 }.AsReadOnlyCollection().SkipLastExact(-1));
+            TestUtil.AssertThrows<ArgumentException>(() => new[] { 1, 2, 3 }.AsReadOnlyCollection().SkipLastExact(4));
+            TestUtil.AssertThrows<ArgumentException>(() => new[] { 1, 2 }.AsReadOnlyCollection().SkipLastExact(-1));
+            TestUtil.AssertThrows<ArgumentException>(() => new[] { 1, 2 }.AsReadOnlyCollection().SkipLastExact(3));
 
             Assert.IsTrue(new[] { 1, 2, 3 }.AsReadOnlyCollection().SkipLastExact(0).SequenceEqual(new[] { 1, 2, 3 }));
             Assert.IsTrue(new[] { 1, 2, 3 }.AsReadOnlyCollection().SkipLastExact(3).SequenceEqual(new int[0]));
@@ -137,16 +137,16 @@ namespace LinqToReadOnlyCollectionsTest {
             Assert.IsTrue(mi.Count == 0);
             Assert.IsTrue(mi.SequenceEqual(new int[0]));
             li.Remove(2);
-            Util.ExpectException<InvalidOperationException>(Util.Ack(() => mi.Count));
-            Util.ExpectException<InvalidOperationException>(Util.Ack(mi.GetEnumerator));
+            TestUtil.AssertThrows<InvalidOperationException>((() => mi.Count));
+            TestUtil.AssertThrows<InvalidOperationException>(() => mi.GetEnumerator());
         }
         [TestMethod]
         public void TakeExactTest() {
-            Util.ExpectException<ArgumentException>(() => ((IReadOnlyCollection<int>)null).TakeExact(0));
-            Util.ExpectException<ArgumentException>(() => new[] { 1, 2, 3 }.AsReadOnlyCollection().TakeExact(-1));
-            Util.ExpectException<ArgumentException>(() => new[] { 1, 2, 3 }.AsReadOnlyCollection().TakeExact(4));
-            Util.ExpectException<ArgumentException>(() => new[] { 1, 2 }.AsReadOnlyCollection().TakeExact(-1));
-            Util.ExpectException<ArgumentException>(() => new[] { 1, 2 }.AsReadOnlyCollection().TakeExact(3));
+            TestUtil.AssertThrows<ArgumentException>(() => ((IReadOnlyCollection<int>)null).TakeExact(0));
+            TestUtil.AssertThrows<ArgumentException>(() => new[] { 1, 2, 3 }.AsReadOnlyCollection().TakeExact(-1));
+            TestUtil.AssertThrows<ArgumentException>(() => new[] { 1, 2, 3 }.AsReadOnlyCollection().TakeExact(4));
+            TestUtil.AssertThrows<ArgumentException>(() => new[] { 1, 2 }.AsReadOnlyCollection().TakeExact(-1));
+            TestUtil.AssertThrows<ArgumentException>(() => new[] { 1, 2 }.AsReadOnlyCollection().TakeExact(3));
 
             Assert.IsTrue(new[] { 1, 2, 3 }.AsReadOnlyCollection().TakeExact(0).SequenceEqual(new int[0]));
             Assert.IsTrue(new[] { 1, 2, 3 }.AsReadOnlyCollection().TakeExact(3).SequenceEqual(new[] { 1, 2, 3 }));
@@ -168,16 +168,16 @@ namespace LinqToReadOnlyCollectionsTest {
             Assert.IsTrue(mi.Count == 2);
             Assert.IsTrue(mi.SequenceEqual(new[] { 0, 2 }));
             li.Remove(2);
-            Util.ExpectException<InvalidOperationException>(Util.Ack(() => mi.Count));
-            Util.ExpectException<InvalidOperationException>(Util.Ack(mi.GetEnumerator));
+            TestUtil.AssertThrows<InvalidOperationException>((() => mi.Count));
+            TestUtil.AssertThrows<InvalidOperationException>(() => mi.GetEnumerator());
         }
         [TestMethod]
         public void TakeLastExactTest() {
-            Util.ExpectException<ArgumentException>(() => ((IReadOnlyCollection<int>)null).TakeLastExact(0));
-            Util.ExpectException<ArgumentException>(() => new[] { 1, 2, 3 }.AsReadOnlyCollection().TakeLastExact(-1));
-            Util.ExpectException<ArgumentException>(() => new[] { 1, 2, 3 }.AsReadOnlyCollection().TakeLastExact(4));
-            Util.ExpectException<ArgumentException>(() => new[] { 1, 2 }.AsReadOnlyCollection().TakeLastExact(-1));
-            Util.ExpectException<ArgumentException>(() => new[] { 1, 2 }.AsReadOnlyCollection().TakeLastExact(3));
+            TestUtil.AssertThrows<ArgumentException>(() => ((IReadOnlyCollection<int>)null).TakeLastExact(0));
+            TestUtil.AssertThrows<ArgumentException>(() => new[] { 1, 2, 3 }.AsReadOnlyCollection().TakeLastExact(-1));
+            TestUtil.AssertThrows<ArgumentException>(() => new[] { 1, 2, 3 }.AsReadOnlyCollection().TakeLastExact(4));
+            TestUtil.AssertThrows<ArgumentException>(() => new[] { 1, 2 }.AsReadOnlyCollection().TakeLastExact(-1));
+            TestUtil.AssertThrows<ArgumentException>(() => new[] { 1, 2 }.AsReadOnlyCollection().TakeLastExact(3));
 
             Assert.IsTrue(new[] { 1, 2, 3 }.AsReadOnlyCollection().TakeLastExact(0).SequenceEqual(new int[0]));
             Assert.IsTrue(new[] { 1, 2, 3 }.AsReadOnlyCollection().TakeLastExact(3).SequenceEqual(new[] { 1, 2, 3 }));
@@ -199,15 +199,15 @@ namespace LinqToReadOnlyCollectionsTest {
             Assert.IsTrue(mi.Count == 2);
             Assert.IsTrue(mi.SequenceEqual(new[] { 0, 2 }));
             li.Remove(2);
-            Util.ExpectException<InvalidOperationException>(Util.Ack(() => mi.Count));
-            Util.ExpectException<InvalidOperationException>(Util.Ack(mi.GetEnumerator));
+            TestUtil.AssertThrows<InvalidOperationException>((() => mi.Count));
+            TestUtil.AssertThrows<InvalidOperationException>(() => mi.GetEnumerator());
         }
 
         [TestMethod]
         public void SkipTest() {
-            Util.ExpectException<ArgumentException>(() => ((IReadOnlyCollection<int>)null).Skip(0));
-            Util.ExpectException<ArgumentException>(() => new[] { 1, 2, 3 }.AsReadOnlyCollection().Skip(-1));
-            Util.ExpectException<ArgumentException>(() => new[] { 1, 2 }.AsReadOnlyCollection().Skip(-1));
+            TestUtil.AssertThrows<ArgumentException>(() => ((IReadOnlyCollection<int>)null).Skip(0));
+            TestUtil.AssertThrows<ArgumentException>(() => new[] { 1, 2, 3 }.AsReadOnlyCollection().Skip(-1));
+            TestUtil.AssertThrows<ArgumentException>(() => new[] { 1, 2 }.AsReadOnlyCollection().Skip(-1));
 
             Assert.IsTrue(new[] { 1, 2, 3 }.AsReadOnlyCollection().Skip(0).SequenceEqual(new[] { 1, 2, 3 }));
             Assert.IsTrue(new[] { 1, 2, 3 }.AsReadOnlyCollection().Skip(3).SequenceEqual(new int[0]));
@@ -239,9 +239,9 @@ namespace LinqToReadOnlyCollectionsTest {
         }
         [TestMethod]
         public void SkipLastTest() {
-            Util.ExpectException<ArgumentException>(() => ((IReadOnlyCollection<int>)null).SkipLast(0));
-            Util.ExpectException<ArgumentException>(() => new[] { 1, 2, 3 }.AsReadOnlyCollection().SkipLast(-1));
-            Util.ExpectException<ArgumentException>(() => new[] { 1, 2 }.AsReadOnlyCollection().SkipLast(-1));
+            TestUtil.AssertThrows<ArgumentException>(() => ((IReadOnlyCollection<int>)null).SkipLast(0));
+            TestUtil.AssertThrows<ArgumentException>(() => new[] { 1, 2, 3 }.AsReadOnlyCollection().SkipLast(-1));
+            TestUtil.AssertThrows<ArgumentException>(() => new[] { 1, 2 }.AsReadOnlyCollection().SkipLast(-1));
 
             Assert.IsTrue(new[] { 1, 2, 3 }.AsReadOnlyCollection().SkipLast(0).SequenceEqual(new[] { 1, 2, 3 }));
             Assert.IsTrue(new[] { 1, 2, 3 }.AsReadOnlyCollection().SkipLast(3).SequenceEqual(new int[0]));
@@ -273,9 +273,9 @@ namespace LinqToReadOnlyCollectionsTest {
         }
         [TestMethod]
         public void TakeTest() {
-            Util.ExpectException<ArgumentException>(() => ((IReadOnlyCollection<int>)null).Take(0));
-            Util.ExpectException<ArgumentException>(() => new[] { 1, 2, 3 }.AsReadOnlyCollection().Take(-1));
-            Util.ExpectException<ArgumentException>(() => new[] { 1, 2 }.AsReadOnlyCollection().Take(-1));
+            TestUtil.AssertThrows<ArgumentException>(() => ((IReadOnlyCollection<int>)null).Take(0));
+            TestUtil.AssertThrows<ArgumentException>(() => new[] { 1, 2, 3 }.AsReadOnlyCollection().Take(-1));
+            TestUtil.AssertThrows<ArgumentException>(() => new[] { 1, 2 }.AsReadOnlyCollection().Take(-1));
 
             Assert.IsTrue(new[] { 1, 2, 3 }.AsReadOnlyCollection().Take(0).SequenceEqual(new int[0]));
             Assert.IsTrue(new[] { 1, 2, 3 }.AsReadOnlyCollection().Take(3).SequenceEqual(new[] { 1, 2, 3 }));
@@ -309,11 +309,11 @@ namespace LinqToReadOnlyCollectionsTest {
         public void MultiSkipTest() {
             var li = new List<int> { 1, 2, 3, 4, 5 };
             Assert.IsTrue(!li.SkipExact(5).Skip(1).Any());
-            Util.ExpectException<ArgumentException>(() => li.Skip(1).SkipExact(5));
+            TestUtil.AssertThrows<ArgumentException>(() => li.Skip(1).SkipExact(5));
             Assert.IsTrue(!li.SkipExact(3).SkipExact(2).Any());
-            Util.ExpectException<ArgumentException>(() => li.SkipExact(3).SkipExact(3));
+            TestUtil.AssertThrows<ArgumentException>(() => li.SkipExact(3).SkipExact(3));
             Assert.IsTrue(li.SkipExact(1).Skip(2).SkipExact(1).SequenceEqual(new[] { 5 }));
-            Util.ExpectException<ArgumentException>(() => li.SkipExact(1).Skip(2).SkipExact(3));
+            TestUtil.AssertThrows<ArgumentException>(() => li.SkipExact(1).Skip(2).SkipExact(3));
             Assert.IsTrue(li.SkipLast(2).Skip(2).SequenceEqual(new[] { 3 }));
             Assert.IsTrue(li.SkipLastExact(2).Skip(2).SequenceEqual(new[] { 3 }));
             Assert.IsTrue(li.SkipLastExact(2).SkipExact(2).SequenceEqual(new[] { 3 }));
@@ -322,17 +322,17 @@ namespace LinqToReadOnlyCollectionsTest {
             Assert.IsTrue(mi.SequenceEqual(new[] { 3 }));
             Assert.IsTrue(!mi.SkipLastExact(1).Any());
             Assert.IsTrue(!mi.SkipExact(1).Any());
-            Util.ExpectException<ArgumentException>(() => mi.SkipExact(2));
+            TestUtil.AssertThrows<ArgumentException>(() => mi.SkipExact(2));
             Assert.IsTrue(!mi.SkipExact(1).Skip(1).Any());
             Assert.IsTrue(!mi.SkipExact(1).SkipLast(1).Any());
-            Util.ExpectException<ArgumentException>(() => mi.SkipExact(1).SkipLastExact(1));
-            Util.ExpectException<ArgumentException>(() => mi.Skip(1).SkipLastExact(1));
+            TestUtil.AssertThrows<ArgumentException>(() => mi.SkipExact(1).SkipLastExact(1));
+            TestUtil.AssertThrows<ArgumentException>(() => mi.Skip(1).SkipLastExact(1));
         }
         [TestMethod]
         public void TakeLastTest() {
-            Util.ExpectException<ArgumentException>(() => ((IReadOnlyCollection<int>)null).TakeLast(0));
-            Util.ExpectException<ArgumentException>(() => new[] { 1, 2, 3 }.AsReadOnlyCollection().TakeLast(-1));
-            Util.ExpectException<ArgumentException>(() => new[] { 1, 2 }.AsReadOnlyCollection().TakeLast(-1));
+            TestUtil.AssertThrows<ArgumentException>(() => ((IReadOnlyCollection<int>)null).TakeLast(0));
+            TestUtil.AssertThrows<ArgumentException>(() => new[] { 1, 2, 3 }.AsReadOnlyCollection().TakeLast(-1));
+            TestUtil.AssertThrows<ArgumentException>(() => new[] { 1, 2 }.AsReadOnlyCollection().TakeLast(-1));
 
             Assert.IsTrue(new[] { 1, 2, 3 }.AsReadOnlyCollection().TakeLast(0).SequenceEqual(new int[0]));
             Assert.IsTrue(new[] { 1, 2, 3 }.AsReadOnlyCollection().TakeLast(3).SequenceEqual(new[] { 1, 2, 3 }));
@@ -365,8 +365,8 @@ namespace LinqToReadOnlyCollectionsTest {
 
         [TestMethod]
         public void SelectTest() {
-            Util.ExpectException<ArgumentException>(() => ((IReadOnlyCollection<int>)null).Select(i => i));
-            Util.ExpectException<ArgumentException>(() => new int[0].AsReadOnlyCollection().Select((Func<int, int>)null));
+            TestUtil.AssertThrows<ArgumentException>(() => ((IReadOnlyCollection<int>)null).Select(i => i));
+            TestUtil.AssertThrows<ArgumentException>(() => new int[0].AsReadOnlyCollection().Select((Func<int, int>)null));
 
             Assert.IsTrue(Rng(5).Select(i => i * i).SequenceEqual(new[] { 0, 1, 4, 9, 16 }));
             Assert.IsTrue(Rng(0).Select(i => i * i).SequenceEqual(new int[0]));
@@ -374,8 +374,8 @@ namespace LinqToReadOnlyCollectionsTest {
         }
         [TestMethod]
         public void Select2Test() {
-            Util.ExpectException<ArgumentException>(() => ((IReadOnlyCollection<int>)null).Select((e, i) => i));
-            Util.ExpectException<ArgumentException>(() => new int[0].AsReadOnlyCollection().Select((Func<int, int, int>)null));
+            TestUtil.AssertThrows<ArgumentException>(() => ((IReadOnlyCollection<int>)null).Select((e, i) => i));
+            TestUtil.AssertThrows<ArgumentException>(() => new int[0].AsReadOnlyCollection().Select((Func<int, int, int>)null));
 
             Assert.IsTrue(Rng(5).Select((e, i) => i * e).SequenceEqual(new[] { 0, 1, 4, 9, 16 }));
             Assert.IsTrue(Rng(0).Select((e, i) => i * e).SequenceEqual(new int[0]));
@@ -385,9 +385,9 @@ namespace LinqToReadOnlyCollectionsTest {
         }
         [TestMethod]
         public void ZipTest() {
-            Util.ExpectException<ArgumentException>(() => ReadOnlyCollectionExtensions.Zip<int, int, int>(null, new int[0], (i1, i2) => i1));
-            Util.ExpectException<ArgumentException>(() => new int[0].AsReadOnlyCollection().Zip((IReadOnlyCollection<int>)null, (i1, i2) => i1));
-            Util.ExpectException<ArgumentException>(() => new int[0].AsReadOnlyCollection().Zip(new int[0], (Func<int, int, int>)null));
+            TestUtil.AssertThrows<ArgumentException>(() => ReadOnlyCollectionExtensions.Zip<int, int, int>(null, new int[0], (i1, i2) => i1));
+            TestUtil.AssertThrows<ArgumentException>(() => new int[0].AsReadOnlyCollection().Zip((IReadOnlyCollection<int>)null, (i1, i2) => i1));
+            TestUtil.AssertThrows<ArgumentException>(() => new int[0].AsReadOnlyCollection().Zip(new int[0], (Func<int, int, int>)null));
 
             Assert.IsTrue(Rng(5).Zip(Rng(4), (e1, e2) => e1 + e2).SequenceEqual(new[] { 0, 2, 4, 6 }));
             Assert.IsTrue(Rng(4).Zip(Rng(5), (e1, e2) => e1 + e2).SequenceEqual(new[] { 0, 2, 4, 6 }));
@@ -396,7 +396,7 @@ namespace LinqToReadOnlyCollectionsTest {
 
         [TestMethod]
         public void ReverseTest() {
-            Util.ExpectException<ArgumentException>(() => ((IReadOnlyCollection<int>)null).Reverse());
+            TestUtil.AssertThrows<ArgumentException>(() => ((IReadOnlyCollection<int>)null).Reverse());
 
             Assert.IsTrue(Rng(0).Reverse().SequenceEqual(new int[0]));
             Assert.IsTrue(Rng(5).Reverse().SequenceEqual(new[] { 4, 3, 2, 1, 0 }));
@@ -405,7 +405,7 @@ namespace LinqToReadOnlyCollectionsTest {
 
         [TestMethod]
         public void LastOrDefaultTest() {
-            Util.ExpectException<ArgumentException>(() => ((IReadOnlyCollection<int>)null).LastOrDefault());
+            TestUtil.AssertThrows<ArgumentException>(() => ((IReadOnlyCollection<int>)null).LastOrDefault());
             Assert.IsTrue(Rng(0).LastOrDefault() == 0);
             Assert.IsTrue(Rng(0).LastOrDefault(5) == 5);
             Assert.IsTrue(Rng(1).LastOrDefault() == 0);
@@ -416,7 +416,7 @@ namespace LinqToReadOnlyCollectionsTest {
 
         [TestMethod]
         public void AsICollectionTest() {
-            Util.ExpectException<ArgumentException>(() => ((IReadOnlyCollection<int>)null).AsICollection());
+            TestUtil.AssertThrows<ArgumentException>(() => ((IReadOnlyCollection<int>)null).AsICollection());
 
             var rawCollection = new List<int> { 0, 1, 2 };
             var asReadOnlyCollection = rawCollection.AsReadOnlyCollection();
@@ -427,9 +427,9 @@ namespace LinqToReadOnlyCollectionsTest {
             Assert.IsTrue(asReadOnlyCollectionAsCollection.SequenceEqual(new[] { 0, 1, 2 }));
             Assert.AreSame(asReadOnlyCollectionAsCollectionAsReadOnlyCollection, asReadOnlyCollectionAsCollection);
             Assert.AreSame(asReadOnlyCollectionAsCollectionAsReadOnlyCollection, asReadOnlyCollectionAsCollectionAsReadOnlyCollection.AsICollection());
-            Util.ExpectException<NotSupportedException>(() => asReadOnlyCollectionAsCollection.Add(0));
-            Util.ExpectException<NotSupportedException>(() => asReadOnlyCollectionAsCollection.Remove(0));
-            Util.ExpectException<NotSupportedException>(asReadOnlyCollectionAsCollection.Clear);
+            TestUtil.AssertThrows<NotSupportedException>(() => asReadOnlyCollectionAsCollection.Add(0));
+            TestUtil.AssertThrows<NotSupportedException>(() => asReadOnlyCollectionAsCollection.Remove(0));
+            TestUtil.AssertThrows<NotSupportedException>(() => asReadOnlyCollectionAsCollection.Clear());
 
             var asCollection = Rng(5).AsICollection();
             var asCollectionAsReadOnlyCollection = asCollection.AsReadOnlyCollection();
