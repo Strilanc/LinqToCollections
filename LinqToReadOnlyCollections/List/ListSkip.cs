@@ -25,19 +25,22 @@ namespace LinqToReadOnlyCollections.List {
             if (offset < 0) throw new ArgumentOutOfRangeException("offset", "offset < 0");
             if (offset > maxSkip) throw new ArgumentOutOfRangeException("offset", "offset > maxSkip");
 
+            // if nothing is skipped, the result is unchanged
+            if (maxSkip == 0) return subList;
+
             // when skipping more than can ever be available, the result is an empty list
             var c = subList.TryGetMaxCount();
             if (c.HasValue && c.Value <= maxSkip)
-                return new ListEmpty<T>();
+                return ListEmpty<T>.Empty;
 
             // when skipping on top of skipping, the operations can be merged
             var s = subList as ListSkip<T>;
             if (s != null)
                 return From(
                     s.SubList,
+                    s.Offset + offset,
                     minSkip == 0 ? s.MinSkip : s.MaxSkip + minSkip,
-                    s.MaxSkip + maxSkip,
-                    s.Offset + offset);
+                    s.MaxSkip + maxSkip);
 
             return new ListSkip<T>(subList, offset, minSkip, maxSkip);
         }

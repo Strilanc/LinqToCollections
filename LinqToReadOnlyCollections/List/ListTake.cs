@@ -22,6 +22,9 @@ namespace LinqToReadOnlyCollections.List {
             if (maxCount < minCount) throw new ArgumentOutOfRangeException("maxCount", "maxCount < minCount");
             if (minCount > subList.Count) throw new ArgumentOutOfRangeException("minCount", "minCount > subList.Count");
 
+            // if nothing is taken, the result is empty
+            if (maxCount == 0) return ListEmpty<T>.Empty;
+
             // when taking more than can ever be available, there is no change
             var c = subList.TryGetMaxCount();
             if (c.HasValue && c.Value <= maxCount)

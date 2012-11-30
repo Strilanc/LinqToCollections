@@ -9,8 +9,10 @@ namespace LinqToReadOnlyCollections.List {
         public static int? TryGetMaxCount<T>(this IReadOnlyList<T> list) {
             if (list == null) throw new ArgumentNullException("list");
             var r = list as IPotentialMaxCount;
-            if (r == null) return null;
-            return r.MaxCount;
+            if (r != null) return r.MaxCount;
+            var a = list as T[];
+            if (a != null) return a.Length;
+            return null;
         }
     }
 }
