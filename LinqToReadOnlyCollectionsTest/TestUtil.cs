@@ -77,6 +77,10 @@ internal static class TestUtil {
         Assert.AreSame(actual: actual, expected: expected);
     }
     [DebuggerStepThrough]
+    public static void AssertReferenceDoesNotEqual<T1, T2>(this T1 actual, T2 notExpected) {
+        Assert.AreNotSame(actual: actual, notExpected: notExpected);
+    }
+    [DebuggerStepThrough]
     public static void AssertIsTrue(this bool value) {
         Assert.IsTrue(value);
     }

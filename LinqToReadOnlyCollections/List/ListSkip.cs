@@ -8,6 +8,7 @@ namespace LinqToReadOnlyCollections.List {
         public readonly int MaxSkip;
         public readonly int Offset;
         public int? MaxCount { get; private set; }
+        public int MinCount { get; private set; }
 
         private ListSkip(IReadOnlyList<T> subList, int offset, int minSkip, int maxSkip) {
             this.SubList = subList;
@@ -16,6 +17,7 @@ namespace LinqToReadOnlyCollections.List {
             this.Offset = offset;
             var n = subList.TryGetMaxCount() - maxSkip;
             this.MaxCount = n.HasValue ? Math.Max(0, n.Value) : (int?)null;
+            this.MinCount = Math.Max(0, subList.TryGetMinCount() - maxSkip);
         }
         public static IReadOnlyList<T> From(IReadOnlyList<T> subList, int offset, int minSkip, int maxSkip) {
             if (subList == null) throw new ArgumentNullException("subList");

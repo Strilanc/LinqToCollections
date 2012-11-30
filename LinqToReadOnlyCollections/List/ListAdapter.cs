@@ -1,15 +1,45 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Collections.ObjectModel;
 
 namespace LinqToReadOnlyCollections.List {
-    internal sealed class ListCombo<T> : AbstractReadOnlyList<T>, IList<T>, IPotentialMaxCount {
+    ///<summary>Exposes a read only list as a mutable list that doesn't support mutation.</summary>
+    internal sealed class ListAdapter<T> : AbstractReadOnlyList<T>, IList<T>, IPotentialMaxCount {
         public readonly IReadOnlyList<T> List;
         public int? MaxCount { get; private set; }
+        public int MinCount { get; private set; }
         
-        public ListCombo(IReadOnlyList<T> list) {
+        private ListAdapter(IReadOnlyList<T> list) {
             if (list == null) throw new ArgumentNullException("list");
             this.List = list;
             this.MaxCount = list.TryGetMaxCount();
+            this.MinCount = list.TryGetMinCount();
+        }
+        public static IReadOnlyList<T> From(IList<T> list) {
+            if (list == null) throw new ArgumentNullException("list");
+
+            if (list.IsReadOnly) {
+                // if it's an adapter, then we can unwrap it
+                var c = list as ListAdapter<T>;
+                if (c != null) return c.List;
+
+                // if it's already what we need, great!
+                var r = list as IReadOnlyList<T>;
+                if (r != null) return r;
+            }
+
+            // use existing readonly adapter
+            return new ReadOnlyCollection<T>(list);
+        }
+        public static IList<T> From(IReadOnlyList<T> list) {
+            if (list == null) throw new ArgumentNullException("list");
+
+            // if it's already a list, we can just return it
+            var r = list as IList<T>;
+            if (r != null) return r;
+
+            // otherwise we need to adapt it
+            return new ListAdapter<T>(list);
         }
 
         // delegate methods for IReadOnlyList

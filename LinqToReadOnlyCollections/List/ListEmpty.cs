@@ -9,5 +9,6 @@ namespace LinqToReadOnlyCollections.List {
         public override int Count { get { return 0; } }
         public override IEnumerator<T> GetEnumerator() { yield break; }
         int? IPotentialMaxCount.MaxCount { get { return 0; } }
+        int IPotentialMaxCount.MinCount { get { return 0; } }
     }
 }

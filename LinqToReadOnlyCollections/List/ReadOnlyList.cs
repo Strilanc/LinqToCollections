@@ -5,19 +5,19 @@ using System;
 namespace LinqToReadOnlyCollections.List {
     ///<summary>Contains extension methods related to read-only lists.</summary>
     public static class ReadOnlyList {
-        ///<summary>
-        ///Exposes a list as a read-only list, using a cast if possible (unless the list is not marked read-only).
-        ///The result is guaranteed to still implement IList, so that further usage of AsIList and AsReadOnlyList do not cause more wrapping.
-        ///</summary>
+        /// <summary>
+        /// Exposes a list as a read-only list.
+        /// Tries to unwrap the list, removing previous AsIList overhead if possible.
+        /// Tries to cast the list, unless the list is not marked as read-only.
+        /// </summary>
         public static IReadOnlyList<T> AsReadOnlyList<T>(this IList<T> list) {
             if (list == null) throw new ArgumentNullException("list");
-            return (list.IsReadOnly ? list as IReadOnlyList<T> : null) 
-                ?? new AnonymousReadOnlyList<T>(() => list.Count, i => list[i], list);
+            return ListAdapter<T>.From(list);
         }
         ///<summary>Exposes a read-only list as a list, using a cast if possible.</summary>
         public static IList<T> AsIList<T>(this IReadOnlyList<T> list) {
             if (list == null) throw new ArgumentNullException("list");
-            return list as IList<T> ?? new ListCombo<T>(list);
+            return ListAdapter<T>.From(list);
         }
 
         ///<summary>Exposes the end of a readable list, after skipping up to the given number of items, as a readable list.</summary>
@@ -77,6 +77,7 @@ namespace LinqToReadOnlyCollections.List {
             return new AnonymousReadOnlyList<TOut>(
                 () => list.Count,
                 list.TryGetMaxCount(),
+                list.TryGetMinCount(),
                 i => projection(list[i]),
                 Enumerable.Select(list, projection));
         }
@@ -87,6 +88,7 @@ namespace LinqToReadOnlyCollections.List {
             return new AnonymousReadOnlyList<TOut>(
                 () => list.Count,
                 list.TryGetMaxCount(),
+                list.TryGetMinCount(),
                 i => projection(list[i], i),
                 Enumerable.Select(list, projection));
         }
@@ -137,6 +139,7 @@ namespace LinqToReadOnlyCollections.List {
             return new AnonymousReadOnlyList<T>(
                 () => list.Count,
                 list.TryGetMaxCount(),
+                list.TryGetMinCount(),
                 i => list[list.Count - 1 - i]);
         }
 
