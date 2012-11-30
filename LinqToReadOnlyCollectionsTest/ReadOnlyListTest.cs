@@ -34,7 +34,7 @@ namespace LinqToReadOnlyCollectionsTest {
 
         [TestMethod]
         public void EfficientIteratorTest() {
-            var r = new AnonymousReadOnlyList<Int32>(counter: () => { throw new ArgumentException(); }, getter: i => { throw new ArgumentException(); }, efficientIterator: new[] { 0, 1, 2 });
+            var r = new AnonymousReadOnlyList<Int32>(counter: () => { throw new ArgumentException(); }, getter: i => { throw new ArgumentException(); }, optionalEfficientIterator: new[] { 0, 1, 2 });
             Util.ExpectException<ArgumentException>(Util.Ack(() => r[0]));
             Util.ExpectException<ArgumentException>(Util.Ack(() => r.Count));
             Assert.IsTrue(r.SequenceEqual(new[] { 0, 1, 2 }));

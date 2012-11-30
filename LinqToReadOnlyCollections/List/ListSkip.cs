@@ -2,51 +2,62 @@
 using System.Collections.Generic;
 
 namespace LinqToReadOnlyCollections.List {
-    internal sealed class ListSkip<T> : AbstractReadOnlyList<T> {
-        private readonly IReadOnlyList<T> _subList;
-        private readonly int _skipExact;
-        private readonly int _skipElastic;
-        private readonly int _offset;
+    internal sealed class ListSkip<T> : AbstractReadOnlyList<T>, IPotentialMaxCount {
+        public readonly IReadOnlyList<T> SubList;
+        public readonly int MinSkip;
+        public readonly int MaxSkip;
+        public readonly int Offset;
+        public int? MaxCount { get; private set; }
 
-        public ListSkip(IReadOnlyList<T> subList, int skipExact, int skipElastic, int offset) {
+        private ListSkip(IReadOnlyList<T> subList, int offset, int minSkip, int maxSkip) {
+            this.SubList = subList;
+            this.MinSkip = minSkip;
+            this.MaxSkip = maxSkip;
+            this.Offset = offset;
+            var n = subList.TryGetMaxCount() - maxSkip;
+            this.MaxCount = n.HasValue ? Math.Max(0, n.Value) : (int?)null;
+        }
+        public static IReadOnlyList<T> From(IReadOnlyList<T> subList, int offset, int minSkip, int maxSkip) {
             if (subList == null) throw new ArgumentNullException("subList");
-            if (skipElastic < 0) throw new ArgumentOutOfRangeException("skipElastic");
-            if (skipExact < 0 || skipExact > subList.Count) throw new ArgumentOutOfRangeException("skipExact");
-            if (offset < 0 || offset > skipExact + skipElastic) throw new ArgumentOutOfRangeException("offset");
+            if (minSkip < 0) throw new ArgumentOutOfRangeException("minSkip", "minSkip < 0");
+            if (maxSkip < minSkip) throw new ArgumentOutOfRangeException("maxSkip", "maxSkip < minSkip");
+            if (minSkip > subList.Count) throw new ArgumentOutOfRangeException("minSkip", "minSkip > subList.Count");
+            if (offset < 0) throw new ArgumentOutOfRangeException("offset", "offset < 0");
+            if (offset > maxSkip) throw new ArgumentOutOfRangeException("offset", "offset > maxSkip");
 
-            this._subList = subList;
-            this._skipExact = skipExact;
-            this._skipElastic = skipElastic;
-            this._offset = offset;
+            // when skipping more than can ever be available, the result is an empty list
+            var c = subList.TryGetMaxCount();
+            if (c.HasValue && c.Value <= maxSkip)
+                return new ListEmpty<T>();
 
-            var p = subList as ListSkip<T>;
-            if (p != null) {
-                if (this._skipExact > 0) {
-                    this._skipExact += p._skipElastic;
-                } else {
-                    this._skipElastic += p._skipElastic;
-                }
-                this._subList = p._subList;
-                this._skipExact += p._skipExact;
-                this._offset += p._offset;
-            }
+            // when skipping on top of skipping, the operations can be merged
+            var s = subList as ListSkip<T>;
+            if (s != null)
+                return From(
+                    s.SubList,
+                    minSkip == 0 ? s.MinSkip : s.MaxSkip + minSkip,
+                    s.MaxSkip + maxSkip,
+                    s.Offset + offset);
+
+            return new ListSkip<T>(subList, offset, minSkip, maxSkip);
         }
 
         public override T this[int index] {
             get {
                 if (index < 0 || index > Count) throw new ArgumentOutOfRangeException("index");
-                return _subList[index + _offset];
+                return this.SubList[index + this.Offset];
             }
         }
         public override int Count {
             get {
-                if (_subList.Count < _skipExact) throw new InvalidOperationException("Skipped past end of list.");
-                return Math.Max(0, _subList.Count - _skipExact - _skipElastic);
+                var n = SubList.Count;
+                if (n < MinSkip) throw new InvalidOperationException("Skipped past end of list.");
+                return Math.Max(0, n - MaxSkip);
             }
         }
 
         public override IEnumerator<T> GetEnumerator() {
-            if (_subList.Count < _skipExact) throw new InvalidOperationException("Skipped past end of list.");
+            if (SubList.Count < MinSkip) throw new InvalidOperationException("Skipped past end of list.");
             return base.GetEnumerator();
         }
     }

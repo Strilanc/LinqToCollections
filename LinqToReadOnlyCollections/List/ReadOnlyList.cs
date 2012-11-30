@@ -25,66 +25,53 @@ namespace LinqToReadOnlyCollections.List {
             if (list == null) throw new ArgumentNullException("list");
             if (maxSkipCount < 0) throw new ArgumentOutOfRangeException("maxSkipCount");
             if (maxSkipCount == 0) return list;
-            return new ListSkip<T>(list, 0, maxSkipCount, maxSkipCount);
+            return ListSkip<T>.From(list, maxSkipCount, 0, maxSkipCount);
         }
         ///<summary>Exposes the start of a readable list, before skipping down to the given number of items at the end, as a readable list.</summary>
         public static IReadOnlyList<T> SkipLast<T>(this IReadOnlyList<T> list, int maxSkipCount) {
             if (list == null) throw new ArgumentNullException("list");
             if (maxSkipCount < 0) throw new ArgumentOutOfRangeException("maxSkipCount");
             if (maxSkipCount == 0) return list;
-            return new ListSkip<T>(list, 0, maxSkipCount, 0);
+            return ListSkip<T>.From(list, 0, 0, maxSkipCount);
         }
         ///<summary>Exposes the end of a readable list, after skipping exactly the given number of items, as a readable list.</summary>
         public static IReadOnlyList<T> SkipExact<T>(this IReadOnlyList<T> list, int exactSkipCount) {
             if (list == null) throw new ArgumentNullException("list");
             if (exactSkipCount < 0 || exactSkipCount > list.Count) throw new ArgumentOutOfRangeException("exactSkipCount");
             if (exactSkipCount == 0) return list;
-            return new ListSkip<T>(list, exactSkipCount, 0, exactSkipCount);
+            return ListSkip<T>.From(list, exactSkipCount, exactSkipCount, exactSkipCount);
         }
         ///<summary>Exposes the start of a readable list, before skipping exactly the given number of items at the end, as a readable list.</summary>
         public static IReadOnlyList<T> SkipLastExact<T>(this IReadOnlyList<T> list, int exactSkipCount) {
             if (list == null) throw new ArgumentNullException("list");
             if (exactSkipCount < 0 || exactSkipCount > list.Count) throw new ArgumentOutOfRangeException("exactSkipCount");
             if (exactSkipCount == 0) return list;
-            return new ListSkip<T>(list, exactSkipCount, 0, 0);
+            return ListSkip<T>.From(list, 0, exactSkipCount, exactSkipCount);
         }
 
         ///<summary>Exposes the start of a readable list, up to the given number of items, as a readable list.</summary>
         public static IReadOnlyList<T> Take<T>(this IReadOnlyList<T> list, int maxTakeCount) {
             if (list == null) throw new ArgumentNullException("list");
             if (maxTakeCount < 0) throw new ArgumentOutOfRangeException("maxTakeCount");
-            return new AnonymousReadOnlyList<T>(
-                () => Math.Min(maxTakeCount, list.Count),
-                i => list[i],
-                Enumerable.Take(list, maxTakeCount));
+            return ListTake<T>.From(list, 0, maxTakeCount, isTakeLast: false);
         }
         ///<summary>Exposes the end of a readable list, down to the given number of items, as a readable list.</summary>
         public static IReadOnlyList<T> TakeLast<T>(this IReadOnlyList<T> list, int maxTakeCount) {
             if (list == null) throw new ArgumentNullException("list");
             if (maxTakeCount < 0) throw new ArgumentOutOfRangeException("maxTakeCount");
-            return new AnonymousReadOnlyList<T>(
-                () => Math.Min(maxTakeCount, list.Count),
-                i => list[Math.Max(list.Count - maxTakeCount, 0) + i]);
+            return ListTake<T>.From(list, 0, maxTakeCount, isTakeLast: true);
         }
         ///<summary>Exposes the start of a readable list, up to exactly the given number of items, as a readable list.</summary>
         public static IReadOnlyList<T> TakeExact<T>(this IReadOnlyList<T> list, int exactTakeCount) {
             if (list == null) throw new ArgumentNullException("list");
             if (exactTakeCount < 0 || exactTakeCount > list.Count) throw new ArgumentOutOfRangeException("exactTakeCount");
-            return new AnonymousReadOnlyList<T>(
-                () => {
-                    if (list.Count < exactTakeCount) throw new InvalidOperationException("Took past end of list.");
-                    return exactTakeCount;
-                }, i => list[i]);
+            return ListTake<T>.From(list, exactTakeCount, exactTakeCount, isTakeLast: false);
         }
         ///<summary>Exposes the end of a readable list, down to exactly the given number of items, as a readable list.</summary>
         public static IReadOnlyList<T> TakeLastExact<T>(this IReadOnlyList<T> list, int exactTakeCount) {
             if (list == null) throw new ArgumentNullException("list");
             if (exactTakeCount < 0 || exactTakeCount > list.Count) throw new ArgumentOutOfRangeException("exactTakeCount");
-            return new AnonymousReadOnlyList<T>(
-                () => {
-                    if (list.Count < exactTakeCount) throw new InvalidOperationException("Took past end of list.");
-                    return exactTakeCount;
-                }, i => list[list.Count - exactTakeCount + i]);
+            return ListTake<T>.From(list, exactTakeCount, exactTakeCount, isTakeLast: true);
         }
 
         ///<summary>Projects each element of a readable list into a new form and exposes the results as a readable list.</summary>
@@ -92,7 +79,8 @@ namespace LinqToReadOnlyCollections.List {
             if (list == null) throw new ArgumentNullException("list");
             if (projection == null) throw new ArgumentNullException("projection");
             return new AnonymousReadOnlyList<TOut>(
-                () => list.Count, 
+                () => list.Count,
+                list.TryGetMaxCount(),
                 i => projection(list[i]),
                 Enumerable.Select(list, projection));
         }
@@ -102,6 +90,7 @@ namespace LinqToReadOnlyCollections.List {
             if (projection == null) throw new ArgumentNullException("projection");
             return new AnonymousReadOnlyList<TOut>(
                 () => list.Count,
+                list.TryGetMaxCount(),
                 i => projection(list[i], i),
                 Enumerable.Select(list, projection));
         }
@@ -113,7 +102,7 @@ namespace LinqToReadOnlyCollections.List {
             if (list2 == null) throw new ArgumentNullException("list2");
             if (projection == null) throw new ArgumentNullException("projection");
             return new AnonymousReadOnlyList<TOut>(
-                () => Math.Min(list1.Count, list2.Count), 
+                () => Math.Min(list1.Count, list2.Count),
                 i => projection(list1[i], list2[i]),
                 Enumerable.Zip(list1, list2, projection));
         }
@@ -150,7 +139,8 @@ namespace LinqToReadOnlyCollections.List {
         public static IReadOnlyList<T> Reverse<T>(this IReadOnlyList<T> list) {
             if (list == null) throw new ArgumentNullException("list");
             return new AnonymousReadOnlyList<T>(
-                () => list.Count, 
+                () => list.Count,
+                list.TryGetMaxCount(),
                 i => list[list.Count - 1 - i]);
         }
 
@@ -169,62 +159,62 @@ namespace LinqToReadOnlyCollections.List {
         ///<summary>Returns a readable list composed of the non-negative signed bytes less than the given count, in increasing order starting at 0.</summary>
         public static IReadOnlyList<short> Range(this sbyte count) {
             if (count < 0) throw new ArgumentOutOfRangeException("count");
-            return new AnonymousReadOnlyList<short>(counter: () => count, getter: i => (short)i);
+            return new AnonymousReadOnlyList<short>(count, i => (short)i);
         }
         ///<summary>Returns a readable list composed of the bytes less than the given count, in increasing order starting at 0.</summary>
         public static IReadOnlyList<byte> Range(this byte count) {
-            return new AnonymousReadOnlyList<byte>(counter: () => count, getter: i => (byte)i);
+            return new AnonymousReadOnlyList<byte>(count, i => (byte)i);
         }
         ///<summary>Returns a readable list composed of the non-negative signed shorts less than the given count, in increasing order starting at 0.</summary>
         public static IReadOnlyList<short> Range(this short count) {
             if (count < 0) throw new ArgumentOutOfRangeException("count");
-            return new AnonymousReadOnlyList<short>(counter: () => count, getter: i => (short)i);
+            return new AnonymousReadOnlyList<short>(count, i => (short)i);
         }
         ///<summary>Returns a readable list composed of the unsigned shorts less than the given count, in increasing order starting at 0.</summary>
         public static IReadOnlyList<ushort> Range(this ushort count) {
-            return new AnonymousReadOnlyList<ushort>(counter: () => count, getter: i => (ushort)i);
+            return new AnonymousReadOnlyList<ushort>(count, i => (ushort)i);
         }
         ///<summary>Returns a readable list composed of the non-negative signed integers less than the given count, in increasing order starting at 0.</summary>
         public static IReadOnlyList<int> Range(this int count) {
             if (count < 0) throw new ArgumentOutOfRangeException("count");
-            return new AnonymousReadOnlyList<int>(counter: () => count, getter: i => i);
+            return new AnonymousReadOnlyList<int>(count, i => i);
         }
 
         ///<summary>Returns a readable list of all the unsigned bytes, from 0 to 255, in increasing order.</summary>
         public static IReadOnlyList<byte> AllBytes() {
             return new AnonymousReadOnlyList<byte>(
-                () => 1 << 8,
+                1 << 8,
                 i => (byte)i);
         }
         ///<summary>Returns a readable list of all the unsigned shorts, from 0 to 65535, in increasing order.</summary>
         public static IReadOnlyList<ushort> AllUnsigned16BitIntegers() {
             return new AnonymousReadOnlyList<ushort>(
-                () => 1 << 16,
+                1 << 16,
                 i => (ushort)i);
         }
 
         ///<summary>Returns a readable list of all the signed bytes, from -128 to 127, in increasing order.</summary>
         public static IReadOnlyList<sbyte> AllSignedBytes() {
             return new AnonymousReadOnlyList<sbyte>(
-                () => 1 << 8,
+                1 << 8,
                 i => (sbyte)(i + sbyte.MinValue));
         }
         ///<summary>Returns a readable list of all the signed shorts, from -32768 to 32767, in increasing order.</summary>
         public static IReadOnlyList<short> AllSigned16BitIntegers() {
             return new AnonymousReadOnlyList<short>(
-                () => 1 << 16,
+                1 << 16,
                 i => (short)(i + short.MinValue));
         }
 
         ///<summary>Returns a readable list with no items.</summary>
         public static IReadOnlyList<T> Empty<T>() {
-            return new AnonymousReadOnlyList<T>(() => 0, i => default(T));
+            return new ListEmpty<T>();
         }
         ///<summary>Returns a readable list composed of a value repeated a desired number of times.</summary>
         public static IReadOnlyList<T> Repeated<T>(T value, int count) {
-            if (count < 0) throw new ArgumentOutOfRangeException("count");
-            if (count == 0) return Empty<T>(); // avoid closing over count or value
-            return new AnonymousReadOnlyList<T>(() => count, i => value);
+            if (count < 0) throw new ArgumentOutOfRangeException("count", "count < 0");
+            if (count == 0) return Empty<T>(); // avoid closing over value
+            return new AnonymousReadOnlyList<T>(count, i => value);
         }
     }
 }

@@ -2,18 +2,20 @@
 using System.Collections.Generic;
 
 namespace LinqToReadOnlyCollections.List {
-    internal sealed class ListCombo<T> : AbstractReadOnlyList<T>, IList<T> {
-        private readonly IReadOnlyList<T> _list;
+    internal sealed class ListCombo<T> : AbstractReadOnlyList<T>, IList<T>, IPotentialMaxCount {
+        public readonly IReadOnlyList<T> List;
+        public int? MaxCount { get; private set; }
         
         public ListCombo(IReadOnlyList<T> list) {
             if (list == null) throw new ArgumentNullException("list");
-            this._list = list;
+            this.List = list;
+            this.MaxCount = list.TryGetMaxCount();
         }
 
         // delegate methods for IReadOnlyList
-        public override T this[int index] { get { return _list[index]; } }
-        public override int Count { get { return _list.Count; } }
-        public override IEnumerator<T> GetEnumerator() { return _list.GetEnumerator(); }
+        public override T this[int index] { get { return this.List[index]; } }
+        public override int Count { get { return this.List.Count; } }
+        public override IEnumerator<T> GetEnumerator() { return this.List.GetEnumerator(); }
 
         // implement non-mutating methods for IList
         public bool IsReadOnly { get { return true; } }
