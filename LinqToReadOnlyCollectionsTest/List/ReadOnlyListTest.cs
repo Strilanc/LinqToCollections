@@ -51,39 +51,6 @@ namespace LinqToReadOnlyCollectionsTest {
             list.Add(5);
             Assert.IsTrue(asReadOnlyList.SequenceEqual(new[] { 2, 3, 5 }));
         }
-        [TestMethod]
-        public void AsElseToReadOnlyListTest() {
-            Util.ExpectException<ArgumentException>(() => ((IEnumerable<int>)null).AsElseToReadOnlyList());
-
-            var list = new List<int> { 2, 3 };
-            var listAsReadOnlyList = list.AsElseToReadOnlyList();
-            var projectionAsReadOnlyList = list.Select(i => i + 1).AsElseToReadOnlyList();
-            var enumerableProjectionAsReadOnlyList = list.AsEnumerable().Select(i => i + 1).AsElseToReadOnlyList();
-
-            //IReadOnlyList ==> gives back input
-            Assert.AreSame(listAsReadOnlyList, listAsReadOnlyList.AsElseToReadOnlyList());
-
-            //IList ==> viewed as ReadOnlyList, IEnumerable ==> copied
-            Assert.IsTrue(listAsReadOnlyList.SequenceEqual(new[] { 2, 3 }));
-            Assert.IsTrue(projectionAsReadOnlyList.SequenceEqual(new[] { 3, 4 }));
-            Assert.IsTrue(enumerableProjectionAsReadOnlyList.SequenceEqual(new[] { 3, 4 }));
-
-            //IList ==> viewed as ReadOnlyList, IEnumerable ==> copied
-            list.RemoveAt(1);
-            Assert.IsTrue(listAsReadOnlyList.SequenceEqual(new[] { 2 }));
-            Assert.IsTrue(projectionAsReadOnlyList.SequenceEqual(new[] { 3 }));
-            Assert.IsTrue(enumerableProjectionAsReadOnlyList.SequenceEqual(new[] { 3, 4 }));
-        }
-        [TestMethod]
-        public void ToRistTest() {
-            Util.ExpectException<ArgumentException>(() => ((IReadOnlyList<int>)null).ToReadOnlyList());
-
-            var list = new List<int> { 2, 3 };
-            var toReadOnlyList = list.ToReadOnlyList();
-            Assert.IsTrue(toReadOnlyList.SequenceEqual(new[] { 2, 3 }));
-            list.Add(1);
-            Assert.IsTrue(toReadOnlyList.SequenceEqual(new[] { 2, 3 }));
-        }
 
         [TestMethod]
         public void SkipExactTest() {

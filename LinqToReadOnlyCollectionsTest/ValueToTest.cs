@@ -1,5 +1,4 @@
 ﻿using LinqToReadOnlyCollections.List;
-using LinqToReadOnlyCollections.Experimental.Map;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 using System;
 using System.Linq;

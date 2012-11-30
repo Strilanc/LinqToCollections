@@ -45,11 +45,9 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="ReadOnlyCollectionTest.cs" />
-    <Compile Include="Experimental\MapTest.cs" />
-    <Compile Include="Experimental\RetTest.cs" />
     <Compile Include="ValueToTest.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
-    <Compile Include="ReadOnlyListTest.cs" />
+    <Compile Include="List\ReadOnlyListTest.cs" />
     <Compile Include="Util.cs" />
   </ItemGroup>
   <ItemGroup>
