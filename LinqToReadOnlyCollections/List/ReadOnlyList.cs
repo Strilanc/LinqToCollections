@@ -4,12 +4,12 @@ using System;
 
 namespace LinqToReadOnlyCollections.List {
     ///<summary>Contains extension methods related to read-only lists.</summary>
-    public static class ReadOnlyListExtensions {
+    public static class ReadOnlyList {
         ///<summary>Exposes a list as a read-only list.</summary>
         public static IReadOnlyList<T> AsReadOnlyList<T>(this IList<T> list) {
             if (list == null) throw new ArgumentNullException("list");
             return (list.IsReadOnly ? list as IReadOnlyList<T> : null)
-                ?? new ReadOnlyList<T>(getter: i => list[i],
+                ?? new AnonymousReadOnlyList<T>(getter: i => list[i],
                                        counter: () => list.Count,
                                        efficientIterator: list);
         }
@@ -72,7 +72,7 @@ namespace LinqToReadOnlyCollections.List {
         public static IReadOnlyList<T> Take<T>(this IReadOnlyList<T> list, int maxTakeCount) {
             if (list == null) throw new ArgumentNullException("list");
             if (maxTakeCount < 0) throw new ArgumentOutOfRangeException("maxTakeCount");
-            return new ReadOnlyList<T>(
+            return new AnonymousReadOnlyList<T>(
                 () => Math.Min(maxTakeCount, list.Count),
                 i => list[i],
                 Enumerable.Take(list, maxTakeCount));
@@ -81,7 +81,7 @@ namespace LinqToReadOnlyCollections.List {
         public static IReadOnlyList<T> TakeLast<T>(this IReadOnlyList<T> list, int maxTakeCount) {
             if (list == null) throw new ArgumentNullException("list");
             if (maxTakeCount < 0) throw new ArgumentOutOfRangeException("maxTakeCount");
-            return new ReadOnlyList<T>(
+            return new AnonymousReadOnlyList<T>(
                 () => Math.Min(maxTakeCount, list.Count),
                 i => list[Math.Max(list.Count - maxTakeCount, 0) + i]);
         }
@@ -89,7 +89,7 @@ namespace LinqToReadOnlyCollections.List {
         public static IReadOnlyList<T> TakeExact<T>(this IReadOnlyList<T> list, int exactTakeCount) {
             if (list == null) throw new ArgumentNullException("list");
             if (exactTakeCount < 0 || exactTakeCount > list.Count) throw new ArgumentOutOfRangeException("exactTakeCount");
-            return new ReadOnlyList<T>(
+            return new AnonymousReadOnlyList<T>(
                 () => {
                     if (list.Count < exactTakeCount) throw new InvalidOperationException("Took past end of list.");
                     return exactTakeCount;
@@ -99,7 +99,7 @@ namespace LinqToReadOnlyCollections.List {
         public static IReadOnlyList<T> TakeLastExact<T>(this IReadOnlyList<T> list, int exactTakeCount) {
             if (list == null) throw new ArgumentNullException("list");
             if (exactTakeCount < 0 || exactTakeCount > list.Count) throw new ArgumentOutOfRangeException("exactTakeCount");
-            return new ReadOnlyList<T>(
+            return new AnonymousReadOnlyList<T>(
                 () => {
                     if (list.Count < exactTakeCount) throw new InvalidOperationException("Took past end of list.");
                     return exactTakeCount;
@@ -110,26 +110,26 @@ namespace LinqToReadOnlyCollections.List {
         public static IReadOnlyList<TOut> Select<TIn, TOut>(this IReadOnlyList<TIn> list, Func<TIn, TOut> projection) {
             if (list == null) throw new ArgumentNullException("list");
             if (projection == null) throw new ArgumentNullException("projection");
-            return new ReadOnlyList<TOut>(counter: () => list.Count, getter: i => projection(list[i]));
+            return new AnonymousReadOnlyList<TOut>(counter: () => list.Count, getter: i => projection(list[i]));
         }
         ///<summary>Projects each element of a readable list into a new form by incorporating the element's index and exposes the results as a readable list.</summary>
         public static IReadOnlyList<TOut> Select<TIn, TOut>(this IReadOnlyList<TIn> list, Func<TIn, int, TOut> projection) {
             if (list == null) throw new ArgumentNullException("list");
             if (projection == null) throw new ArgumentNullException("projection");
-            return new ReadOnlyList<TOut>(counter: () => list.Count, getter: i => projection(list[i], i));
+            return new AnonymousReadOnlyList<TOut>(counter: () => list.Count, getter: i => projection(list[i], i));
         }
         ///<summary>Merges two readable lists using the specified projection and exposes the results as a readable list.</summary>
         public static IReadOnlyList<TOut> Zip<TIn1, TIn2, TOut>(this IReadOnlyList<TIn1> list1, IReadOnlyList<TIn2> list2, Func<TIn1, TIn2, TOut> projection) {
             if (list1 == null) throw new ArgumentNullException("list1");
             if (list2 == null) throw new ArgumentNullException("list2");
             if (projection == null) throw new ArgumentNullException("projection");
-            return new ReadOnlyList<TOut>(counter: () => Math.Min(list1.Count, list2.Count), getter: i => projection(list1[i], list2[i]));
+            return new AnonymousReadOnlyList<TOut>(counter: () => Math.Min(list1.Count, list2.Count), getter: i => projection(list1[i], list2[i]));
         }
         
         ///<summary>Returns a readable list with the same elements but in the reverse order.</summary>
         public static IReadOnlyList<T> Reverse<T>(this IReadOnlyList<T> list) {
             if (list == null) throw new ArgumentNullException("list");
-            return new ReadOnlyList<T>(counter: () => list.Count, getter: i => list[list.Count - 1 - i]);
+            return new AnonymousReadOnlyList<T>(counter: () => list.Count, getter: i => list[list.Count - 1 - i]);
         }
 
         ///<summary>Returns the last element in a non-empty readable list.</summary>
