@@ -2,23 +2,20 @@
 using System.Collections.Generic;
 
 namespace LinqToReadOnlyCollections.List {
-    ///<summary>Implements a ReadOnly IList by delegating calls to a readable list.</summary>
-    internal sealed class ReadOnlyListIList<T> : IList<T>, IReadOnlyList<T> {
+    internal sealed class ListCombo<T> : AbstractReadOnlyList<T>, IList<T> {
         private readonly IReadOnlyList<T> _list;
         
-        public ReadOnlyListIList(IReadOnlyList<T> list) {
+        public ListCombo(IReadOnlyList<T> list) {
             if (list == null) throw new ArgumentNullException("list");
             this._list = list;
         }
 
-        public T this[int index] { 
-            get {
-                return _list[index]; 
-            } 
-        }
-        public int Count { get { return _list.Count; } }
-        public IEnumerator<T> GetEnumerator() { return _list.GetEnumerator(); }
+        // delegate methods for IReadOnlyList
+        public override T this[int index] { get { return _list[index]; } }
+        public override int Count { get { return _list.Count; } }
+        public override IEnumerator<T> GetEnumerator() { return _list.GetEnumerator(); }
 
+        // implement non-mutating methods for IList
         public bool IsReadOnly { get { return true; } }
         public int IndexOf(T item) {
             var eq = EqualityComparer<T>.Default;
@@ -37,7 +34,7 @@ namespace LinqToReadOnlyCollections.List {
                 array[i + arrayIndex] = this[i];
         }
 
-        System.Collections.IEnumerator System.Collections.IEnumerable.GetEnumerator() { return GetEnumerator(); }
+        // don't support mutating methods for IList
         void IList<T>.Insert(int index, T item) { throw new NotSupportedException("Collection is read-only."); }
         void IList<T>.RemoveAt(int index) { throw new NotSupportedException("Collection is read-only."); }
         void ICollection<T>.Add(T item) { throw new NotSupportedException("Collection is read-only."); }

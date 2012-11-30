@@ -1,9 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Diagnostics;
 
 namespace LinqToReadOnlyCollections.List {
-    [DebuggerDisplay("{ToString()}")]
     internal sealed class ListSkip<T> : AbstractReadOnlyList<T> {
         private readonly IReadOnlyList<T> _subList;
         private readonly int _skipExact;

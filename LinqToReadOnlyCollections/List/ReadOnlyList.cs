@@ -5,38 +5,19 @@ using System;
 namespace LinqToReadOnlyCollections.List {
     ///<summary>Contains extension methods related to read-only lists.</summary>
     public static class ReadOnlyList {
-        ///<summary>Exposes a list as a read-only list.</summary>
+        ///<summary>
+        ///Exposes a list as a read-only list, using a cast if possible (unless the list is not marked read-only).
+        ///The result is guaranteed to still implement IList, so that further usage of AsIList and AsReadOnlyList do not cause more wrapping.
+        ///</summary>
         public static IReadOnlyList<T> AsReadOnlyList<T>(this IList<T> list) {
             if (list == null) throw new ArgumentNullException("list");
-            return (list.IsReadOnly ? list as IReadOnlyList<T> : null)
-                ?? new AnonymousReadOnlyList<T>(getter: i => list[i],
-                                       counter: () => list.Count,
-                                       efficientIterator: list);
+            return (list.IsReadOnly ? list as IReadOnlyList<T> : null) 
+                ?? new AnonymousReadOnlyList<T>(() => list.Count, i => list[i], list);
         }
-        ///<summary>Exposes a read-only list as a list.</summary>
-        ///<remarks>Using AsReadOnlyList on the result will use a cast instead of wrapping more (and AsIList on that will also cast instead of wrap).</remarks>
+        ///<summary>Exposes a read-only list as a list, using a cast if possible.</summary>
         public static IList<T> AsIList<T>(this IReadOnlyList<T> list) {
             if (list == null) throw new ArgumentNullException("list");
-            return list as IList<T> 
-                ?? new ReadOnlyListIList<T>(list);
-        }
-        ///<summary>Creates a copy of the given sequence and exposes the copy as a readable list.</summary>
-        public static IReadOnlyList<T> ToReadOnlyList<T>(this IEnumerable<T> sequence) {
-            if (sequence == null) throw new ArgumentNullException("sequence");
-            return sequence.ToArray();
-        }
-        ///<summary>Exposes the underlying list of a given sequence as a readable list, creating a copy if the underlying type is not a list.</summary>
-        ///<remarks>Just a cast when the sequence is an IReadOnlyList, and equivalent to AsReadOnlyList(IList) when the sequence is an IList.</remarks>
-        public static IReadOnlyList<T> AsElseToReadOnlyList<T>(this IEnumerable<T> sequence) {
-            if (sequence == null) throw new ArgumentNullException("sequence");
-
-            var asList = sequence as IList<T>;
-            if (asList != null) return asList.AsReadOnlyList();
-
-            var asRist = sequence as IReadOnlyList<T>;
-            if (asRist != null) return asRist;
-            
-            return sequence.ToReadOnlyList();
+            return list as IList<T> ?? new ListCombo<T>(list);
         }
 
         ///<summary>Exposes the end of a readable list, after skipping up to the given number of items, as a readable list.</summary>
@@ -110,26 +91,67 @@ namespace LinqToReadOnlyCollections.List {
         public static IReadOnlyList<TOut> Select<TIn, TOut>(this IReadOnlyList<TIn> list, Func<TIn, TOut> projection) {
             if (list == null) throw new ArgumentNullException("list");
             if (projection == null) throw new ArgumentNullException("projection");
-            return new AnonymousReadOnlyList<TOut>(counter: () => list.Count, getter: i => projection(list[i]));
+            return new AnonymousReadOnlyList<TOut>(
+                () => list.Count, 
+                i => projection(list[i]),
+                Enumerable.Select(list, projection));
         }
         ///<summary>Projects each element of a readable list into a new form by incorporating the element's index and exposes the results as a readable list.</summary>
         public static IReadOnlyList<TOut> Select<TIn, TOut>(this IReadOnlyList<TIn> list, Func<TIn, int, TOut> projection) {
             if (list == null) throw new ArgumentNullException("list");
             if (projection == null) throw new ArgumentNullException("projection");
-            return new AnonymousReadOnlyList<TOut>(counter: () => list.Count, getter: i => projection(list[i], i));
+            return new AnonymousReadOnlyList<TOut>(
+                () => list.Count,
+                i => projection(list[i], i),
+                Enumerable.Select(list, projection));
         }
         ///<summary>Merges two readable lists using the specified projection and exposes the results as a readable list.</summary>
-        public static IReadOnlyList<TOut> Zip<TIn1, TIn2, TOut>(this IReadOnlyList<TIn1> list1, IReadOnlyList<TIn2> list2, Func<TIn1, TIn2, TOut> projection) {
+        public static IReadOnlyList<TOut> Zip<TIn1, TIn2, TOut>(this IReadOnlyList<TIn1> list1,
+                                                                IReadOnlyList<TIn2> list2,
+                                                                Func<TIn1, TIn2, TOut> projection) {
             if (list1 == null) throw new ArgumentNullException("list1");
             if (list2 == null) throw new ArgumentNullException("list2");
             if (projection == null) throw new ArgumentNullException("projection");
-            return new AnonymousReadOnlyList<TOut>(counter: () => Math.Min(list1.Count, list2.Count), getter: i => projection(list1[i], list2[i]));
+            return new AnonymousReadOnlyList<TOut>(
+                () => Math.Min(list1.Count, list2.Count), 
+                i => projection(list1[i], list2[i]),
+                Enumerable.Zip(list1, list2, projection));
+        }
+        ///<summary>Merges three readable lists using the specified projection and exposes the results as a readable list.</summary>
+        public static IReadOnlyList<TOut> Zip<TIn1, TIn2, TIn3, TOut>(this IReadOnlyList<TIn1> list1,
+                                                                      IReadOnlyList<TIn2> list2,
+                                                                      IReadOnlyList<TIn3> list3,
+                                                                      Func<TIn1, TIn2, TIn3, TOut> projection) {
+            if (list1 == null) throw new ArgumentNullException("list1");
+            if (list2 == null) throw new ArgumentNullException("list2");
+            if (list3 == null) throw new ArgumentNullException("list3");
+            if (projection == null) throw new ArgumentNullException("projection");
+            return new AnonymousReadOnlyList<TOut>(
+                () => Math.Min(Math.Min(list1.Count, list2.Count), list3.Count),
+                i => projection(list1[i], list2[i], list3[i]));
+        }
+        ///<summary>Merges four readable lists using the specified projection and exposes the results as a readable list.</summary>
+        public static IReadOnlyList<TOut> Zip<TIn1, TIn2, TIn3, TIn4, TOut>(this IReadOnlyList<TIn1> list1,
+                                                                            IReadOnlyList<TIn2> list2,
+                                                                            IReadOnlyList<TIn3> list3,
+                                                                            IReadOnlyList<TIn4> list4,
+                                                                            Func<TIn1, TIn2, TIn3, TIn4, TOut> projection) {
+            if (list1 == null) throw new ArgumentNullException("list1");
+            if (list2 == null) throw new ArgumentNullException("list2");
+            if (list3 == null) throw new ArgumentNullException("list3");
+            if (list4 == null) throw new ArgumentNullException("list4");
+            if (projection == null) throw new ArgumentNullException("projection");
+            return new AnonymousReadOnlyList<TOut>(
+                () => Math.Min(Math.Min(Math.Min(list1.Count, list2.Count), list3.Count), list4.Count),
+                i => projection(list1[i], list2[i], list3[i], list4[i]));
         }
         
         ///<summary>Returns a readable list with the same elements but in the reverse order.</summary>
         public static IReadOnlyList<T> Reverse<T>(this IReadOnlyList<T> list) {
             if (list == null) throw new ArgumentNullException("list");
-            return new AnonymousReadOnlyList<T>(counter: () => list.Count, getter: i => list[list.Count - 1 - i]);
+            return new AnonymousReadOnlyList<T>(
+                () => list.Count, 
+                i => list[list.Count - 1 - i]);
         }
 
         ///<summary>Returns the last element in a non-empty readable list.</summary>
