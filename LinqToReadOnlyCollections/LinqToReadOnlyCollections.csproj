@@ -135,7 +135,6 @@
     <Compile Include="List\ReadOnlyList.cs" />
     <Compile Include="List\ReadOnlyListAndIList.cs" />
     <Compile Include="List\ListSkip.cs" />
-    <Compile Include="List\ValueToReadOnlyListExtensions.cs" />
   </ItemGroup>
   <ItemGroup>
     <None Include="Strilanc-LinqToReadOnlyCollections.pfx" />

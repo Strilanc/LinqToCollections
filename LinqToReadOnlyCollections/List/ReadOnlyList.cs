@@ -143,5 +143,61 @@ namespace LinqToReadOnlyCollections.List {
             if (list == null) throw new ArgumentNullException("list");
             return list.Count == 0 ? defaultValue : list[list.Count - 1];
         }
+
+        ///<summary>Returns a readable list composed of the non-negative signed bytes less than the given count, in increasing order starting at 0.</summary>
+        public static IReadOnlyList<short> Range(this sbyte count) {
+            if (count < 0) throw new ArgumentOutOfRangeException("count");
+            return new AnonymousReadOnlyList<short>(counter: () => count, getter: i => (short)i);
+        }
+        ///<summary>Returns a readable list composed of the bytes less than the given count, in increasing order starting at 0.</summary>
+        public static IReadOnlyList<byte> Range(this byte count) {
+            return new AnonymousReadOnlyList<byte>(counter: () => count, getter: i => (byte)i);
+        }
+        ///<summary>Returns a readable list composed of the non-negative signed shorts less than the given count, in increasing order starting at 0.</summary>
+        public static IReadOnlyList<short> Range(this short count) {
+            if (count < 0) throw new ArgumentOutOfRangeException("count");
+            return new AnonymousReadOnlyList<short>(counter: () => count, getter: i => (short)i);
+        }
+        ///<summary>Returns a readable list composed of the unsigned shorts less than the given count, in increasing order starting at 0.</summary>
+        public static IReadOnlyList<ushort> Range(this ushort count) {
+            return new AnonymousReadOnlyList<ushort>(counter: () => count, getter: i => (ushort)i);
+        }
+        ///<summary>Returns a readable list composed of the non-negative signed integers less than the given count, in increasing order starting at 0.</summary>
+        public static IReadOnlyList<int> Range(this int count) {
+            if (count < 0) throw new ArgumentOutOfRangeException("count");
+            return new AnonymousReadOnlyList<int>(counter: () => count, getter: i => i);
+        }
+
+        ///<summary>Returns a readable list of all the unsigned bytes, from 0 to 255, in increasing order.</summary>
+        public static IReadOnlyList<byte> AllBytes() {
+            return new AnonymousReadOnlyList<byte>(
+                () => 1 << 8,
+                i => (byte)i);
+        }
+        ///<summary>Returns a readable list of all the unsigned shorts, from 0 to 65535, in increasing order.</summary>
+        public static IReadOnlyList<ushort> AllUnsigned16BitIntegers() {
+            return new AnonymousReadOnlyList<ushort>(
+                () => 1 << 16,
+                i => (ushort)i);
+        }
+
+        ///<summary>Returns a readable list of all the signed bytes, from -128 to 127, in increasing order.</summary>
+        public static IReadOnlyList<sbyte> AllSignedBytes() {
+            return new AnonymousReadOnlyList<sbyte>(
+                () => 1 << 8,
+                i => (sbyte)(i + sbyte.MinValue));
+        }
+        ///<summary>Returns a readable list of all the signed shorts, from -32768 to 32767, in increasing order.</summary>
+        public static IReadOnlyList<short> AllSigned16BitIntegers() {
+            return new AnonymousReadOnlyList<short>(
+                () => 1 << 16,
+                i => (short)(i + short.MinValue));
+        }
+
+        ///<summary>Returns a readable list composed of a value repeated a desired number of times.</summary>
+        public static IReadOnlyList<T> Repeated<T>(T value, int count) {
+            if (count < 0) throw new ArgumentOutOfRangeException("count");
+            return new AnonymousReadOnlyList<T>(counter: () => count, getter: i => value);
+        }
     }
 }
