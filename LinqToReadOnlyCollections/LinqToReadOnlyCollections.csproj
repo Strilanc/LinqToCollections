@@ -111,7 +111,8 @@
     <SignAssembly>false</SignAssembly>
   </PropertyGroup>
   <PropertyGroup>
-    <AssemblyOriginatorKeyFile>Strilanc-LinqToReadOnlyCollections.pfx</AssemblyOriginatorKeyFile>
+    <AssemblyOriginatorKeyFile>
+    </AssemblyOriginatorKeyFile>
   </PropertyGroup>
   <ItemGroup>
     <Reference Include="System" />
@@ -123,9 +124,14 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="Collection\AbstractReadOnlyCollection.cs" />
+    <Compile Include="Collection\AnonymousReadOnlyCollection.cs" />
+    <Compile Include="Collection\CollectionAdapter.cs" />
+    <Compile Include="Collection\CollectionCountCheck.cs" />
+    <Compile Include="Collection\CollectionSkip.cs" />
+    <Compile Include="Collection\CollectionTakeFirst.cs" />
+    <Compile Include="Collection\CollectionTakeLast.cs" />
     <Compile Include="Collection\ReadOnlyCollection.cs" />
-    <Compile Include="Collection\ReadOnlyCollectionAsICollection.cs" />
-    <Compile Include="Collection\ReadOnlyCollectionExtensions.cs" />
     <Compile Include="Dictionary\AnonymousReadOnlyDictionary.cs" />
     <Compile Include="Dictionary\AbstractReadOnlyDictionary.cs" />
     <Compile Include="Dictionary\DictionaryAdapter.cs" />
@@ -133,7 +139,7 @@
     <Compile Include="List\AbstractReadOnlyList.cs" />
     <Compile Include="List\ListTakeLast.cs" />
     <Compile Include="List\ListCountCheck.cs" />
-    <Compile Include="List\IBoundedCount.cs" />
+    <Compile Include="IBoundedCount.cs" />
     <Compile Include="List\ListEmpty.cs" />
     <Compile Include="List\ListTakeFirst.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
@@ -141,9 +147,6 @@
     <Compile Include="List\ReadOnlyList.cs" />
     <Compile Include="List\ListAdapter.cs" />
     <Compile Include="List\ListSkip.cs" />
-  </ItemGroup>
-  <ItemGroup>
-    <None Include="Strilanc-LinqToReadOnlyCollections.pfx" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 

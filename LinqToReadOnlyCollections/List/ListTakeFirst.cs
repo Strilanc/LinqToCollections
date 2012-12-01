@@ -2,7 +2,7 @@
 using System.Collections.Generic;
 using System.Linq;
 
-namespace LinqToReadOnlyCollections.List {
+namespace Strilanc.LinqToCollections {
     ///<summary>Manages the Take operation on readable lists.</summary>
     internal sealed class ListTakeFirst<T> : AbstractReadOnlyList<T>, IBoundedCount {
         public readonly IReadOnlyList<T> SubList;

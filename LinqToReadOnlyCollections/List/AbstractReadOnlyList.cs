@@ -1,6 +1,6 @@
 ﻿using System.Collections.Generic;
 
-namespace LinqToReadOnlyCollections.List {
+namespace Strilanc.LinqToCollections {
     ///<summary>A partially implemented readonly list.</summary>
     public abstract class AbstractReadOnlyList<T> : IReadOnlyList<T> {
         public abstract int Count { get; }

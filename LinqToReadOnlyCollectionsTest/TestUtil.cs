@@ -3,11 +3,15 @@ using System.Collections.Generic;
 using System.Diagnostics;
 using System.Linq;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
+using Strilanc.LinqToCollections;
 
 internal static class TestUtil {
     public static void AssertThrows<TException>(Func<object> func) where TException : Exception {
         AssertThrows<TException>(new Action(() => func()));
     }
+    public static IReadOnlyCollection<int> CRange(this int count) {
+        return count.Range();
+    } 
     public static void AssertThrows<TException>(Action action) where TException : Exception {
         try {
             action();
@@ -40,6 +44,13 @@ internal static class TestUtil {
         for (var i = 0; i < expected.Length; i++)
             actual[i].AssertEquals(expected[i]);
     }
+    public static void AssertCollectionEquals<T>(this IReadOnlyCollection<T> actual, params T[] expected) {
+        actual.AssertSequenceEquals(expected);
+        actual.Count.AssertEquals(expected.Length);
+    }
+    public static void AssertCollectionEquals<T>(this IReadOnlyCollection<T> actual, IEnumerable<T> expected) {
+        actual.AssertCollectionEquals(expected.ToArray());
+    }
     public static void AssertDictionaryEquals<TKey, TValue>(this IReadOnlyDictionary<TKey, TValue> actual, IEnumerable<KeyValuePair<TKey, TValue>> keyVals) {
         var d = keyVals.ToDictionary(e => e.Key, e => e.Value);
         foreach (var e in actual)
@@ -56,6 +67,10 @@ internal static class TestUtil {
         AssertThrows<InvalidOperationException>(() => list[0]);
         AssertThrows<InvalidOperationException>(() => list.GetEnumerator());
     }
+    public static void AssertCollectionBroken<T>(this IReadOnlyCollection<T> list) {
+        AssertThrows<InvalidOperationException>(() => list.Count);
+        AssertThrows<InvalidOperationException>(() => list.GetEnumerator());
+    }
     [DebuggerStepThrough]
     public static T AssertNotCollected<T>(this WeakReference<T> weak) where T : class {
         T val;
@@ -69,6 +84,11 @@ internal static class TestUtil {
     }
     [DebuggerStepThrough]
     public static void AssertListIsEmpty<T>(this IReadOnlyList<T> actual) {
+        actual.Count.AssertEquals(0);
+        Assert.IsTrue(actual.SequenceEqual(new T[0]));
+    }
+    [DebuggerStepThrough]
+    public static void AssertCollectionIsEmpty<T>(this IReadOnlyCollection<T> actual) {
         actual.Count.AssertEquals(0);
         Assert.IsTrue(actual.SequenceEqual(new T[0]));
     }

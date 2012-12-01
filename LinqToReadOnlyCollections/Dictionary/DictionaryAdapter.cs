@@ -1,9 +1,8 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
-using LinqToReadOnlyCollections.Collection;
 
-namespace LinqToReadOnlyCollections.Dictionary {
+namespace Strilanc.LinqToCollections {
     ///<summary>Exposes a readonly dictionary as a mutable dictionary that doesn't support mutation.</summary>
     internal sealed class DictionaryAdapter<TKey, TValue> : AbstractReadOnlyDictionary<TKey, TValue>, IDictionary<TKey, TValue> {
         public readonly IReadOnlyDictionary<TKey, TValue> SubDictionary;
@@ -62,7 +61,7 @@ namespace LinqToReadOnlyCollections.Dictionary {
         }
         ICollection<TKey> IDictionary<TKey, TValue>.Keys {
             get {
-                return new Collection.ReadOnlyCollection<TKey>(
+                return new AnonymousReadOnlyCollection<TKey>(
                     () => Count,
                     () => SubDictionary.Keys.GetEnumerator()
                 ).AsICollection();
@@ -70,7 +69,7 @@ namespace LinqToReadOnlyCollections.Dictionary {
         }
         ICollection<TValue> IDictionary<TKey, TValue>.Values {
             get {
-                return new Collection.ReadOnlyCollection<TValue>(
+                return new AnonymousReadOnlyCollection<TValue>(
                     () => Count,
                     () => SubDictionary.Values.GetEnumerator()
                 ).AsICollection();

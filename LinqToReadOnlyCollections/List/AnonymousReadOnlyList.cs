@@ -1,7 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 
-namespace LinqToReadOnlyCollections.List {
+namespace Strilanc.LinqToCollections {
     ///<summary>A readonly list implemented with delegates passed to its constructor.</summary>
     public sealed class AnonymousReadOnlyList<T> : AbstractReadOnlyList<T>, IBoundedCount {
         private readonly int? _maxCount;

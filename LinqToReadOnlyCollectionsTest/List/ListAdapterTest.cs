@@ -1,6 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
-using LinqToReadOnlyCollections.List;
+using Strilanc.LinqToCollections;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 
 [TestClass]

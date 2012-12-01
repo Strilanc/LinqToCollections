@@ -2,7 +2,7 @@
 using System.Collections.Generic;
 using System.Linq;
 
-namespace LinqToReadOnlyCollections.List {
+namespace Strilanc.LinqToCollections {
     ///<summary>Manages both the Skip and SkipLast operations on readable lists.</summary>
     internal sealed class ListSkip<T> : AbstractReadOnlyList<T>, IBoundedCount {
         public readonly IReadOnlyList<T> SubList;

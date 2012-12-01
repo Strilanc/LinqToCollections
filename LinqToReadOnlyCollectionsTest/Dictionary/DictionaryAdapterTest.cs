@@ -1,9 +1,8 @@
 ﻿using System.Collections.Generic;
 using System.Collections.ObjectModel;
-using LinqToReadOnlyCollections.List;
+using Strilanc.LinqToCollections;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 using System.Linq;
-using LinqToReadOnlyCollections.Dictionary;
 
 [TestClass]
 public class DictionaryAdapterTest {

@@ -1,7 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 
-namespace LinqToReadOnlyCollections.List {
+namespace Strilanc.LinqToCollections {
     internal sealed class ListCountCheck<T> : AbstractReadOnlyList<T>, IBoundedCount {
         public readonly IReadOnlyList<T> SubList;
         public readonly int EnforcedMininimumCount;

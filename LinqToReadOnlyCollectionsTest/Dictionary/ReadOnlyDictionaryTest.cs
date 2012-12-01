@@ -1,7 +1,6 @@
-﻿using LinqToReadOnlyCollections.List;
+﻿using Strilanc.LinqToCollections;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 using System.Linq;
-using LinqToReadOnlyCollections.Dictionary;
 
 [TestClass]
 public class ReadOnlyDictionaryTest {

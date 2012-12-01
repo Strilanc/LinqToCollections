@@ -1,5 +1,5 @@
 ﻿using System.Collections.Generic;
-using LinqToReadOnlyCollections.List;
+using Strilanc.LinqToCollections;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 using System;
 using System.Linq;

@@ -1,7 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 
-namespace LinqToReadOnlyCollections.List {
+namespace Strilanc.LinqToCollections {
     ///<summary>A singleton for empty readable lists.</summary>
     internal sealed class ListEmpty<T> : AbstractReadOnlyList<T>, IBoundedCount {
         public static readonly ListEmpty<T> Empty = new ListEmpty<T>();

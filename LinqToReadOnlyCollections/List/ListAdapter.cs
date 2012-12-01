@@ -2,7 +2,7 @@
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
 
-namespace LinqToReadOnlyCollections.List {
+namespace Strilanc.LinqToCollections {
     ///<summary>Exposes a readonly list as a mutable list that doesn't support mutation.</summary>
     internal sealed class ListAdapter<T> : AbstractReadOnlyList<T>, IList<T>, IBoundedCount {
         public readonly IReadOnlyList<T> List;

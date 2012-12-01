@@ -2,7 +2,7 @@
 using System.Collections.Generic;
 using System.Linq;
 
-namespace LinqToReadOnlyCollections.List {
+namespace Strilanc.LinqToCollections {
     ///<summary>Contains extension methods for readonly lists.</summary>
     public static class ReadOnlyList {
         ///<summary>Requires that there be a given minimum number of items in a list, checking whenever it is accessed.</summary>
@@ -217,7 +217,7 @@ namespace LinqToReadOnlyCollections.List {
             return ListEmpty<T>.Empty;
         }
         ///<summary>Returns a readable list composed of a value repeated a desired number of times.</summary>
-        public static IReadOnlyList<T> Repeated<T>(T value, int count) {
+        public static IReadOnlyList<T> Repeat<T>(T value, int count) {
             if (count < 0) throw new ArgumentOutOfRangeException("count", "count < 0");
             if (count == 0) return Empty<T>(); // avoid closing over value
             return new AnonymousReadOnlyList<T>(count, i => value);

@@ -1,7 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 
-namespace LinqToReadOnlyCollections.List {
+namespace Strilanc.LinqToCollections {
     ///<summary>Manages the TakeLast operation on readable lists.</summary>
     internal sealed class ListTakeLast<T> : AbstractReadOnlyList<T>, IBoundedCount {
         public readonly IReadOnlyList<T> SubList;

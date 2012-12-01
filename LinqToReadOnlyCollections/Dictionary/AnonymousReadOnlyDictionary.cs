@@ -1,8 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
-using LinqToReadOnlyCollections.Collection;
 
-namespace LinqToReadOnlyCollections.Dictionary {
+namespace Strilanc.LinqToCollections {
     public delegate bool TryGetter<in TKey, TValue>(TKey key, out TValue value);
 
     ///<summary>A readonly dictionary implemented with delegates passed to its constructor.</summary>
@@ -20,7 +19,7 @@ namespace LinqToReadOnlyCollections.Dictionary {
             if (counter == null) throw new ArgumentNullException("counter");
             if (keys == null) throw new ArgumentNullException("keys");
             if (getter == null) throw new ArgumentNullException("getter");
-            _keys = new ReadOnlyCollection<TKey>(counter, keys.GetEnumerator);
+            _keys = new AnonymousReadOnlyCollection<TKey>(counter, keys.GetEnumerator);
             _getter = getter;
         }
 

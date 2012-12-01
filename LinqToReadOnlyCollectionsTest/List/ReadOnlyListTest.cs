@@ -1,5 +1,5 @@
 ﻿using System.Collections.Generic;
-using LinqToReadOnlyCollections.List;
+using Strilanc.LinqToCollections;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 using System;
 using System.Linq;
@@ -83,8 +83,8 @@ public class ReadOnlyListTest {
     }
     [TestMethod]
     public void Repeat() {
-        ReadOnlyList.Repeated("a", 20).AssertListEquals(Enumerable.Repeat("a", 20));
-        ReadOnlyList.Repeated("b", 10).AssertListEquals(Enumerable.Repeat("b", 10));
+        ReadOnlyList.Repeat("a", 20).AssertListEquals(Enumerable.Repeat("a", 20));
+        ReadOnlyList.Repeat("b", 10).AssertListEquals(Enumerable.Repeat("b", 10));
     }
     [TestMethod]
     public void AllValues() {

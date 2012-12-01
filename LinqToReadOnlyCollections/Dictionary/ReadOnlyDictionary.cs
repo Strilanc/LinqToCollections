@@ -1,7 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 
-namespace LinqToReadOnlyCollections.Dictionary {
+namespace Strilanc.LinqToCollections {
     ///<summary>Contains extension methods for readonly dictionaries.</summary>
     public static class ReadOnlyDictionary {
         /// <summary>

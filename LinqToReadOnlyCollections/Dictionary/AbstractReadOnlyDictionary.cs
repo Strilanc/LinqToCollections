@@ -3,7 +3,7 @@ using System.Linq;
 using System.Collections;
 using System.Collections.Generic;
 
-namespace LinqToReadOnlyCollections.Dictionary {
+namespace Strilanc.LinqToCollections {
     ///<summary>A partially implemented readonly dictionary.</summary>
     public abstract class AbstractReadOnlyDictionary<TKey, TValue> : IReadOnlyDictionary<TKey, TValue> {
         public abstract int Count { get; }
