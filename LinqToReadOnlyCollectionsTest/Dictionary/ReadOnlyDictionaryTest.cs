@@ -1,7 +1,5 @@
-﻿using System.Collections.Generic;
-using LinqToReadOnlyCollections.List;
+﻿using LinqToReadOnlyCollections.List;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
-using System;
 using System.Linq;
 using LinqToReadOnlyCollections.Dictionary;
 

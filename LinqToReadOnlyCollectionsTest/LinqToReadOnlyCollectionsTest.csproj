@@ -44,6 +44,7 @@
     </CodeAnalysisDependentAssemblyPaths>
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="Dictionary\AnonymousReadOnlyDictionaryTest.cs" />
     <Compile Include="Dictionary\DictionaryAdapterTest.cs" />
     <Compile Include="Dictionary\ReadOnlyDictionaryTest.cs" />
     <Compile Include="List\AnonymousReadOnlyListTest.cs" />

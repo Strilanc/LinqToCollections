@@ -84,13 +84,13 @@ public class ReadOnlyListTest {
     [TestMethod]
     public void Repeat() {
         ReadOnlyList.Repeated("a", 20).AssertListEquals(Enumerable.Repeat("a", 20));
-        ReadOnlyList.Repeated("b", 10).AssertListEquals(Enumerable.Repeat("a", 10));
+        ReadOnlyList.Repeated("b", 10).AssertListEquals(Enumerable.Repeat("b", 10));
     }
     [TestMethod]
     public void AllValues() {
-        ReadOnlyList.AllBytes().Select(e => (int)e).AssertListEquals(Enumerable.Range(Byte.MinValue, Byte.MaxValue - (int)Byte.MinValue + 1));
-        ReadOnlyList.AllSignedBytes().Select(e => (int)e).AssertListEquals(Enumerable.Range(SByte.MinValue, SByte.MaxValue - (int)SByte.MinValue + 1));
-        ReadOnlyList.AllUnsigned16BitIntegers().Select(e => (int)e).AssertListEquals(Enumerable.Range(UInt16.MinValue, UInt16.MaxValue - (int)UInt16.MinValue + 1));
-        ReadOnlyList.AllSigned16BitIntegers().Select(e => (int)e).AssertListEquals(Enumerable.Range(Int16.MinValue, Int16.MaxValue - (int)Int16.MinValue + 1));
+        ReadOnlyList.AllBytes().Select(e => (int)e).AssertListEquals(Enumerable.Range(Byte.MinValue, Byte.MaxValue + 1 - Byte.MinValue));
+        ReadOnlyList.AllSignedBytes().Select(e => (int)e).AssertListEquals(Enumerable.Range(SByte.MinValue, SByte.MaxValue + 1 - SByte.MinValue));
+        ReadOnlyList.AllUnsigned16BitIntegers().Select(e => (int)e).AssertListEquals(Enumerable.Range(UInt16.MinValue, UInt16.MaxValue + 1 - UInt16.MinValue));
+        ReadOnlyList.AllSigned16BitIntegers().Select(e => (int)e).AssertListEquals(Enumerable.Range(Int16.MinValue, Int16.MaxValue + 1 - Int16.MinValue));
     }
 }
