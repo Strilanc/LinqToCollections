@@ -6,38 +6,19 @@ using LinqToReadOnlyCollections.Collection;
 namespace LinqToReadOnlyCollections.Dictionary {
     ///<summary>Contains extension methods having to do with the IReadOnlyDictionary interface.</summary>
     public static class ReadOnlyDictionary {
-        ///<summary>Exposes a dictionary as a readonly dictionary.</summary>
+        /// <summary>
+        /// Exposes a dictionary as a read-only dictionary.
+        /// Tries to unwrap the dictionary, removing previous AsIList overhead if possible.
+        /// Tries to cast the dictionary, unless the dictionary is not marked as read-only.
+        /// </summary>
         public static IReadOnlyDictionary<TKey, TValue> AsReadOnlyDictionary<TKey, TValue>(this IDictionary<TKey, TValue> dictionary) {
             if (dictionary == null) throw new ArgumentNullException("dictionary");
-            return dictionary as IReadOnlyDictionary<TKey, TValue>
-                ?? new AnonymousReadOnlyDictionary<TKey, TValue>(
-                        dictionary.Keys.AsReadOnlyCollection(),
-                        dictionary.TryGetValue);
+            return DictionaryAdapter<TKey, TValue>.Adapt(dictionary);
         }
-        ///<summary>Exposes a readonly dictionary as an IDictionary (readonly).</summary>
-        ///<remarks>Using AsReadOnlyDictionary on the result will use a cast instead of wrapping more (and AsIDictionary on that will also cast instead of wrap).</remarks>
+        ///<summary>Exposes a read-only dictionary as a dictionary, using a cast if possible.</summary>
         public static IDictionary<TKey, TValue> AsIDictionary<TKey, TValue>(this IReadOnlyDictionary<TKey, TValue> dictionary) {
             if (dictionary == null) throw new ArgumentNullException("dictionary");
-            return dictionary as IDictionary<TKey, TValue> 
-                ?? new DictionaryAdapter<TKey, TValue>(dictionary);
-        }
-        ///<summary>Creates a copy of the given sequence and exposes the copy as a readable dictionary.</summary>
-        public static IReadOnlyDictionary<TKey, TValue> ToReadOnlyDictionary<TKey, TValue>(this IEnumerable<KeyValuePair<TKey, TValue>> sequence) {
-            if (sequence == null) throw new ArgumentNullException("sequence");
-            return sequence.ToDictionary(e => e.Key, e => e.Value);
-        }
-        ///<summary>Exposes the underlying dictionary of a given sequence as a readable dictionary, creating a copy if the underlying type is not a dictionary.</summary>
-        ///<remarks>Just a cast when the sequence is an IReadOnlyDictionary, and equivalent to AsReadOnlyDictionary(IDictionary) when the sequence is an IDictionary.</remarks>
-        public static IReadOnlyDictionary<TKey, TValue> AsElseToReadOnlyDictionary<TKey, TValue>(this IEnumerable<KeyValuePair<TKey, TValue>> sequence) {
-            if (sequence == null) throw new ArgumentNullException("sequence");
-
-            var asReadOnlyDict = sequence as IReadOnlyDictionary<TKey, TValue>;
-            if (asReadOnlyDict != null) return asReadOnlyDict;
-
-            var asDict = sequence as IDictionary<TKey, TValue>;
-            if (asDict != null) return asDict.AsReadOnlyDictionary();
-
-            return sequence.ToReadOnlyDictionary();
+            return DictionaryAdapter<TKey, TValue>.Adapt(dictionary);
         }
 
         ///<summary>Creates a readable dictionary with values derived from the given readable dictionary by the given projection function.</summary>

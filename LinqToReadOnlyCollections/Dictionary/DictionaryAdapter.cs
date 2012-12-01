@@ -1,30 +1,60 @@
 ﻿using System;
 using System.Collections;
 using System.Collections.Generic;
+using System.Collections.ObjectModel;
 using LinqToReadOnlyCollections.Collection;
 
 namespace LinqToReadOnlyCollections.Dictionary {
     ///<summary>Implements an IDictionary that is readonly by delegating calls to an IReadOnlyDictionary.</summary>
     internal sealed class DictionaryAdapter<TKey, TValue> : IDictionary<TKey, TValue>, IReadOnlyDictionary<TKey, TValue> {
-        private readonly IReadOnlyDictionary<TKey, TValue> _dict;
+        public readonly IReadOnlyDictionary<TKey, TValue> SubDictionary;
         
-        public DictionaryAdapter(IReadOnlyDictionary<TKey, TValue> dict) {
-            if (dict == null) throw new ArgumentNullException("dict");
-            this._dict = dict;
+        private DictionaryAdapter(IReadOnlyDictionary<TKey, TValue> dict) {
+            this.SubDictionary = dict;
+        }
+        public static IReadOnlyDictionary<TKey, TValue> From(IReadOnlyDictionary<TKey, TValue> dictionary) {
+            if (dictionary == null) throw new ArgumentNullException("dictionary");
+            return new DictionaryAdapter<TKey, TValue>(dictionary);
+        }
+        public static IReadOnlyDictionary<TKey, TValue> Adapt(IDictionary<TKey, TValue> dictionary) {
+            if (dictionary == null) throw new ArgumentNullException("dictionary");
+
+            if (dictionary.IsReadOnly) {
+                // if it's an adapter, then we can unwrap it
+                var c = dictionary as DictionaryAdapter<TKey, TValue>;
+                if (c != null) return c.SubDictionary;
+
+                // if it's already what we need, great!
+                var r = dictionary as IReadOnlyDictionary<TKey, TValue>;
+                if (r != null) return r;
+            }
+
+            // use existing readonly adapter
+            return new ReadOnlyDictionary<TKey, TValue>(dictionary);
+        }
+        public static IDictionary<TKey, TValue> Adapt(IReadOnlyDictionary<TKey, TValue> dictionary) {
+            if (dictionary == null) throw new ArgumentNullException("dictionary");
+
+            // if it's already a dictionary, we can just return it
+            var r = dictionary as IDictionary<TKey, TValue>;
+            if (r != null) return r;
+
+            // otherwise we need to adapt it
+            return new DictionaryAdapter<TKey, TValue>(dictionary);
         }
 
-        public int Count { get { return _dict.Count; } }
-        public bool ContainsKey(TKey key) { return _dict.ContainsKey(key); }
-        public bool TryGetValue(TKey key, out TValue value) { return _dict.TryGetValue(key, out value); }
-        TValue IReadOnlyDictionary<TKey, TValue>.this[TKey key] { get { return _dict[key]; } }
-        IEnumerable<TKey> IReadOnlyDictionary<TKey, TValue>.Keys { get { return _dict.Keys; } }
-        IEnumerable<TValue> IReadOnlyDictionary<TKey, TValue>.Values { get { return _dict.Values; } }
-        public IEnumerator<KeyValuePair<TKey, TValue>> GetEnumerator() { return _dict.GetEnumerator(); }
-        IEnumerator IEnumerable.GetEnumerator() { return _dict.GetEnumerator(); }
+        public int Count { get { return SubDictionary.Count; } }
+        public bool ContainsKey(TKey key) { return SubDictionary.ContainsKey(key); }
+        public bool TryGetValue(TKey key, out TValue value) { return SubDictionary.TryGetValue(key, out value); }
+        TValue IReadOnlyDictionary<TKey, TValue>.this[TKey key] { get { return SubDictionary[key]; } }
+        IEnumerable<TKey> IReadOnlyDictionary<TKey, TValue>.Keys { get { return SubDictionary.Keys; } }
+        IEnumerable<TValue> IReadOnlyDictionary<TKey, TValue>.Values { get { return SubDictionary.Values; } }
+        public IEnumerator<KeyValuePair<TKey, TValue>> GetEnumerator() { return SubDictionary.GetEnumerator(); }
+        IEnumerator IEnumerable.GetEnumerator() { return SubDictionary.GetEnumerator(); }
 
         public bool Contains(KeyValuePair<TKey, TValue> item) {
             TValue value;
-            return _dict.TryGetValue(item.Key, out value)
+            return SubDictionary.TryGetValue(item.Key, out value)
                 && Equals(item.Value, value);
         }
         public void CopyTo(KeyValuePair<TKey, TValue>[] array, int arrayIndex) {
@@ -38,22 +68,22 @@ namespace LinqToReadOnlyCollections.Dictionary {
         }
         ICollection<TKey> IDictionary<TKey, TValue>.Keys {
             get {
-                return new ReadOnlyCollection<TKey>(
+                return new Collection.ReadOnlyCollection<TKey>(
                     () => Count,
-                    () => _dict.Keys.GetEnumerator()
+                    () => SubDictionary.Keys.GetEnumerator()
                 ).AsICollection();
             }
         }
         ICollection<TValue> IDictionary<TKey, TValue>.Values {
             get {
-                return new ReadOnlyCollection<TValue>(
+                return new Collection.ReadOnlyCollection<TValue>(
                     () => Count,
-                    () => _dict.Values.GetEnumerator()
+                    () => SubDictionary.Values.GetEnumerator()
                 ).AsICollection();
             }
         }
         public TValue this[TKey key] {
-            get { return _dict[key]; }
+            get { return SubDictionary[key]; }
             set { throw new NotSupportedException("Dictionary is read-only."); }
         }
 
