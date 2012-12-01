@@ -45,6 +45,7 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="List\AnonymousReadOnlyListTest.cs" />
+    <Compile Include="List\ListCountCheckTest.cs" />
     <Compile Include="List\ListAdapterTest.cs" />
     <Compile Include="List\ListEmptyTest.cs" />
     <Compile Include="List\ListTakeTest.cs" />
