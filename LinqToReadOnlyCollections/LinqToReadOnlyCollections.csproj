@@ -126,9 +126,9 @@
     <Compile Include="Collection\ReadOnlyCollection.cs" />
     <Compile Include="Collection\ReadOnlyCollectionAsICollection.cs" />
     <Compile Include="Collection\ReadOnlyCollectionExtensions.cs" />
+    <Compile Include="Dictionary\AnonymousReadOnlyDictionary.cs" />
+    <Compile Include="Dictionary\DictionaryAdapter.cs" />
     <Compile Include="Dictionary\ReadOnlyDictionary.cs" />
-    <Compile Include="Dictionary\ReadOnlyDictionaryAsIDictionary.cs" />
-    <Compile Include="Dictionary\ReadOnlyDictionaryExtensions.cs" />
     <Compile Include="List\AbstractReadOnlyList.cs" />
     <Compile Include="List\ListTakeLast.cs" />
     <Compile Include="List\ListCountCheck.cs" />

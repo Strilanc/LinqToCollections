@@ -1,46 +1,68 @@
-﻿using System;
+﻿using System.Collections.Generic;
 using System.Linq;
-using System.Collections;
-using System.Collections.Generic;
+using System;
+using LinqToReadOnlyCollections.Collection;
 
 namespace LinqToReadOnlyCollections.Dictionary {
-    public delegate bool TryGetter<in TKey, TValue>(TKey key, out TValue value);
+    ///<summary>Contains extension methods having to do with the IReadOnlyDictionary interface.</summary>
+    public static class ReadOnlyDictionary {
+        ///<summary>Exposes a dictionary as a readonly dictionary.</summary>
+        public static IReadOnlyDictionary<TKey, TValue> AsReadOnlyDictionary<TKey, TValue>(this IDictionary<TKey, TValue> dictionary) {
+            if (dictionary == null) throw new ArgumentNullException("dictionary");
+            return dictionary as IReadOnlyDictionary<TKey, TValue>
+                ?? new AnonymousReadOnlyDictionary<TKey, TValue>(
+                        dictionary.Keys.AsReadOnlyCollection(),
+                        dictionary.TryGetValue);
+        }
+        ///<summary>Exposes a readonly dictionary as an IDictionary (readonly).</summary>
+        ///<remarks>Using AsReadOnlyDictionary on the result will use a cast instead of wrapping more (and AsIDictionary on that will also cast instead of wrap).</remarks>
+        public static IDictionary<TKey, TValue> AsIDictionary<TKey, TValue>(this IReadOnlyDictionary<TKey, TValue> dictionary) {
+            if (dictionary == null) throw new ArgumentNullException("dictionary");
+            return dictionary as IDictionary<TKey, TValue> 
+                ?? new DictionaryAdapter<TKey, TValue>(dictionary);
+        }
+        ///<summary>Creates a copy of the given sequence and exposes the copy as a readable dictionary.</summary>
+        public static IReadOnlyDictionary<TKey, TValue> ToReadOnlyDictionary<TKey, TValue>(this IEnumerable<KeyValuePair<TKey, TValue>> sequence) {
+            if (sequence == null) throw new ArgumentNullException("sequence");
+            return sequence.ToDictionary(e => e.Key, e => e.Value);
+        }
+        ///<summary>Exposes the underlying dictionary of a given sequence as a readable dictionary, creating a copy if the underlying type is not a dictionary.</summary>
+        ///<remarks>Just a cast when the sequence is an IReadOnlyDictionary, and equivalent to AsReadOnlyDictionary(IDictionary) when the sequence is an IDictionary.</remarks>
+        public static IReadOnlyDictionary<TKey, TValue> AsElseToReadOnlyDictionary<TKey, TValue>(this IEnumerable<KeyValuePair<TKey, TValue>> sequence) {
+            if (sequence == null) throw new ArgumentNullException("sequence");
 
-    ///<summary>A readonly dictionary implemented with delegates passed to its constructor.</summary>
-    public sealed class ReadOnlyDictionary<TKey, TValue> : IReadOnlyDictionary<TKey, TValue> {
-        private readonly IReadOnlyCollection<TKey> _keys;
-        private readonly TryGetter<TKey, TValue> _getter;
+            var asReadOnlyDict = sequence as IReadOnlyDictionary<TKey, TValue>;
+            if (asReadOnlyDict != null) return asReadOnlyDict;
 
-        public ReadOnlyDictionary(IReadOnlyCollection<TKey> keys, TryGetter<TKey, TValue> getter) {
-            if (keys == null) throw new ArgumentNullException("keys");
-            if (getter == null) throw new ArgumentNullException("getter");
-            _keys = keys;
-            _getter = getter;
+            var asDict = sequence as IDictionary<TKey, TValue>;
+            if (asDict != null) return asDict.AsReadOnlyDictionary();
+
+            return sequence.ToReadOnlyDictionary();
         }
 
-        public int Count { get { return _keys.Count; } }
-        public IEnumerable<TKey> Keys { get { return _keys; } }
-        public IEnumerable<TValue> Values { get { return _keys.Select(e => this[e]); } }
+        ///<summary>Creates a readable dictionary with values derived from the given readable dictionary by the given projection function.</summary>
+        public static IReadOnlyDictionary<TKey, TValueOut> Select<TKey, TValueIn, TValueOut>(this IReadOnlyDictionary<TKey, TValueIn> dictionary, Func<TKey, TValueIn, TValueOut> projection) {
+            if (dictionary == null) throw new ArgumentNullException("dictionary");
+            if (projection == null) throw new ArgumentNullException("projection");
+            return new AnonymousReadOnlyDictionary<TKey, TValueOut>(
+                new ReadOnlyCollection<TKey>(() => dictionary.Count, () => dictionary.Keys.GetEnumerator()),
+                (TKey k, out TValueOut v) => {
+                    TValueIn vin;
+                    if (!dictionary.TryGetValue(k, out vin)) {
+                        v = default(TValueOut);
+                        return false;
+                    }
+                    v = projection(k, vin);
+                    return true;
+                }
+            );
+        }
 
-        public bool ContainsKey(TKey key) {
-            TValue v;
-            return _getter(key, out v);
-        }
-        public bool TryGetValue(TKey key, out TValue value) {
-            return _getter(key, out value);
-        }
-        public TValue this[TKey key] { 
-            get {
-                TValue value;
-                if (!_getter(key, out value)) throw new ArgumentOutOfRangeException("key", "!ContainsKey(key)");
-                return value;
-            }
-        }
-        public IEnumerator<KeyValuePair<TKey, TValue>> GetEnumerator() {
-            return _keys.Select(e => new KeyValuePair<TKey, TValue>(e, this[e])).GetEnumerator();
-        }
-        IEnumerator IEnumerable.GetEnumerator() {
-            return GetEnumerator();
+        ///<summary>Creates a readable dictionary with values derived from the given readable dictionary by the given projection function.</summary>
+        public static IReadOnlyDictionary<TKey, TValueOut> Select<TKey, TValueIn, TValueOut>(this IReadOnlyDictionary<TKey, TValueIn> dictionary, Func<TValueIn, TValueOut> projection) {
+            if (dictionary == null) throw new ArgumentNullException("dictionary");
+            if (projection == null) throw new ArgumentNullException("projection");
+            return dictionary.Select((k, v) => projection(v));
         }
     }
 }

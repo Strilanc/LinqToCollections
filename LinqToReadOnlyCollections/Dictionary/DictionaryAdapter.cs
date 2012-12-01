@@ -5,10 +5,10 @@ using LinqToReadOnlyCollections.Collection;
 
 namespace LinqToReadOnlyCollections.Dictionary {
     ///<summary>Implements an IDictionary that is readonly by delegating calls to an IReadOnlyDictionary.</summary>
-    internal sealed class ReadOnlyDictionaryAsIDictionary<TKey, TValue> : IDictionary<TKey, TValue>, IReadOnlyDictionary<TKey, TValue> {
+    internal sealed class DictionaryAdapter<TKey, TValue> : IDictionary<TKey, TValue>, IReadOnlyDictionary<TKey, TValue> {
         private readonly IReadOnlyDictionary<TKey, TValue> _dict;
         
-        public ReadOnlyDictionaryAsIDictionary(IReadOnlyDictionary<TKey, TValue> dict) {
+        public DictionaryAdapter(IReadOnlyDictionary<TKey, TValue> dict) {
             if (dict == null) throw new ArgumentNullException("dict");
             this._dict = dict;
         }
