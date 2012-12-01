@@ -46,7 +46,7 @@ public class CollectionAdapterTest {
     }
     [TestMethod]
     public void CountOptimizationsThroughAdapter() {
-        var ri = new HashSet<int>(new int[5]).AsReadOnlyCollection();
+        var ri = new int[5].AsReadOnlyCollection();
         ri.Skip(10).AssertReferenceEquals(ReadOnlyCollection.Empty<int>());
         ri.Take(10).AssertReferenceEquals(ri);
     }

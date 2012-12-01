@@ -116,7 +116,7 @@ namespace Strilanc.LinqToCollections {
                 () => collection.Count,
                 collection.TryGetMaxCount(),
                 collection.TryGetMinCount(),
-                collection.Reverse().GetEnumerator);
+                Enumerable.Reverse(collection).GetEnumerator);
         }
 
         ///<summary>Returns a readable collection with no items.</summary>

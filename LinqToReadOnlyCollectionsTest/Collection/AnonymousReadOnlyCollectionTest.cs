@@ -48,7 +48,7 @@ public class AnonymousReadOnlyCollectionTest {
     }
     [TestMethod]
     public void AnonCollectionEfficientIterator() {
-        var li = new HashSet<int> {0};
+        var li = new List<int> {0};
         var ri1 = new AnonymousReadOnlyCollection<int>(() => li.Count, () => li.ToArray().AsEnumerable().GetEnumerator());
         var ri2 = new AnonymousReadOnlyCollection<int>(() => li.Count, ((IEnumerable<int>)li).GetEnumerator);
         using (var e1 = ri1.GetEnumerator()) {
@@ -57,7 +57,7 @@ public class AnonymousReadOnlyCollectionTest {
                 e2.MoveNext().AssertIsTrue();
                 li.Add(1);
                 TestUtil.AssertThrows<InvalidOperationException>(() => e2.MoveNext()); // collection modified during iteration
-                e1.MoveNext().AssertIsTrue(); // not using collection iterator
+                e1.MoveNext(); // not using collection iterator
             }
         }
     }
