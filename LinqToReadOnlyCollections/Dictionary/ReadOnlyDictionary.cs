@@ -1,10 +1,8 @@
-﻿using System.Collections.Generic;
-using System.Linq;
-using System;
-using LinqToReadOnlyCollections.Collection;
+﻿using System;
+using System.Collections.Generic;
 
 namespace LinqToReadOnlyCollections.Dictionary {
-    ///<summary>Contains extension methods having to do with the IReadOnlyDictionary interface.</summary>
+    ///<summary>Contains extension methods for readonly dictionaries.</summary>
     public static class ReadOnlyDictionary {
         /// <summary>
         /// Exposes a dictionary as a read-only dictionary.
@@ -21,29 +19,23 @@ namespace LinqToReadOnlyCollections.Dictionary {
             return DictionaryAdapter<TKey, TValue>.Adapt(dictionary);
         }
 
-        ///<summary>Creates a readable dictionary with values derived from the given readable dictionary by the given projection function.</summary>
-        public static IReadOnlyDictionary<TKey, TValueOut> Select<TKey, TValueIn, TValueOut>(this IReadOnlyDictionary<TKey, TValueIn> dictionary, Func<TKey, TValueIn, TValueOut> projection) {
+        ///<summary>Returns a readable dictionary with the same keys, but values determined by projecting the existing key/value pairs.</summary>
+        public static IReadOnlyDictionary<TKey, TResult> Select<TKey, TValue, TResult>(this IReadOnlyDictionary<TKey, TValue> dictionary,
+                                                                                       Func<KeyValuePair<TKey, TValue>, TResult> projection) {
             if (dictionary == null) throw new ArgumentNullException("dictionary");
             if (projection == null) throw new ArgumentNullException("projection");
-            return new AnonymousReadOnlyDictionary<TKey, TValueOut>(
-                new ReadOnlyCollection<TKey>(() => dictionary.Count, () => dictionary.Keys.GetEnumerator()),
-                (TKey k, out TValueOut v) => {
-                    TValueIn vin;
-                    if (!dictionary.TryGetValue(k, out vin)) {
-                        v = default(TValueOut);
+            return new AnonymousReadOnlyDictionary<TKey, TResult>(
+                () => dictionary.Count,
+                dictionary.Keys,
+                (TKey k, out TResult r) => {
+                    TValue v;
+                    if (!dictionary.TryGetValue(k, out v)) {
+                        r = default(TResult);
                         return false;
                     }
-                    v = projection(k, vin);
+                    r = projection(new KeyValuePair<TKey, TValue>(k, v));
                     return true;
-                }
-            );
-        }
-
-        ///<summary>Creates a readable dictionary with values derived from the given readable dictionary by the given projection function.</summary>
-        public static IReadOnlyDictionary<TKey, TValueOut> Select<TKey, TValueIn, TValueOut>(this IReadOnlyDictionary<TKey, TValueIn> dictionary, Func<TValueIn, TValueOut> projection) {
-            if (dictionary == null) throw new ArgumentNullException("dictionary");
-            if (projection == null) throw new ArgumentNullException("projection");
-            return dictionary.Select((k, v) => projection(v));
+                });
         }
     }
 }

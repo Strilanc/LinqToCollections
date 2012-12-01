@@ -40,6 +40,14 @@ internal static class TestUtil {
         for (var i = 0; i < expected.Length; i++)
             actual[i].AssertEquals(expected[i]);
     }
+    public static void AssertDictionaryEquals<TKey, TValue>(this IReadOnlyDictionary<TKey, TValue> actual, IEnumerable<KeyValuePair<TKey, TValue>> keyVals) {
+        var d = keyVals.ToDictionary(e => e.Key, e => e.Value);
+        foreach (var e in actual)
+            d.Contains(e).AssertIsTrue();
+        foreach (var e in d)
+            actual.Contains(e).AssertIsTrue();
+        actual.Count.AssertEquals(d.Count);
+    }
     public static void AssertListEquals<T>(this IReadOnlyList<T> actual, IEnumerable<T> expected) {
         actual.AssertListEquals(expected.ToArray());
     }

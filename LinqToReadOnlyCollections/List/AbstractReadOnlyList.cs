@@ -1,6 +1,7 @@
 ﻿using System.Collections.Generic;
 
 namespace LinqToReadOnlyCollections.List {
+    ///<summary>A partially implemented readonly list.</summary>
     public abstract class AbstractReadOnlyList<T> : IReadOnlyList<T> {
         public abstract int Count { get; }
         public abstract T this[int index] { get; }

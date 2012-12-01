@@ -1,9 +1,9 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using System.Linq;
-using System;
 
 namespace LinqToReadOnlyCollections.List {
-    ///<summary>Contains extension methods related to read-only lists.</summary>
+    ///<summary>Contains extension methods for readonly lists.</summary>
     public static class ReadOnlyList {
         ///<summary>Requires that there be a given minimum number of items in a list, checking whenever it is accessed.</summary>
         internal static IReadOnlyList<T> Require<T>(this IReadOnlyList<T> list, int enforcedMinimumCount) {
