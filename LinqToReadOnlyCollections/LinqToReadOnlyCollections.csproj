@@ -130,9 +130,11 @@
     <Compile Include="Dictionary\ReadOnlyDictionaryAsIDictionary.cs" />
     <Compile Include="Dictionary\ReadOnlyDictionaryExtensions.cs" />
     <Compile Include="List\AbstractReadOnlyList.cs" />
+    <Compile Include="List\ListTakeLast.cs" />
+    <Compile Include="List\ListCountCheck.cs" />
     <Compile Include="List\IBoundedCount.cs" />
     <Compile Include="List\ListEmpty.cs" />
-    <Compile Include="List\ListTake.cs" />
+    <Compile Include="List\ListTakeFirst.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="List\AnonymousReadOnlyList.cs" />
     <Compile Include="List\ReadOnlyList.cs" />

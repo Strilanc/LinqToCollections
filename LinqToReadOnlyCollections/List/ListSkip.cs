@@ -1,38 +1,36 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Linq;
 
 namespace LinqToReadOnlyCollections.List {
+    ///<summary>Manages both the Skip and SkipLast operations on readable lists.</summary>
     internal sealed class ListSkip<T> : AbstractReadOnlyList<T>, IBoundedCount {
         public readonly IReadOnlyList<T> SubList;
-        public readonly int MinSkip;
-        public readonly int MaxSkip;
+        public readonly int Amount;
         public readonly int Offset;
         public int? MaxCount { get; private set; }
         public int MinCount { get; private set; }
 
-        private ListSkip(IReadOnlyList<T> subList, int offset, int minSkip, int maxSkip) {
+        private ListSkip(IReadOnlyList<T> subList, int offset, int amount) {
             this.SubList = subList;
-            this.MinSkip = minSkip;
-            this.MaxSkip = maxSkip;
+            this.Amount = amount;
             this.Offset = offset;
-            var n = subList.TryGetMaxCount() - maxSkip;
+            var n = subList.TryGetMaxCount() - amount;
             this.MaxCount = n.HasValue ? Math.Max(0, n.Value) : (int?)null;
-            this.MinCount = Math.Max(0, subList.TryGetMinCount() - maxSkip);
+            this.MinCount = Math.Max(0, subList.TryGetMinCount() - amount);
         }
-        public static IReadOnlyList<T> From(IReadOnlyList<T> subList, int offset, int minSkip, int maxSkip) {
+        public static IReadOnlyList<T> From(IReadOnlyList<T> subList, int offset, int amount) {
             if (subList == null) throw new ArgumentNullException("subList");
-            if (minSkip < 0) throw new ArgumentOutOfRangeException("minSkip", "minSkip < 0");
-            if (maxSkip < minSkip) throw new ArgumentOutOfRangeException("maxSkip", "maxSkip < minSkip");
-            if (minSkip > subList.Count) throw new ArgumentOutOfRangeException("minSkip", "minSkip > subList.Count");
+            if (amount < 0) throw new ArgumentOutOfRangeException("amount", "amount < 0");
             if (offset < 0) throw new ArgumentOutOfRangeException("offset", "offset < 0");
-            if (offset > maxSkip) throw new ArgumentOutOfRangeException("offset", "offset > maxSkip");
+            if (offset > amount) throw new ArgumentOutOfRangeException("offset", "offset > amount");
 
             // if nothing is skipped, the result is unchanged
-            if (maxSkip == 0) return subList;
+            if (amount == 0) return subList;
 
             // when skipping more than can ever be available, the result is an empty list
             var c = subList.TryGetMaxCount();
-            if (c.HasValue && c.Value <= maxSkip)
+            if (c.HasValue && c.Value <= amount)
                 return ListEmpty<T>.Empty;
 
             // when skipping on top of skipping, the operations can be merged
@@ -41,29 +39,29 @@ namespace LinqToReadOnlyCollections.List {
                 return From(
                     s.SubList,
                     s.Offset + offset,
-                    minSkip == 0 ? s.MinSkip : s.MaxSkip + minSkip,
-                    s.MaxSkip + maxSkip);
+                    s.Amount + amount);
 
-            return new ListSkip<T>(subList, offset, minSkip, maxSkip);
+            return new ListSkip<T>(subList, offset, amount);
         }
 
         public override T this[int index] {
             get {
-                if (index < 0 || index > Count) throw new ArgumentOutOfRangeException("index");
-                return this.SubList[index + this.Offset];
+                if (index < 0 || index >= Count) throw new ArgumentOutOfRangeException("index");
+                return SubList[index + Offset];
             }
         }
         public override int Count {
             get {
-                var n = SubList.Count;
-                if (n < MinSkip) throw new InvalidOperationException("Skipped past end of list.");
-                return Math.Max(0, n - MaxSkip);
+                return Math.Max(0, SubList.Count - Amount);
             }
         }
-
         public override IEnumerator<T> GetEnumerator() {
-            if (SubList.Count < MinSkip) throw new InvalidOperationException("Skipped past end of list.");
-            return base.GetEnumerator();
+            // if only skipping stuff at the end of the last, we can use the normal Take enumerator
+            if (Offset == 0) return Enumerable.Take(SubList, Count).GetEnumerator();
+            // if skipping the whole list, we're golden
+            if (Count == 0) return Enumerable.Empty<T>().GetEnumerator();
+            // otherwise index iterate to avoid scanning skipped sections
+            return EnumerateByIndex();
         }
     }
 }

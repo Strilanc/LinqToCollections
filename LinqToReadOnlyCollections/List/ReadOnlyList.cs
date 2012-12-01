@@ -5,6 +5,13 @@ using System;
 namespace LinqToReadOnlyCollections.List {
     ///<summary>Contains extension methods related to read-only lists.</summary>
     public static class ReadOnlyList {
+        ///<summary>Requires that there be a given minimum number of items in a list, checking whenever it is accessed.</summary>
+        internal static IReadOnlyList<T> Require<T>(this IReadOnlyList<T> list, int enforcedMinimumCount) {
+            if (list == null) throw new ArgumentNullException("list");
+            if (enforcedMinimumCount < 0) throw new ArgumentOutOfRangeException("enforcedMinimumCount", "enforcedMinimumCount < 0");
+            return ListCountCheck<T>.From(list, enforcedMinimumCount);
+        }
+
         /// <summary>
         /// Exposes a list as a read-only list.
         /// Tries to unwrap the list, removing previous AsIList overhead if possible.
@@ -12,62 +19,62 @@ namespace LinqToReadOnlyCollections.List {
         /// </summary>
         public static IReadOnlyList<T> AsReadOnlyList<T>(this IList<T> list) {
             if (list == null) throw new ArgumentNullException("list");
-            return ListAdapter<T>.From(list);
+            return ListAdapter<T>.Adapt(list);
         }
         ///<summary>Exposes a read-only list as a list, using a cast if possible.</summary>
         public static IList<T> AsIList<T>(this IReadOnlyList<T> list) {
             if (list == null) throw new ArgumentNullException("list");
-            return ListAdapter<T>.From(list);
+            return ListAdapter<T>.Adapt(list);
         }
 
         ///<summary>Exposes the end of a readable list, after skipping up to the given number of items, as a readable list.</summary>
         public static IReadOnlyList<T> Skip<T>(this IReadOnlyList<T> list, int maxSkipCount) {
             if (list == null) throw new ArgumentNullException("list");
             if (maxSkipCount < 0) throw new ArgumentOutOfRangeException("maxSkipCount");
-            return ListSkip<T>.From(list, maxSkipCount, 0, maxSkipCount);
+            return ListSkip<T>.From(list, maxSkipCount, maxSkipCount);
         }
         ///<summary>Exposes the start of a readable list, before skipping down to the given number of items at the end, as a readable list.</summary>
         public static IReadOnlyList<T> SkipLast<T>(this IReadOnlyList<T> list, int maxSkipCount) {
             if (list == null) throw new ArgumentNullException("list");
             if (maxSkipCount < 0) throw new ArgumentOutOfRangeException("maxSkipCount");
-            return ListSkip<T>.From(list, 0, 0, maxSkipCount);
+            return ListSkip<T>.From(list, 0, maxSkipCount);
         }
-        ///<summary>Exposes the end of a readable list, after skipping exactly the given number of items, as a readable list.</summary>
-        public static IReadOnlyList<T> SkipExact<T>(this IReadOnlyList<T> list, int exactSkipCount) {
-            if (list == null) throw new ArgumentNullException("list");
-            if (exactSkipCount < 0 || exactSkipCount > list.Count) throw new ArgumentOutOfRangeException("exactSkipCount");
-            return ListSkip<T>.From(list, exactSkipCount, exactSkipCount, exactSkipCount);
-        }
-        ///<summary>Exposes the start of a readable list, before skipping exactly the given number of items at the end, as a readable list.</summary>
-        public static IReadOnlyList<T> SkipLastExact<T>(this IReadOnlyList<T> list, int exactSkipCount) {
-            if (list == null) throw new ArgumentNullException("list");
-            if (exactSkipCount < 0 || exactSkipCount > list.Count) throw new ArgumentOutOfRangeException("exactSkipCount");
-            return ListSkip<T>.From(list, 0, exactSkipCount, exactSkipCount);
-        }
-
         ///<summary>Exposes the start of a readable list, up to the given number of items, as a readable list.</summary>
         public static IReadOnlyList<T> Take<T>(this IReadOnlyList<T> list, int maxTakeCount) {
             if (list == null) throw new ArgumentNullException("list");
             if (maxTakeCount < 0) throw new ArgumentOutOfRangeException("maxTakeCount");
-            return ListTake<T>.From(list, 0, maxTakeCount, isTakeLast: false);
+            return ListTakeFirst<T>.From(list, maxTakeCount);
         }
         ///<summary>Exposes the end of a readable list, down to the given number of items, as a readable list.</summary>
         public static IReadOnlyList<T> TakeLast<T>(this IReadOnlyList<T> list, int maxTakeCount) {
             if (list == null) throw new ArgumentNullException("list");
             if (maxTakeCount < 0) throw new ArgumentOutOfRangeException("maxTakeCount");
-            return ListTake<T>.From(list, 0, maxTakeCount, isTakeLast: true);
+            return ListTakeLast<T>.From(list, maxTakeCount);
+        }
+        
+        ///<summary>Exposes the end of a readable list, after skipping exactly the given number of items, as a readable list.</summary>
+        public static IReadOnlyList<T> SkipExact<T>(this IReadOnlyList<T> list, int exactSkipCount) {
+            if (list == null) throw new ArgumentNullException("list");
+            if (exactSkipCount < 0 || exactSkipCount > list.Count) throw new ArgumentOutOfRangeException("exactSkipCount");
+            return list.Require(exactSkipCount).Skip(exactSkipCount);
+        }
+        ///<summary>Exposes the start of a readable list, before skipping exactly the given number of items at the end, as a readable list.</summary>
+        public static IReadOnlyList<T> SkipLastExact<T>(this IReadOnlyList<T> list, int exactSkipCount) {
+            if (list == null) throw new ArgumentNullException("list");
+            if (exactSkipCount < 0 || exactSkipCount > list.Count) throw new ArgumentOutOfRangeException("exactSkipCount");
+            return list.Require(exactSkipCount).SkipLast(exactSkipCount);
         }
         ///<summary>Exposes the start of a readable list, up to exactly the given number of items, as a readable list.</summary>
         public static IReadOnlyList<T> TakeExact<T>(this IReadOnlyList<T> list, int exactTakeCount) {
             if (list == null) throw new ArgumentNullException("list");
             if (exactTakeCount < 0 || exactTakeCount > list.Count) throw new ArgumentOutOfRangeException("exactTakeCount");
-            return ListTake<T>.From(list, exactTakeCount, exactTakeCount, isTakeLast: false);
+            return list.Require(exactTakeCount).Take(exactTakeCount);
         }
         ///<summary>Exposes the end of a readable list, down to exactly the given number of items, as a readable list.</summary>
         public static IReadOnlyList<T> TakeLastExact<T>(this IReadOnlyList<T> list, int exactTakeCount) {
             if (list == null) throw new ArgumentNullException("list");
             if (exactTakeCount < 0 || exactTakeCount > list.Count) throw new ArgumentOutOfRangeException("exactTakeCount");
-            return ListTake<T>.From(list, exactTakeCount, exactTakeCount, isTakeLast: true);
+            return list.Require(exactTakeCount).TakeLast(exactTakeCount);
         }
 
         ///<summary>Projects each element of a readable list into a new form and exposes the results as a readable list.</summary>

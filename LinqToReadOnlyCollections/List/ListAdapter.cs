@@ -10,12 +10,15 @@ namespace LinqToReadOnlyCollections.List {
         public int MinCount { get; private set; }
         
         private ListAdapter(IReadOnlyList<T> list) {
-            if (list == null) throw new ArgumentNullException("list");
             this.List = list;
             this.MaxCount = list.TryGetMaxCount();
             this.MinCount = list.TryGetMinCount();
         }
-        public static IReadOnlyList<T> From(IList<T> list) {
+        public static IReadOnlyList<T> From(IReadOnlyList<T> list) {
+            if (list == null) throw new ArgumentNullException("list");
+            return new ListAdapter<T>(list);
+        }
+        public static IReadOnlyList<T> Adapt(IList<T> list) {
             if (list == null) throw new ArgumentNullException("list");
 
             if (list.IsReadOnly) {
@@ -31,7 +34,7 @@ namespace LinqToReadOnlyCollections.List {
             // use existing readonly adapter
             return new ReadOnlyCollection<T>(list);
         }
-        public static IList<T> From(IReadOnlyList<T> list) {
+        public static IList<T> Adapt(IReadOnlyList<T> list) {
             if (list == null) throw new ArgumentNullException("list");
 
             // if it's already a list, we can just return it
@@ -43,9 +46,9 @@ namespace LinqToReadOnlyCollections.List {
         }
 
         // delegate methods for IReadOnlyList
-        public override T this[int index] { get { return this.List[index]; } }
-        public override int Count { get { return this.List.Count; } }
-        public override IEnumerator<T> GetEnumerator() { return this.List.GetEnumerator(); }
+        public override T this[int index] { get { return List[index]; } }
+        public override int Count { get { return List.Count; } }
+        public override IEnumerator<T> GetEnumerator() { return List.GetEnumerator(); }
 
         // implement non-mutating methods for IList
         public bool IsReadOnly { get { return true; } }

@@ -54,9 +54,9 @@ namespace LinqToReadOnlyCollections.List {
             } 
         }
         public override IEnumerator<T> GetEnumerator() {
-            return this._optionalEfficientIterator == null 
-                 ? base.GetEnumerator() 
-                 : this._optionalEfficientIterator.GetEnumerator();
+            return _optionalEfficientIterator == null 
+                 ? EnumerateByIndex() 
+                 : _optionalEfficientIterator.GetEnumerator();
         }
     }
 }
