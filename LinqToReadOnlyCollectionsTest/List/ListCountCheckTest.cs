@@ -10,24 +10,24 @@ public class ListCountCheckTest {
     public void ExactTakeSkip() {
         // matches Take
         foreach (var i in 50.Range()) {
-            50.Range().TakeExact(i).AssertListEquals(50.Range().Take(i));
-            50.Range().TakeLastExact(i).AssertListEquals(50.Range().TakeLast(i));
-            50.Range().SkipExact(i).AssertListEquals(50.Range().Skip(i));
-            50.Range().SkipLastExact(i).AssertListEquals(50.Range().SkipLast(i));
+            50.Range().TakeRequire(i).AssertListEquals(50.Range().Take(i));
+            50.Range().TakeLastRequire(i).AssertListEquals(50.Range().TakeLast(i));
+            50.Range().SkipRequire(i).AssertListEquals(50.Range().Skip(i));
+            50.Range().SkipLastRequire(i).AssertListEquals(50.Range().SkipLast(i));
         }
 
         // checks count
-        TestUtil.AssertThrows<ArgumentException>(() => 50.Range().TakeExact(51));
-        TestUtil.AssertThrows<ArgumentException>(() => 50.Range().TakeLastExact(51));
-        TestUtil.AssertThrows<ArgumentException>(() => 50.Range().SkipExact(51));
-        TestUtil.AssertThrows<ArgumentException>(() => 50.Range().SkipLastExact(51));
+        TestUtil.AssertThrows<ArgumentException>(() => 50.Range().TakeRequire(51));
+        TestUtil.AssertThrows<ArgumentException>(() => 50.Range().TakeLastRequire(51));
+        TestUtil.AssertThrows<ArgumentException>(() => 50.Range().SkipRequire(51));
+        TestUtil.AssertThrows<ArgumentException>(() => 50.Range().SkipLastRequire(51));
 
         // continues to check count
         var li = 51.Range().ToList();
-        var ri = li.TakeExact(51);
-        var ri2 = li.TakeLastExact(51);
-        var ri3 = li.SkipExact(51);
-        var ri4 = li.SkipLastExact(51);
+        var ri = li.TakeRequire(51);
+        var ri2 = li.TakeLastRequire(51);
+        var ri3 = li.SkipRequire(51);
+        var ri4 = li.SkipLastRequire(51);
         ri.AssertListEquals(li);
         ri2.AssertListEquals(li);
         ri3.AssertListIsEmpty();
@@ -41,20 +41,20 @@ public class ListCountCheckTest {
     [TestMethod]
     public void CountCheckOptimizesAcrossMostThings() {
         var r = 5.Range();
-        r.TakeLastExact(5).AssertReferenceEquals(r);
-        r.SkipLastExact(5).AssertReferenceEquals(ReadOnlyList.Empty<int>());
-        r.TakeExact(5).AssertReferenceEquals(r);
-        r.SkipExact(5).AssertReferenceEquals(ReadOnlyList.Empty<int>());
-        r.TakeLastExact(0).AssertReferenceEquals(ReadOnlyList.Empty<int>());
-        r.SkipLastExact(0).AssertReferenceEquals(r);
-        r.TakeExact(0).AssertReferenceEquals(ReadOnlyList.Empty<int>());
-        r.SkipExact(0).AssertReferenceEquals(r);
+        r.TakeLastRequire(5).AssertReferenceEquals(r);
+        r.SkipLastRequire(5).AssertReferenceEquals(ReadOnlyList.Empty<int>());
+        r.TakeRequire(5).AssertReferenceEquals(r);
+        r.SkipRequire(5).AssertReferenceEquals(ReadOnlyList.Empty<int>());
+        r.TakeLastRequire(0).AssertReferenceEquals(ReadOnlyList.Empty<int>());
+        r.SkipLastRequire(0).AssertReferenceEquals(r);
+        r.TakeRequire(0).AssertReferenceEquals(ReadOnlyList.Empty<int>());
+        r.SkipRequire(0).AssertReferenceEquals(r);
 
         var x = new Func<IReadOnlyList<int>, int, IReadOnlyList<int>>[] {
             ReadOnlyList.Skip, 
-            ReadOnlyList.SkipLastExact, 
-            ReadOnlyList.TakeExact, 
-            ReadOnlyList.TakeLastExact,
+            ReadOnlyList.SkipLastRequire, 
+            ReadOnlyList.TakeRequire, 
+            ReadOnlyList.TakeLastRequire,
             (e,i) => (IReadOnlyList<int>)e.AsIList()
         };
         foreach (var e in x) {
