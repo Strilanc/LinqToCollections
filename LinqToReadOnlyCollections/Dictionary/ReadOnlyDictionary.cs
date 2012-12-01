@@ -2,15 +2,11 @@
 using System.Linq;
 using System.Collections;
 using System.Collections.Generic;
-using System.Diagnostics;
-using System.Diagnostics.CodeAnalysis;
 
 namespace LinqToReadOnlyCollections.Dictionary {
     public delegate bool TryGetter<in TKey, TValue>(TKey key, out TValue value);
 
-    ///<summary>Utility class for implementing a readable dictionary via delegates.</summary>
-    [DebuggerDisplay("{ToString()}")]
-    [SuppressMessage("Microsoft.Naming", "CA1710:IdentifiersShouldHaveCorrectSuffix")]
+    ///<summary>A readonly dictionary implemented with delegates passed to its constructor.</summary>
     public sealed class ReadOnlyDictionary<TKey, TValue> : IReadOnlyDictionary<TKey, TValue> {
         private readonly IReadOnlyCollection<TKey> _keys;
         private readonly TryGetter<TKey, TValue> _getter;
@@ -36,7 +32,7 @@ namespace LinqToReadOnlyCollections.Dictionary {
         public TValue this[TKey key] { 
             get {
                 TValue value;
-                if (!_getter(key, out value)) throw new ArgumentOutOfRangeException("key", "Key not in dictionary.");
+                if (!_getter(key, out value)) throw new ArgumentOutOfRangeException("key", "!ContainsKey(key)");
                 return value;
             }
         }
@@ -45,13 +41,6 @@ namespace LinqToReadOnlyCollections.Dictionary {
         }
         IEnumerator IEnumerable.GetEnumerator() {
             return GetEnumerator();
-        }
-
-        public override string ToString() {
-            const int MaxPreviewItemCount = 10;
-            var initialItems = String.Join(", ", this.Take(10));
-            var suffix = Count > MaxPreviewItemCount ? "..." : "]";
-            return "Count: " + Count + ", Items: [" + initialItems + suffix;
         }
     }
 }

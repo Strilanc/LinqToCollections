@@ -2,7 +2,7 @@
 using System.Collections.Generic;
 
 namespace LinqToReadOnlyCollections.List {
-    ///<summary>Implements a readonly list implemented with delegates passed to its constructor.</summary>
+    ///<summary>A readonly list implemented with delegates passed to its constructor.</summary>
     public sealed class AnonymousReadOnlyList<T> : AbstractReadOnlyList<T>, IBoundedCount {
         private readonly int? _maxCount;
         private readonly int _minCount;
