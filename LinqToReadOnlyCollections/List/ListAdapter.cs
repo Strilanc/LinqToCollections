@@ -21,7 +21,7 @@ namespace LinqToReadOnlyCollections.List {
         public static IReadOnlyList<T> Adapt(IList<T> list) {
             if (list == null) throw new ArgumentNullException("list");
 
-            if (list.IsReadOnly) {
+            if (list.IsReadOnly && !(list is T[])) {
                 // if it's an adapter, then we can unwrap it
                 var c = list as ListAdapter<T>;
                 if (c != null) return c.List;

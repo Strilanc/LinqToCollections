@@ -23,7 +23,7 @@ internal static class TestUtil {
         }
     }
     public static void AssertSequenceEquals<T>(this IEnumerable<T> actual, IEnumerable<T> expected) {
-        actual.AssertReferenceEquals(expected.ToArray());
+        actual.AssertSequenceEquals(expected.ToArray());
     }
     public static void AssertSequenceEquals<T>(this IEnumerable<T> actual, params T[] expected) {
         if (actual.SequenceEqual(expected)) return;
