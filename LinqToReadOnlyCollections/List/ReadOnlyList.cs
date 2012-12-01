@@ -163,9 +163,9 @@ namespace LinqToReadOnlyCollections.List {
         }
 
         ///<summary>Returns a readable list composed of the non-negative signed bytes less than the given count, in increasing order starting at 0.</summary>
-        public static IReadOnlyList<short> Range(this sbyte count) {
+        public static IReadOnlyList<sbyte> Range(this sbyte count) {
             if (count < 0) throw new ArgumentOutOfRangeException("count");
-            return new AnonymousReadOnlyList<short>(count, i => (short)i);
+            return new AnonymousReadOnlyList<sbyte>(count, i => (sbyte)i);
         }
         ///<summary>Returns a readable list composed of the bytes less than the given count, in increasing order starting at 0.</summary>
         public static IReadOnlyList<byte> Range(this byte count) {
