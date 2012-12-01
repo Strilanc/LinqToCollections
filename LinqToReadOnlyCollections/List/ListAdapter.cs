@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using System.Collections.ObjectModel;
 
 namespace LinqToReadOnlyCollections.List {
-    ///<summary>Exposes a read only list as a mutable list that doesn't support mutation.</summary>
+    ///<summary>Exposes a readonly list as a mutable list that doesn't support mutation.</summary>
     internal sealed class ListAdapter<T> : AbstractReadOnlyList<T>, IList<T>, IBoundedCount {
         public readonly IReadOnlyList<T> List;
         public int? MaxCount { get; private set; }

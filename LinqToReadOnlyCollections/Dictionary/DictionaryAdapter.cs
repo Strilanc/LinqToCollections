@@ -1,12 +1,11 @@
 ﻿using System;
-using System.Collections;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using LinqToReadOnlyCollections.Collection;
 
 namespace LinqToReadOnlyCollections.Dictionary {
-    ///<summary>Implements an IDictionary that is readonly by delegating calls to an IReadOnlyDictionary.</summary>
-    internal sealed class DictionaryAdapter<TKey, TValue> : IDictionary<TKey, TValue>, IReadOnlyDictionary<TKey, TValue> {
+    ///<summary>Exposes a readonly dictionary as a mutable dictionary that doesn't support mutation.</summary>
+    internal sealed class DictionaryAdapter<TKey, TValue> : AbstractReadOnlyDictionary<TKey, TValue>, IDictionary<TKey, TValue> {
         public readonly IReadOnlyDictionary<TKey, TValue> SubDictionary;
         
         private DictionaryAdapter(IReadOnlyDictionary<TKey, TValue> dict) {
@@ -43,14 +42,9 @@ namespace LinqToReadOnlyCollections.Dictionary {
             return new DictionaryAdapter<TKey, TValue>(dictionary);
         }
 
-        public int Count { get { return SubDictionary.Count; } }
-        public bool ContainsKey(TKey key) { return SubDictionary.ContainsKey(key); }
-        public bool TryGetValue(TKey key, out TValue value) { return SubDictionary.TryGetValue(key, out value); }
-        TValue IReadOnlyDictionary<TKey, TValue>.this[TKey key] { get { return SubDictionary[key]; } }
-        IEnumerable<TKey> IReadOnlyDictionary<TKey, TValue>.Keys { get { return SubDictionary.Keys; } }
-        IEnumerable<TValue> IReadOnlyDictionary<TKey, TValue>.Values { get { return SubDictionary.Values; } }
-        public IEnumerator<KeyValuePair<TKey, TValue>> GetEnumerator() { return SubDictionary.GetEnumerator(); }
-        IEnumerator IEnumerable.GetEnumerator() { return SubDictionary.GetEnumerator(); }
+        public override int Count { get { return SubDictionary.Count; } }
+        public override bool TryGetValue(TKey key, out TValue value) { return SubDictionary.TryGetValue(key, out value); }
+        public override IEnumerable<TKey> Keys { get { return SubDictionary.Keys; } }
 
         public bool Contains(KeyValuePair<TKey, TValue> item) {
             TValue value;
@@ -82,7 +76,7 @@ namespace LinqToReadOnlyCollections.Dictionary {
                 ).AsICollection();
             }
         }
-        public TValue this[TKey key] {
+        TValue IDictionary<TKey, TValue>.this[TKey key] {
             get { return SubDictionary[key]; }
             set { throw new NotSupportedException("Dictionary is read-only."); }
         }
