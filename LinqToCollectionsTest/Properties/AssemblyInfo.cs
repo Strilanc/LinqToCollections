@@ -1,17 +1,16 @@
-﻿using System;
-using System.Reflection;
+﻿using System.Reflection;
+using System.Runtime.CompilerServices;
 using System.Runtime.InteropServices;
-using System.Diagnostics.CodeAnalysis;
 
 // General Information about an assembly is controlled through the following 
 // set of attributes. Change these attribute values to modify the information
 // associated with an assembly.
-[assembly: AssemblyTitle("LinqToReadOnlyCollections")]
-[assembly: AssemblyDescription("Readable queryable collection classes.")]
+[assembly: AssemblyTitle("LinqToCollectionsTest")]
+[assembly: AssemblyDescription("")]
 [assembly: AssemblyConfiguration("")]
 [assembly: AssemblyCompany("")]
-[assembly: AssemblyProduct("LinqToReadOnlyCollections")]
-[assembly: AssemblyCopyright("BSD")]
+[assembly: AssemblyProduct("LinqToCollectionsTest")]
+[assembly: AssemblyCopyright("Copyright ©  2012")]
 [assembly: AssemblyTrademark("")]
 [assembly: AssemblyCulture("")]
 
@@ -21,7 +20,7 @@ using System.Diagnostics.CodeAnalysis;
 [assembly: ComVisible(false)]
 
 // The following GUID is for the ID of the typelib if this project is exposed to COM
-[assembly: Guid("8d0e3fdd-8436-4f8f-bc10-164f4af09836")]
+[assembly: Guid("cdfe15af-25d6-432d-bfb2-4a49f262b211")]
 
 // Version information for an assembly consists of the following four values:
 //
