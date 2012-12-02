@@ -6,24 +6,20 @@ namespace Strilanc.LinqToCollections {
 
     ///<summary>A readonly dictionary implemented with delegates passed to its constructor.</summary>
     public sealed class AnonymousReadOnlyDictionary<TKey, TValue> : AbstractReadOnlyDictionary<TKey, TValue> {
-        private readonly IReadOnlyCollection<TKey> _keys;
+        private readonly Func<int> _counter;
+        private readonly IEnumerable<TKey> _keys;
         private readonly TryGetter<TKey, TValue> _getter;
 
-        public AnonymousReadOnlyDictionary(IReadOnlyCollection<TKey> keys, TryGetter<TKey, TValue> getter) {
-            if (keys == null) throw new ArgumentNullException("keys");
-            if (getter == null) throw new ArgumentNullException("getter");
-            _keys = keys;
-            _getter = getter;
-        }
         public AnonymousReadOnlyDictionary(Func<int> counter, IEnumerable<TKey> keys, TryGetter<TKey, TValue> getter) {
             if (counter == null) throw new ArgumentNullException("counter");
             if (keys == null) throw new ArgumentNullException("keys");
             if (getter == null) throw new ArgumentNullException("getter");
-            _keys = new AnonymousReadOnlyCollection<TKey>(counter, keys.GetEnumerator);
+            _counter = counter;
+            _keys = keys;
             _getter = getter;
         }
 
-        public override int Count { get { return _keys.Count; } }
+        public override int Count { get { return _counter(); } }
         public override IEnumerable<TKey> Keys { get { return _keys; } }
         public override bool TryGetValue(TKey key, out TValue value) {
             return _getter(key, out value);
