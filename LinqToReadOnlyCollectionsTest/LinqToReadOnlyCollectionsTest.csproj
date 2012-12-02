@@ -46,10 +46,6 @@
   <ItemGroup>
     <Compile Include="Collection\AnonymousReadOnlyCollectionTest.cs" />
     <Compile Include="Collection\CollectionAdapterTest.cs" />
-    <Compile Include="Collection\CollectionCountCheckTest.cs" />
-    <Compile Include="Collection\CollectionEmptyTest.cs" />
-    <Compile Include="Collection\CollectionSkipTest.cs" />
-    <Compile Include="Collection\CollectionTakeTest.cs" />
     <Compile Include="Collection\ReadOnlyCollectionTest.cs" />
     <Compile Include="Dictionary\AnonymousReadOnlyDictionaryTest.cs" />
     <Compile Include="Dictionary\DictionaryAdapterTest.cs" />

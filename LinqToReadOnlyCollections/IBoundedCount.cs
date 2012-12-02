@@ -3,6 +3,10 @@ using System.Collections;
 using System.Collections.Generic;
 
 namespace Strilanc.LinqToCollections {
+    /// <summary>
+    /// Provides optional bounds on the size a collection can be.
+    /// Checked for by methods like Take and Skip in order to perform optimizations.
+    /// </summary>
     internal interface IBoundedCount {
         int? MaxCount { get; }
         int MinCount { get; }

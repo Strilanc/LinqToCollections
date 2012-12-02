@@ -1,4 +1,5 @@
-﻿using Strilanc.LinqToCollections;
+﻿using System.Collections.Generic;
+using Strilanc.LinqToCollections;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 using System.Linq;
 
@@ -11,5 +12,9 @@ public class ReadOnlyDictionaryTest {
             .Select(e => e.Key + e.Value)
             .AssertDictionaryEquals(
                 5.Range().ToDictionary(i => i, i => i * i + i));
+    }
+    [TestMethod]
+    public void Empty() {
+        ReadOnlyDictionary.Empty<int, int>().AssertDictionaryEquals(new Dictionary<int, int>());
     }
 }

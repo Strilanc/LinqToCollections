@@ -21,7 +21,7 @@ public class CollectionAdapterTest {
         li.AssertSequenceEquals(5.CRange());
         li.Count.AssertEquals(5);
         li.IsReadOnly.AssertIsTrue();
-        foreach (var i in 10.CRange().Select(e => e - 1)) {
+        foreach (var i in 10.Range().Select(e => e - 1)) {
             li.Contains(i).AssertEquals(i >= 0 && i < 5);
         }
         var d = new int[10];
@@ -43,11 +43,5 @@ public class CollectionAdapterTest {
         // when general collection is marked readonly, no wrapping is done
         var ri = li.AsReadOnly();
         ri.AsReadOnlyCollection().AssertReferenceEquals(ri);
-    }
-    [TestMethod]
-    public void CountOptimizationsThroughAdapter() {
-        var ri = new int[5].AsReadOnlyCollection();
-        ri.Skip(10).AssertReferenceEquals(ReadOnlyCollection.Empty<int>());
-        ri.Take(10).AssertReferenceEquals(ri);
     }
 }

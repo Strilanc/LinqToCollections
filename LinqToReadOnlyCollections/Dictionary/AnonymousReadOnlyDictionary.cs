@@ -10,6 +10,9 @@ namespace Strilanc.LinqToCollections {
         private readonly IEnumerable<TKey> _keys;
         private readonly TryGetter<TKey, TValue> _getter;
 
+        public AnonymousReadOnlyDictionary(IReadOnlyCollection<TKey> keys, TryGetter<TKey, TValue> getter)
+            : this(() => keys.Count, keys, getter) {
+        }
         public AnonymousReadOnlyDictionary(Func<int> counter, IEnumerable<TKey> keys, TryGetter<TKey, TValue> getter) {
             if (counter == null) throw new ArgumentNullException("counter");
             if (keys == null) throw new ArgumentNullException("keys");

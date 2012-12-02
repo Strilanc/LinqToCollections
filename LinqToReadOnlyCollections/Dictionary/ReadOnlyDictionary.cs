@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Linq;
 
 namespace Strilanc.LinqToCollections {
     ///<summary>Contains extension methods for readonly dictionaries.</summary>
@@ -35,6 +36,17 @@ namespace Strilanc.LinqToCollections {
                     }
                     r = projection(new KeyValuePair<TKey, TValue>(k, v));
                     return true;
+                });
+        }
+        
+        ///<summary>Returns a readable dictionary with no items.</summary>
+        public static IReadOnlyDictionary<TKey, TValue> Empty<TKey, TValue>() {
+            return new AnonymousReadOnlyDictionary<TKey, TValue>(
+                () => 0,
+                Enumerable.Empty<TKey>(),
+                (TKey key, out TValue value) => {
+                    value = default(TValue);
+                    return false;
                 });
         }
     }

@@ -127,10 +127,6 @@
     <Compile Include="Collection\AbstractReadOnlyCollection.cs" />
     <Compile Include="Collection\AnonymousReadOnlyCollection.cs" />
     <Compile Include="Collection\CollectionAdapter.cs" />
-    <Compile Include="Collection\CollectionCountCheck.cs" />
-    <Compile Include="Collection\CollectionSkip.cs" />
-    <Compile Include="Collection\CollectionTakeFirst.cs" />
-    <Compile Include="Collection\CollectionTakeLast.cs" />
     <Compile Include="Collection\ReadOnlyCollection.cs" />
     <Compile Include="Dictionary\AnonymousReadOnlyDictionary.cs" />
     <Compile Include="Dictionary\AbstractReadOnlyDictionary.cs" />
