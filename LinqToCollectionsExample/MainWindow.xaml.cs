@@ -52,7 +52,8 @@ namespace LinqToCollectionsExample {
                 b.SkipLastRequire(a));
 
             Show("Partition C by A, concatenating", (a, b, c) => 
-                c.Partition(a).Select(e => String.Join("", e)));
+                from g in c.Partition(a) 
+                select String.Join("", g));
 
             Show("Cube map", (a, b, c) => {
                 var count = 100;
