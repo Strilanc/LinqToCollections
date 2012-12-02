@@ -13,7 +13,7 @@ public class ReadOnlyListTest {
         TestUtil.AssertThrows<ArgumentException>(() => ((IReadOnlyList<int>)null).Select((e, i) => i));
         TestUtil.AssertThrows<ArgumentException>(() => new int[0].AsReadOnlyList().Select((Func<int, int, int>)null));
 
-        3.Range().Select(i => i * i).AssertSequenceEquals(0, 1, 4);
+        3.Range().Select(i => i * i).AssertListEquals(0, 1, 4);
         5.Range().Select(i => i * i).AssertListEquals(Enumerable.Range(0, 5).Select(i => i * i));
         10.Range().Select(i => i + i).AssertListEquals(Enumerable.Range(0, 10).Select(i => i + i));
         0.Range().Select(i => i).AssertSequenceIsEmpty();
@@ -92,5 +92,87 @@ public class ReadOnlyListTest {
         ReadOnlyList.AllSignedBytes().Select(e => (int)e).AssertListEquals(Enumerable.Range(SByte.MinValue, SByte.MaxValue + 1 - SByte.MinValue));
         ReadOnlyList.AllUnsigned16BitIntegers().Select(e => (int)e).AssertListEquals(Enumerable.Range(UInt16.MinValue, UInt16.MaxValue + 1 - UInt16.MinValue));
         ReadOnlyList.AllSigned16BitIntegers().Select(e => (int)e).AssertListEquals(Enumerable.Range(Int16.MinValue, Int16.MaxValue + 1 - Int16.MinValue));
+    }
+    [TestMethod]
+    public void Partition() {
+        TestUtil.AssertThrows<ArgumentNullException>(() => (null as IReadOnlyList<int>).Partition(1));
+        TestUtil.AssertThrows<ArgumentOutOfRangeException>(() => 1.Range().Partition(0));
+        TestUtil.AssertThrows<ArgumentOutOfRangeException>(() => 1.Range().Partition(-1));
+
+        var ps = 6.Range().Select(e => e.Range().Partition(3).Select(f => f.ToArray()).ToArray()).ToArray();
+        ps[0].AssertListIsEmpty();
+        ps[1].Length.AssertEquals(1);
+        ps[2].Length.AssertEquals(1);
+        ps[3].Length.AssertEquals(1);
+        ps[4].Length.AssertEquals(2);
+        ps[5].Length.AssertEquals(2);
+
+        ps[1][0].AssertListEquals(0);
+        ps[2][0].AssertListEquals(0, 1);
+        ps[3][0].AssertListEquals(0, 1, 2);
+        ps[4][0].AssertListEquals(0, 1, 2);
+        ps[4][1].AssertListEquals(3);
+        ps[5][0].AssertListEquals(0, 1, 2);
+        ps[5][1].AssertListEquals(3, 4);
+
+        100.Range().Partition(1).Select(e => e.Single()).AssertListEquals(100.Range());
+        100.Range().Partition(503).Single().AssertListEquals(100.Range());
+    }
+
+    [TestMethod]
+    public void Stride() {
+        TestUtil.AssertThrows<ArgumentNullException>(() => (null as IReadOnlyList<int>).Stride(1));
+        TestUtil.AssertThrows<ArgumentOutOfRangeException>(() => 1.Range().Stride(0));
+        TestUtil.AssertThrows<ArgumentOutOfRangeException>(() => 1.Range().Stride(-1));
+
+        var ps = 6.Range().Select(e => e.Range().Stride(3).ToArray()).ToArray();
+        ps[0].AssertListIsEmpty();
+        ps[1].AssertListEquals(0);
+        ps[2].AssertListEquals(0);
+        ps[3].AssertListEquals(0);
+        ps[4].AssertListEquals(0, 3);
+        ps[5].AssertListEquals(0, 3);
+
+        var qs = 8.Range().Select(e => 5.Range().Stride(e + 1).ToArray()).ToArray();
+        qs[0].AssertListEquals(0, 1, 2, 3, 4);
+        qs[1].AssertListEquals(0, 2, 4);
+        qs[2].AssertListEquals(0, 3);
+        qs[3].AssertListEquals(0, 4);
+        qs[4].AssertListEquals(0);
+        qs[5].AssertListEquals(0);
+        qs[6].AssertListEquals(0);
+        qs[7].AssertListEquals(0);
+    }
+    [TestMethod]
+    public void Deinterleave() {
+        TestUtil.AssertThrows<ArgumentNullException>(() => (null as IReadOnlyList<int>).Deinterleave(1));
+        TestUtil.AssertThrows<ArgumentOutOfRangeException>(() => 1.Range().Deinterleave(0));
+        TestUtil.AssertThrows<ArgumentOutOfRangeException>(() => 1.Range().Deinterleave(-1));
+
+        var ps = 6.Range().Select(e => e.Range().Deinterleave(3).Select(f => f.ToArray()).ToArray()).ToArray();
+        Assert.IsTrue(ps.All(e => e.Length == 3));
+
+        ps[0][0].AssertListIsEmpty();
+        ps[0][1].AssertListIsEmpty();
+        ps[0][2].AssertListIsEmpty();
+        ps[1][0].AssertListEquals(0);
+        ps[1][1].AssertListIsEmpty();
+        ps[1][2].AssertListIsEmpty();
+        ps[2][0].AssertListEquals(0);
+        ps[2][1].AssertListEquals(1);
+        ps[2][2].AssertListIsEmpty();
+        ps[3][0].AssertListEquals(0);
+        ps[3][1].AssertListEquals(1);
+        ps[3][2].AssertListEquals(2);
+        ps[4][0].AssertListEquals(0, 3);
+        ps[4][1].AssertListEquals(1);
+        ps[4][2].AssertListEquals(2);
+        ps[5][0].AssertListEquals(0, 3);
+        ps[5][1].AssertListEquals(1, 4);
+        ps[5][2].AssertListEquals(2);
+
+        Assert.IsTrue(100.Range().Deinterleave(1).Single().SequenceEqual(100.Range()));
+        Assert.IsTrue(100.Range().Deinterleave(503).Select(e => e.Select(f => (int?)f).SingleOrDefault()).SequenceEqual(
+            100.Range().Select(e => (int?)e).Concat(Enumerable.Repeat((int?)null, 403))));
     }
 }

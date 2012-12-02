@@ -216,11 +216,52 @@ namespace Strilanc.LinqToCollections {
         public static IReadOnlyList<T> Empty<T>() {
             return ListEmpty<T>.Empty;
         }
+        ///<summary>Returns a readable list with a single item.</summary>
+        public static IReadOnlyList<T> Singleton<T>(T item) {
+            return Repeat(item, 1);
+        }
         ///<summary>Returns a readable list composed of a value repeated a desired number of times.</summary>
         public static IReadOnlyList<T> Repeat<T>(T value, int count) {
             if (count < 0) throw new ArgumentOutOfRangeException("count", "count < 0");
             if (count == 0) return Empty<T>(); // avoid closing over value
             return new AnonymousReadOnlyList<T>(count, i => value);
+        }
+
+        ///<summary>Lists the items, from the given list, whose indices are congruent to 0 (modulo the given stride length).</summary>
+        public static IReadOnlyList<T> Stride<T>(this IReadOnlyList<T> list, int strideLength) {
+            if (list == null) throw new ArgumentNullException("list");
+            if (strideLength <= 0) throw new ArgumentOutOfRangeException("strideLength", "strideLength <= 0");
+            if (strideLength == 1) return list;
+            return new AnonymousReadOnlyList<T>(
+                () => (list.Count + strideLength - 1) / strideLength,
+                i => list[i * strideLength]);
+        }
+
+        /// <summary>
+        /// Lists some lists that, when interleaved, results in the given list.
+        /// Each returned list contains the items, from the given list, whose indices are congruent (modulo the given count) to the list's index in the returned list of lists.
+        /// </summary>
+        public static IReadOnlyList<IReadOnlyList<T>> Deinterleave<T>(this IReadOnlyList<T> list, int interleavedCount) {
+            if (list == null) throw new ArgumentNullException("list");
+            if (interleavedCount <= 0) throw new ArgumentOutOfRangeException("interleavedCount", "interleavedCount <= 0");
+            if (interleavedCount == 1) return Singleton(list);
+            return new AnonymousReadOnlyList<IReadOnlyList<T>>(
+                () => interleavedCount,
+                i => list.Skip(i).Stride(interleavedCount));
+        }
+
+        /// <summary>
+        /// Breaks the list into contiguous groups of items with the given size.
+        /// The last group may be smaller than the group size.
+        /// </summary>
+        public static IReadOnlyList<IReadOnlyList<T>> Partition<T>(this IReadOnlyList<T> list, int groupSize) {
+            if (list == null) throw new ArgumentNullException("list");
+            if (groupSize <= 0) throw new ArgumentOutOfRangeException("groupSize", "groupSize <= 0");
+            return new AnonymousReadOnlyList<IReadOnlyList<T>>(
+                () => (list.Count + groupSize - 1) / groupSize,
+                i => new AnonymousReadOnlyList<T>(
+                    () => i == list.Count / groupSize ? list.Count % groupSize : groupSize,
+                    j => list[i * groupSize + j]));
         }
     }
 }
