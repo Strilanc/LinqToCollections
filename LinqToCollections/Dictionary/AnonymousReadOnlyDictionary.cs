@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 
 namespace Strilanc.LinqToCollections {
+    ///<summary>Determines if a key is in a dictionary and returns the associated value.</summary>
     public delegate bool TryGetter<in TKey, TValue>(TKey key, out TValue value);
 
     ///<summary>A readonly dictionary implemented with delegates passed to its constructor.</summary>
@@ -29,11 +30,8 @@ namespace Strilanc.LinqToCollections {
             _getter = getter;
         }
 
-        ///<summary>The number of key/value pairs in the dictionary.</summary>
         public override int Count { get { return _counter(); } }
-        ///<summary>The keys in the dictionary.</summary>
         public override IEnumerable<TKey> Keys { get { return _keys; } }
-        ///<summary>Tries to get the value associated with a key, returning true when successful.</summary>
         public override bool TryGetValue(TKey key, out TValue value) {
             return _getter(key, out value);
         }
