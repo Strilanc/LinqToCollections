@@ -1,0 +1,16 @@
+﻿<Window x:Class="LinqToCollectionsExample.MainWindow"
+        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        Title="MainWindow"
+        Width="700"
+        Height="350"
+        Background="LightGray">
+    <StackPanel x:Name="Rows">
+        <TextBlock Text="A"/>
+        <Slider x:Name="SliderA" Minimum="0" Maximum="25" Value="3"/>
+        <TextBlock Text="B"/>
+        <TextBox x:Name="TextB" Text="separate,items,by,commas,,,,,,like,this"/>
+        <TextBlock Text="C"/>
+        <TextBox x:Name="TextC" Text="wow,me,by,common,means,so,that,you,don't,lose,your,horse"/>
+    </StackPanel>
+</Window>
