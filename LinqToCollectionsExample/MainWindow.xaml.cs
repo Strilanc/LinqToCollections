@@ -63,7 +63,7 @@ namespace LinqToCollectionsExample {
                         value = key*key;
                         return key >= 0 && key < count;
                     });
-                var cubeMap = squareMap.Select(e => e.Key*e.Value);
+                var cubeMap = squareMap.SelectValue(e => e.Key*e.Value);
                 return cubeMap; // treated as an IReadOnlyCollection<KeyValuePair<int, int>>
             });
         }

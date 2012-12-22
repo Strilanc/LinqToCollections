@@ -21,8 +21,8 @@ namespace Strilanc.LinqToCollections {
         }
 
         ///<summary>Returns a readable dictionary with the same keys, but values determined by projecting the existing key/value pairs.</summary>
-        public static IReadOnlyDictionary<TKey, TResult> Select<TKey, TValue, TResult>(this IReadOnlyDictionary<TKey, TValue> dictionary,
-                                                                                       Func<KeyValuePair<TKey, TValue>, TResult> projection) {
+        public static IReadOnlyDictionary<TKey, TResult> SelectValue<TKey, TValue, TResult>(this IReadOnlyDictionary<TKey, TValue> dictionary,
+                                                                                            Func<KeyValuePair<TKey, TValue>, TResult> projection) {
             if (dictionary == null) throw new ArgumentNullException("dictionary");
             if (projection == null) throw new ArgumentNullException("projection");
             return new AnonymousReadOnlyDictionary<TKey, TResult>(
@@ -38,7 +38,7 @@ namespace Strilanc.LinqToCollections {
                     return true;
                 });
         }
-        
+
         ///<summary>Returns a readable dictionary with no items.</summary>
         public static IReadOnlyDictionary<TKey, TValue> Empty<TKey, TValue>() {
             return new AnonymousReadOnlyDictionary<TKey, TValue>(
