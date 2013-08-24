@@ -92,6 +92,7 @@ public class ReadOnlyListTest {
         ReadOnlyList.AllSignedBytes().Select(e => (int)e).AssertListEquals(Enumerable.Range(SByte.MinValue, SByte.MaxValue + 1 - SByte.MinValue));
         ReadOnlyList.AllUnsigned16BitIntegers().Select(e => (int)e).AssertListEquals(Enumerable.Range(UInt16.MinValue, UInt16.MaxValue + 1 - UInt16.MinValue));
         ReadOnlyList.AllSigned16BitIntegers().Select(e => (int)e).AssertListEquals(Enumerable.Range(Int16.MinValue, Int16.MaxValue + 1 - Int16.MinValue));
+        ReadOnlyList.AllBools().AssertListEquals(false, true);
     }
     [TestMethod]
     public void Partition() {

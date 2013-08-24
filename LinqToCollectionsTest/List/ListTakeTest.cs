@@ -76,7 +76,7 @@ public class ListTakeTest {
 
     [TestMethod]
     public void TakeOptimizes() {
-        var x = new[] { ReadOnlyList.Empty<int>(), 5.Range(), new int[6], new List<int> { 1, 2 } };
+        var x = new[] {ReadOnlyList.Empty<int>(), 5.Range(), new int[6], new List<int> {1, 2}};
 
         // taking none is empty
         foreach (var e in x) {
@@ -86,31 +86,24 @@ public class ListTakeTest {
 
         // taking all is ignored
         foreach (var e in x) {
-            foreach (var i in new[] { e.Count, e.Count + 1, 100 }) {
+            foreach (var i in new[] {e.Count, e.Count + 1, 100}) {
                 var b = !(e is List<int>);
                 ReferenceEquals(e.Take(i), e).AssertEquals(b);
                 ReferenceEquals(e.TakeLast(i), e).AssertEquals(b);
             }
         }
+    }
 
-        // double taking is merged
-        foreach (var last in new[] { false, true }) {
-            // scope inside an action to prevent the debugger from holding onto references
-            new Action(() => {
-                var root = 6.Range();
-                var transient = Taker(last)(root, 3);
-                var result = Taker(last)(transient, 2);
+    [TestMethod]
+    public void TakeOptimizesDoubleTaking() {
+        var root = 6.Range();
+        
+        var r = (ListTakeFirst<int>)root.Take(3).Take(2);
+        r.Amount.AssertEquals(2);
+        r.SubList.AssertReferenceEquals(root);
 
-                var weakRoot = root.WeakRef();
-                var weakTransient = transient.WeakRef();
-                root = null;
-                transient = null;
-                GC.Collect();
-
-                weakRoot.AssertNotCollected();
-                weakTransient.AssertCollected();
-                GC.KeepAlive(result);
-            }).Invoke();
-        }
+        var r2 = (ListTakeLast<int>)root.TakeLast(3).TakeLast(2);
+        r2.Amount.AssertEquals(2);
+        r2.SubList.AssertReferenceEquals(root);
     }
 }

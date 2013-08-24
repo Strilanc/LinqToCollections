@@ -39,43 +39,68 @@ public class ListCountCheckTest {
         ri4.AssertListBroken();
     }
     [TestMethod]
-    public void CountCheckOptimizesAcrossMostThings() {
-        var r = 5.Range();
-        r.TakeLastRequire(5).AssertReferenceEquals(r);
-        r.SkipLastRequire(5).AssertReferenceEquals(ReadOnlyList.Empty<int>());
-        r.TakeRequire(5).AssertReferenceEquals(r);
-        r.SkipRequire(5).AssertReferenceEquals(ReadOnlyList.Empty<int>());
+    public void CountCheckOptimizesAwayWhenZero() {
+        var r = 5.Range().ToList();
         r.TakeLastRequire(0).AssertReferenceEquals(ReadOnlyList.Empty<int>());
         r.SkipLastRequire(0).AssertReferenceEquals(r);
         r.TakeRequire(0).AssertReferenceEquals(ReadOnlyList.Empty<int>());
         r.SkipRequire(0).AssertReferenceEquals(r);
+    }
+    [TestMethod]
+    public void CountCheckOptimizesAwayWhenSizeIsKnown() {
+        var r = 5.Range();
 
-        var x = new Func<IReadOnlyList<int>, int, IReadOnlyList<int>>[] {
-            ReadOnlyList.Skip, 
+        r.TakeLastRequire(5).AssertReferenceEquals(r);
+        r.TakeRequire(5).AssertReferenceEquals(r);
+        r.SkipLastRequire(5).AssertReferenceEquals(ReadOnlyList.Empty<int>());
+        r.SkipRequire(5).AssertReferenceEquals(ReadOnlyList.Empty<int>());
+
+        TestUtil.AssertThrows(() => r.TakeRequire(6));
+        TestUtil.AssertThrows(() => r.TakeLastRequire(6));
+        TestUtil.AssertThrows(() => r.SkipRequire(6));
+        TestUtil.AssertThrows(() => r.SkipLastRequire(6));
+    }
+    [TestMethod]
+    public void CountCheckDoesNotOptimizeAwayWhenSizeIsVariable() {
+        var r = 5.Range().ToList();
+        r.TakeLastRequire(5).AssertReferenceDoesNotEqual(r);
+        r.SkipLastRequire(5).AssertReferenceDoesNotEqual(ReadOnlyList.Empty<int>());
+        r.TakeRequire(5).AssertReferenceDoesNotEqual(r);
+        r.SkipRequire(5).AssertReferenceDoesNotEqual(ReadOnlyList.Empty<int>());
+    }
+
+    private static T Match<T, TIn, T1, T2, T3, T4>(TIn input, Func<T1, T> match1, Func<T2, T> match2, Func<T3, T> match3, Func<T4, T> match4) {
+        if (input is T1) return match1((T1)(object)input);
+        if (input is T2) return match2((T2)(object)input);
+        if (input is T3) return match3((T3)(object)input);
+        if (input is T4) return match4((T4)(object)input);
+        Assert.Fail(input.GetType().ToString());
+        throw new InvalidProgramException();
+    }
+    [TestMethod]
+    public void CountCheckOptimizesWhenDoubledUp() {
+        var reqs = new Func<IReadOnlyList<int>, int, IReadOnlyList<int>>[] {
+            ReadOnlyList.SkipRequire, 
             ReadOnlyList.SkipLastRequire, 
             ReadOnlyList.TakeRequire, 
-            ReadOnlyList.TakeLastRequire,
-            (e,i) => (IReadOnlyList<int>)e.AsIList()
+            ReadOnlyList.TakeLastRequire
         };
-        foreach (var e in x) {
-            foreach (var e2 in x) {
-                new Action(() => {
-                    var root = 6.Range();
-                    var transient = e(root, 2);
-                    var result = e2(root, 1);
-                    // should combine the takes/skips AND the checks
-                    // resulting in the transient list not being referenced
+        foreach (var req1 in reqs) {
+            foreach (var req2 in reqs) {
+                var root = 6.Range().ToList();
+                var r = req2(req1(root, 3), 2);
 
-                    var weakRoot = root.WeakRef();
-                    var weakTransient = transient.WeakRef();
-                    root = null;
-                    transient = null;
-                    GC.Collect();
-
-                    weakRoot.AssertNotCollected();
-                    weakTransient.AssertCollected();
-                    GC.KeepAlive(result);
-                }).Invoke();
+                var s = Match(r,
+                              (ListCountCheck<int> e) => e,
+                              (ListSkip<int> e) => e.SubList,
+                              (ListTakeFirst<int> e) => e.SubList,
+                              (ListTakeLast<int> e) => e.SubList);
+                var s2 = (ListCountCheck<int>)Match(s,
+                                                    (ListCountCheck<int> e) => e,
+                                                    (ListSkip<int> e) => e.SubList,
+                                                    (ListTakeFirst<int> e) => e.SubList,
+                                                    (ListTakeLast<int> e) => e.SubList);
+                s2.SubList.AssertReferenceEquals(root);
             }
         }
     }

@@ -26,6 +26,12 @@ internal static class TestUtil {
                         ex);
         }
     }
+    public static void AssertThrows(Action action) {
+        AssertThrows<Exception>(action);
+    }
+    public static void AssertThrows(Func<object> func) {
+        AssertThrows<Exception>(func);
+    }
     public static void AssertSequenceEquals<T>(this IEnumerable<T> actual, IEnumerable<T> expected) {
         actual.AssertSequenceEquals(expected.ToArray());
     }

@@ -190,6 +190,10 @@ namespace Strilanc.LinqToCollections {
             return new AnonymousReadOnlyList<int>(count, i => i);
         }
 
+        ///<summary>Returns a readable list of all the boolean values (false and true, in that order).</summary>
+        public static IReadOnlyList<bool> AllBools() {
+            return new[] {false, true};
+        }
         ///<summary>Returns a readable list of all the unsigned bytes, from 0 to 255, in increasing order.</summary>
         public static IReadOnlyList<byte> AllBytes() {
             return new AnonymousReadOnlyList<byte>(

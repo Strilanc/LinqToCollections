@@ -16,6 +16,9 @@ public class ListSkipTest {
         if (last) return ReadOnlyList.SkipLast;
         return ReadOnlyList.Skip;
     }
+    private static IReadOnlyList<Func<IReadOnlyList<int>, int, IReadOnlyList<int>>> Skippers() {
+        return ReadOnlyList.AllBools().Select(Skipper);
+    }
 
     private static IReadOnlyList<int> AssertSkipsProperly(IReadOnlyList<int> list, int n, bool last) {
         var s = Skipper(last);
@@ -94,26 +97,16 @@ public class ListSkipTest {
                 ReferenceEquals(e.SkipLast(i), ReadOnlyList.Empty<int>()).AssertEquals(b);
             }
         }
+    }
 
-        // double skipping is merged
-        foreach (var last1 in new[] {false, true}) {
-            foreach (var last2 in new[] {false, true}) {
-                // scope inside an action to prevent the debugger from holding onto references
-                new Action(() => {
-                    var root = 6.Range();
-                    var transient = Skipper(last1)(root, 2);
-                    var result = Skipper(last2)(transient, 2);
-
-                    var weakRoot = root.WeakRef();
-                    var weakTransient = transient.WeakRef();
-                    root = null;
-                    transient = null;
-                    GC.Collect();
-
-                    weakRoot.AssertNotCollected();
-                    weakTransient.AssertCollected();
-                    GC.KeepAlive(result);
-                }).Invoke();
+    [TestMethod]
+    public void SkipOptimizesDoubleSkipping() {
+        foreach (var skip1 in Skippers()) {
+            foreach (var skip2 in Skippers()) {
+                var root = 6.Range();
+                var r = (ListSkip<int>)skip2(skip1(root, 2), 3);
+                r.SubList.AssertReferenceEquals(root);
+                r.Count.AssertEquals(1);
             }
         }
     }
